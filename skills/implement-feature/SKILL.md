@@ -1,0 +1,82 @@
+---
+name: implement-feature
+description: |
+  Implements a LiveSpec feature by working through its acceptance criteria, writing code, placing
+  livespec: markers that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
+  tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
+  this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
+  scoping (/scope-features), or framing only (/ux-framing, /tech-framing).
+argument-hint: <feature-slug>
+---
+
+# Implement Feature
+
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+
+Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `livespec:` markers (`SPEC.md` §9.4). LiveSpec has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
+
+**Do not start coding until framing is complete.**
+
+## Mode detection
+
+- **If `$ARGUMENTS` names a feature** (`features/**/{slug}.md` exists) → Single-feature mode.
+- **If no argument** → Picker mode.
+
+If the slug matches nothing, say so and run Picker mode.
+
+## Picker mode
+
+1. Locate the project root (nearest `livespec.yaml`, §3.1).
+2. `Glob features/**/*.md` and read each feature's spec-item state.
+3. Present, via `AskUserQuestion`, the features that are framed (have `## UX` where user-facing, and `## Tech`) and still have open (`- [ ]`) ACs, with their progress (e.g. "log-completion (3/8 ACs done)").
+4. If nothing is ready, say so and point at `/scope-features` or `/specify-feature`.
+5. Route the selection into Single-feature mode.
+
+## Single-feature mode
+
+### Step 1: Read the feature and its context
+
+`Read` `features/**/{slug}.md`. Pull in what shapes the work: linked personas, the constraints it must respect (`product/constraint/`), entities it manipulates (`product/entity/`), external systems (`tech/external_system/`), and any concepts referenced from `## UX` / `## Tech`. Read the manifest `mode` (§12).
+
+### Step 2: Check readiness
+
+**Spec completeness**: the feature has a summary and at least one REQ with ACs, and its `## Questions` hold no blocker still open (`- [ ] Q-...`). If a blocking question is unresolved, surface it and resolve it (or defer explicitly) before coding.
+
+**UX framing**: if the feature is user-facing and has no `## UX` section, run `/ux-framing` for it and wait for completion. If the skill is unavailable, tell the user and ask whether to proceed without it.
+
+**Tech framing**: if the feature has no `## Tech` section, run `/tech-framing` for it and wait. If unavailable, tell the user and ask whether to proceed without it.
+
+### Step 3: Implement
+
+Only once framing is in place:
+
+1. Create a working task list from the acceptance criteria (`TaskCreate`), one item per AC.
+2. Briefly state what you are about to build: the feature, who it serves, the UX and tech approach in one line each, and the AC count.
+3. Write the code, AC by AC, following the `## Tech` approach and respecting linked constraints.
+4. **Place `livespec:` markers** (§9.4). At each code site that implements a spec item, add a comment in the host language's native syntax carrying `livespec: {feature-slug}#{spec-item-id}`:
+   - `// livespec: log-completion#REQ-2` (JS/TS), `# livespec: log-completion#AC-2.1` (Python), `<!-- livespec: log-completion#REQ-1 -->` (HTML).
+   - The payload is `livespec:` then one or more spaces then `{slug}#{id}`, no internal whitespace, case-sensitive (§9.4). The slug is the feature slug only; the area is never part of the marker, so markers survive a feature being moved between areas (§9.4).
+   - A marker on a `REQ` implicitly covers its nested ACs unless a more specific AC-level marker exists (§9.4). Mark at the REQ level for a cohesive implementation, at the AC level when criteria land in different places.
+5. **Check ACs as they pass.** When a criterion is implemented and verified, `Edit` the feature to flip that AC `- [ ]` → `- [x]` (§8.1). Mark a REQ `[x]` when its ACs are satisfied; a REQ `[x]` with open ACs is allowed but is a lint warning, so only do it deliberately (§8.2). Never renumber or reuse IDs (§8.3); to drop a criterion that turned out wrong, mark it `[-]` with a reason rather than deleting it.
+6. Keep edits to the feature file tight: change only the checkboxes (and, where useful, add a resolution note, see below). Preserve the rest of the file (losslessness, §14).
+
+### Step 4: Record what the code answered (optional)
+
+When closing a `Q` or `ISS` that the implementation resolved, you MAY add a resolution note: a single continuation line starting with `→ ` at the item's indentation (§8.1). On REQ/AC the code itself is the answer via the marker, so a note there is optional commentary.
+
+```markdown
+- [x] ISS-2: [AC-2.1] dropped completions on a flaky connection.
+  → Fixed by retrying the sync drain with backoff in `src/sync/worker.ts`.
+```
+
+## When implementation diverges from the spec
+
+If the code needs to behave differently from an AC, do not silently overwrite intent. Surface it: either the AC body should evolve (bodies are mutable, IDs are not, §8.3) or a new REQ/AC/ISS captures the reality. Edit the AC body for a clarification; add a new item for genuinely new behavior. Flag product-level changes for the user rather than deciding them.
+
+## Wrap up
+
+Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the `livespec:` markers) is the record. Then point at `/finalize-work` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
+
+---
+
+To check whether the implementation actually meets the spec before finalizing, delegate to the `qa` subagent: it verifies each AC against the code and reports gaps, without changing the spec or the code.

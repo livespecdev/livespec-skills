@@ -1,0 +1,75 @@
+---
+name: finalize-work
+description: |
+  Takes an implemented LiveSpec feature to production-ready: adds or updates tests, runs the project's
+  CI/quality gate, commits the changes, and delegates spec reconciliation to /sync-spec. Use when the
+  user signals readiness to finish ("ready to finalize", "need tests", "run CI", "implementation done").
+  Not for active implementation (/implement-feature), debugging, or spec-only updates (/sync-spec directly).
+argument-hint: <feature-slug>
+---
+
+# Finalize Work
+
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+
+Complete the production-readiness workflow for a feature: **test → check → commit → reconcile**. Use this once the feature's behavior is implemented and you need it shippable.
+
+## Step 1: Verify implementation status
+
+`Read` `features/**/{slug}.md`. Confirm the acceptance criteria are implemented (their code exists and carries `livespec:` markers, §9.4); they need not be tested yet. If some ACs are still genuinely unimplemented (`- [ ]` with no code), tell the user what is missing and ask whether to proceed anyway.
+
+## Step 2: Add or update tests
+
+Identify coverage gaps against the feature's acceptance criteria:
+
+- Review each AC and check existing test files for related coverage.
+- Add unit tests for new functions/components, integration tests for the feature's workflows, and E2E tests where the project uses them.
+- Cover the edge-case, validation, and error-handling ACs, not just the happy path.
+- Update existing tests affected by the change.
+
+You MAY mirror the spec link in test names or comments (e.g. a test named after `log-completion#AC-2.3`), so the test reads as the executable form of that criterion. Summarize what test coverage you added.
+
+## Step 3: Run the quality gate
+
+Find and run the project's CI command:
+
+- `package.json` scripts: `npm run ci`, `test:ci`, `lint && test`, `check`.
+- A `Makefile`: `make ci`, `make test`, `make check`.
+- Failing that, read `.github/workflows/` and run the equivalent steps locally.
+
+Run the most comprehensive check. If it fails, fix the issues and re-run. Do not proceed to commit until it passes. Note anything you fixed.
+
+## Step 4: Commit
+
+**Only after the gate passes.**
+
+1. Review what will be committed: implementation files, test files, the feature file (checked ACs and `livespec:` markers), and any concept files touched.
+2. Match the project's commit style (read recent `git log`).
+3. Git safety:
+   - Never update git config; never use `--no-verify` or skip hooks.
+   - Stage specific files; avoid `git add -A`.
+   - Create a new commit; do not amend unless the user asks.
+   - If you are on the default branch, create a feature branch first.
+4. **Commit attribution**: the commit MUST NOT mention Claude, Claude Code, or any AI agent as author, committer, or contributor. No `Co-Authored-By` AI trailer, no "Generated with" line. The human is the sole author of record (per `CLAUDE.md`).
+
+## Step 5: Reconcile the spec
+
+Delegate to `/sync-spec` for this feature to reconcile the spec files with what was actually built:
+
+- Confirm the right ACs are `[x]` (and any dropped one is `[-]` with a reason).
+- Add or sharpen `## Tech` notes for decisions made during implementation.
+- Record answers to `Q`/`ISS` as resolution notes (`→ `, §8.1).
+- Promote any standing rule discovered during the work to a concept for the user to review.
+
+If `/sync-spec` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).
+
+## Step 6: Summary
+
+Summarize conversationally: tests added for what, the gate passing, the commit hash, and what `/sync-spec` reconciled. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
+
+## Handling failures
+
+- **Test failures**: fix the implementation or the tests, re-run; do not move to the gate until tests pass.
+- **Gate failures**: address lint/type/other issues, re-run; do not commit until green.
+- **Pre-commit hook failures**: fix what the hook raised, create a new commit (do not amend).
+- **Reconciliation issues**: complete the file edits directly and report anything you could not reconcile.

@@ -1,0 +1,8 @@
+format_version: "1.0"
+name: Habit Tracker (Sample)
+description: |
+  Minimal but valid LiveSpec project used as the dogfooding fixture for
+  livespec-tools. Exercises personas, a goal, a pain point, a constraint,
+  an entity, and two features with linked spec items and a typed feature
+  relation. Loose mode.
+mode: loose
