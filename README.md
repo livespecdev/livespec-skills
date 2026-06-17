@@ -4,7 +4,7 @@ Companion tooling for **[LiveSpec](https://livespec.dev)**, the open file format
 
 This repository is a **Claude Code plugin**: a set of skills and subagents that let you and your coding agent author and maintain LiveSpec specs **directly on the local markdown files in your git repository**. No backend, no API, no MCP server, no proprietary app. A skill's output is a git diff you review.
 
-It is the **forward-authoring** toolchain for LiveSpec: scope intent into features, specify them, frame the UX and the technical approach, implement against the acceptance criteria, and keep the spec in sync with the code. Reverse-engineering an existing codebase into a LiveSpec project is a separate concern, handled by [`reverse-livespec`](https://github.com/eric-therond/livespec).
+Scope intent into features, specify them, frame the UX and the technical approach, implement against the acceptance criteria, and keep the spec in sync with the code.
 
 ## How it works
 
