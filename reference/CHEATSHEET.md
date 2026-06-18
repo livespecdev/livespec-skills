@@ -177,7 +177,13 @@ In any source file, in a host-language comment:
 <!-- livespec: idempotency#REQ-1 -->
 ```
 
-Marker = literal `livespec:` + space(s) + `{feature-slug}#{spec-item-id}`. Feature slugs are globally unique within `features/`, so the area is not in the marker — markers survive feature moves.
+One marker MAY list several items of the **same** feature, comma-separated, no whitespace in the payload:
+
+```js
+// livespec: analyze-current-page#REQ-1,REQ-2,AC-3.2
+```
+
+Marker = literal `livespec:` + space(s) + `{feature-slug}#{spec-item-id}`, optionally followed by `,{spec-item-id}` for more items of that feature. Feature slugs are globally unique within `features/`, so the area is not in the marker: markers survive feature moves. Reference items in different features with one marker each.
 
 ## Anti-patterns
 

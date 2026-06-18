@@ -1,6 +1,6 @@
 # LiveSpec: Format Specification
 
-**Version:** `v1.0.0-draft.2`
+**Version:** `v1.0.0-draft`
 **Status:** Draft (open for comments)
 **Canonical home:** https://livespec.dev
 
@@ -702,7 +702,7 @@ A LiveSpec project describes software that exists (or is being built) in a codeb
 #### Marker format
 
 ```
-livespec: {feature-slug}#{spec-item-id}
+livespec: {feature-slug}#{spec-item-id}(,{spec-item-id})*
 ```
 
 The marker MUST appear inside a comment using the host language's native comment syntax. The format defines the **payload**, not the comment delimiter:
@@ -717,17 +717,25 @@ The marker MUST appear inside a comment using the host language's native comment
 <!-- livespec: idempotency#REQ-1 -->
 ```
 
-A source file MAY carry zero, one, or many markers. A marker pointing to a `REQ` implicitly covers its nested `AC`s unless more specific AC-level markers exist elsewhere.
+A single marker MAY point to several spec items **of the same feature** by listing their IDs after the `#`, separated by commas with no surrounding whitespace:
 
-The payload grammar is `livespec:` followed by one or more spaces, then `{feature-slug}#{spec-item-id}` with no internal whitespace. Tools MUST match case-sensitively. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
+```js
+// livespec: analyze-current-page#REQ-1,REQ-2,AC-3.2
+```
+
+This list form exists to avoid repeating the feature slug when one code site serves several items of the same feature. It is exactly equivalent to one single-item marker per ID. The feature slug appears once and scopes every ID in the list; an ID in the list MUST NOT carry its own `feature-slug#` prefix. To reference items across **different** features, a source file uses one marker per feature (a file MAY carry many markers).
+
+A source file MAY carry zero, one, or many markers. A marker pointing to a `REQ` implicitly covers its nested `AC`s unless more specific AC-level markers exist elsewhere; this applies per listed ID.
+
+The payload grammar is `livespec:` followed by one or more spaces, then `{feature-slug}#{spec-item-id}`, optionally followed by one or more `,{spec-item-id}` with no internal whitespace anywhere in the payload. Tools MUST match case-sensitively. Tools MUST recognize the list form and resolve every listed ID. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
 
 #### Resolution
 
 A `livespec:` marker resolves by:
 1. Locating the feature file by searching `features/**/{feature-slug}.md`.
-2. Finding the spec item with the matching ID inside that file (per §8.3).
+2. Finding, for each listed ID, the spec item with the matching ID inside that file (per §8.3).
 
-A marker whose feature file is missing, or whose spec item ID does not exist, is a **broken link**. Tools SHOULD report it as a lint warning at Level 3+.
+A marker whose feature file is missing is a **broken link**. In the list form, each listed ID resolves independently: an ID that does not exist in the feature file is a broken link for that ID alone, leaving the other IDs in the same marker valid. Tools SHOULD report broken links as a lint warning at Level 3+.
 
 #### Scope of this section: what v1 does and does not define
 
@@ -915,12 +923,12 @@ Tools claim conformance at one of three levels:
 - MUST validate against the canonical JSON schemas
 - MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
-- MUST recognize `livespec:` code markers (§9.4) when scanning source files and resolve them to spec items
+- MUST recognize `livespec:` code markers (§9.4) when scanning source files and resolve them to spec items, including the multi-ID list form (`#REQ-1,REQ-2`)
 
 ### Level 3: Linter
 - All Level 2 requirements
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
-- MUST emit diagnostics for broken `livespec:` code markers (feature file or spec item ID does not exist)
+- MUST emit diagnostics for broken `livespec:` code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
 - SHOULD emit diagnostics for resolution-note misuses (§8.1): multiple `→ ` lines on one item, or a `→ ` line on an open (`[ ]`) item
 - SHOULD emit diagnostics for unknown relation names under `links.feature` (anything other than `requires`, `triggers`, `extends` in v1)
 - SHOULD emit diagnostics for broken or ambiguous in-prose `[[ ]]` references (§9.5): unresolved slug, or shorthand slug matching two or more entities
