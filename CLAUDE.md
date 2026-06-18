@@ -2,7 +2,7 @@
 
 ## The project
 
-**livespec-tools** is the companion tooling repository for **LiveSpec**, the open file format for product specifications (format spec lives at `/Users/eric/Dev/livespec`, canonical document `SPEC.md`, home `https://livespec.dev`).
+**livespec-authoring** is the companion tooling repository for **LiveSpec**, the open file format for product specifications (format spec lives at `/Users/eric/Dev/livespec`, canonical document `SPEC.md`, home `https://livespec.dev`).
 
 This repo hosts **Claude Code extensions** (skills, subagents, and a packaged plugin) that let humans and agents author and maintain LiveSpec specs **directly on the local files in the user's git repository**. No backend, no API, no MCP server, no proprietary application.
 
@@ -14,7 +14,7 @@ It is the *forward authoring* toolchain for LiveSpec: scope, specify, frame, imp
 
 These skills are a port of a Territory-backed workflow (`/Users/eric/Dev/topo`). The single most important change:
 
-| Territory (old) | livespec-tools (new) |
+| Territory (old) | livespec-authoring (new) |
 |---|---|
 | Source of truth = Territory server, reached via `mcp__topo__*` MCP tools | Source of truth = **LiveSpec markdown files** in the user's repo |
 | `sync_product_context` pulls context into `.territory/` | Skills **read the files directly**; no sync step, no `.territory/` |
@@ -49,7 +49,7 @@ When unsure whether something is a concept, a feature, or a spec item, apply the
 Packaged as a single Claude Code plugin at the repo root (installable via `claude marketplace add`), following the standard plugin layout:
 
 ```
-livespec-tools/
+livespec-authoring/
 ├── CLAUDE.md                  # this file (working instructions for the repo)
 ├── README.md                  # public-facing intro (TBD)
 ├── LICENSE                    # permissive (Apache-2.0 planned)

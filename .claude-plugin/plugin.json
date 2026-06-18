@@ -1,5 +1,5 @@
 {
-  "name": "livespec-tools",
+  "name": "livespec-authoring",
   "displayName": "LiveSpec Tools",
   "version": "0.2.0",
   "description": "Forward-authoring toolchain for LiveSpec: scope, specify, frame, implement, and keep product specs in sync with code, directly on the local markdown files in your git repository. No backend, no MCP server.",
@@ -7,7 +7,7 @@
     "name": "Eric Thérond"
   },
   "homepage": "https://livespec.dev",
-  "repository": "https://github.com/eric-therond/livespec-tools",
+  "repository": "https://github.com/etherond/livespec-authoring",
   "license": "Apache-2.0",
   "keywords": [
     "livespec",

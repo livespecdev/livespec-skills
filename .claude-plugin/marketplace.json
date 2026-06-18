@@ -6,7 +6,7 @@
   "description": "LiveSpec authoring tools for Claude Code: skills and subagents that maintain LiveSpec product specs on local files in your repository.",
   "plugins": [
     {
-      "name": "livespec-tools",
+      "name": "livespec-authoring",
       "source": "./",
       "description": "Scope, specify, frame, implement, and sync LiveSpec specs directly on local markdown files."
     }

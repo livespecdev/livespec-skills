@@ -1,4 +1,4 @@
-# livespec-tools
+# livespec-authoring
 
 Companion tooling for **[LiveSpec](https://livespec.dev)**, the open file format for product specifications that stay current with the code they describe.
 
@@ -20,8 +20,8 @@ Two ideas drive the design:
 ## Install
 
 ```
-/plugin marketplace add eric-therond/livespec-tools
-/plugin install livespec-tools@livespec
+/plugin marketplace add etherond/livespec-authoring
+/plugin install livespec-authoring@livespec
 ```
 
 The marketplace is named `livespec`, hence the `@livespec` suffix. To test a local checkout before it is published, or to develop against it, see [`INSTALL.md`](INSTALL.md).
@@ -40,6 +40,28 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/implement-feature` | Works through the acceptance criteria, writes code, places `livespec:` markers, and checks ACs as they pass. |
 | `/finalize-work` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
 | `/sync-spec` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
+
+## Making the skills self-trigger
+
+Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a `livespec.yaml`, the skills already fire on their own: ask "how does the export feature work?" and `/livespec-context` orients itself against the spec; say "implement the export feature" and `/implement-feature` takes over. You rarely need to type the slash command.
+
+That routing is model-driven and best-effort, not a hard rule keyed on `livespec.yaml`. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-authoring):
+
+```markdown
+## Specs
+
+This repository is a LiveSpec project (see `livespec.yaml`). Use the
+`livespec-authoring` skills to read and maintain the spec:
+
+- At session start, or before working on any feature, use `livespec-context`
+  to orient against the spec.
+- When scoping new work, use `scope-features`; to author one feature,
+  `specify-feature`; to build it, `implement-feature`.
+
+Keep the spec files in sync with the code: they are the source of truth.
+```
+
+`CLAUDE.md` is read into context every session, so this nudges Claude toward the skills consistently. For a hard guarantee independent of the model's judgment, configure a `SessionStart` hook in `settings.json` instead; a hook cannot invoke a skill directly, but it can inject a reminder to run `/livespec-context`.
 
 ## The subagents
 
