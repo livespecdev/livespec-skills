@@ -113,7 +113,7 @@ Commits MUST NOT mention Claude, Claude Code, or any AI agent as committer, auth
 
 ## Status
 
-Bootstrapping. CLAUDE.md first; plugin manifest, skills, and agents to follow. The LiveSpec format itself is `v1.0.0-draft.2` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
+Bootstrapping. CLAUDE.md first; plugin manifest, skills, and agents to follow. The LiveSpec format itself is `v1.0.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
 
 ### Suggested next steps
 
