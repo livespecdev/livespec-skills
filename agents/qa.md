@@ -74,4 +74,4 @@ AC-2.3: Same-day log on two devices keeps a single completion.
 
 ## Output
 
-Return: the verification status (Ready / Needs work / Blocked), the X/Y ACs met, the key gaps with evidence, the must-fix blockers, the non-blocking nice-to-haves, and a clear recommendation (proceed to `/finalize-work`, or address specific items first).
+Return: the verification status (Ready / Needs work / Blocked), the X/Y ACs met, the key gaps with evidence, the must-fix blockers, the non-blocking nice-to-haves, and a clear recommendation (proceed to `/finalize-feature`, or address specific items first).

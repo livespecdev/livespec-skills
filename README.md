@@ -35,10 +35,10 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/livespec-context` | Locates the project, maps its concepts and features, and bridges the spec against the codebase. Read-only orientation. |
 | `/scope-features` | Decomposes natural-language intent into a plan of features to write or update (and concepts to extract), then writes them. |
 | `/specify-feature` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
-| `/ux-framing` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
-| `/tech-framing` | Frames the technical approach into the feature's `## Tech` section, grounded in the codebase. |
+| `/frame-ux` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
+| `/frame-tech` | Frames the technical approach into the feature's `## Tech` section, grounded in the codebase. |
 | `/implement-feature` | Works through the acceptance criteria, writes code, places `livespec:` markers, and checks ACs as they pass. |
-| `/finalize-work` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
+| `/finalize-feature` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
 | `/sync-spec` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
 
 ## Making the skills self-trigger

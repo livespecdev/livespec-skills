@@ -1,10 +1,10 @@
 ---
-name: tech-framing
+name: frame-tech
 description: |
   Frames the technical approach for a LiveSpec feature and records it in the feature's `## Tech`
   section: architecture, data model, API shape, key decisions, constraints applied, testing strategy.
   Explores the codebase and reads tech/ concepts. Use when framing the technical approach before
-  implementation. Not for the core spec (/specify-feature) or UX (/ux-framing).
+  implementation. Not for the core spec (/specify-feature) or UX (/frame-ux).
 argument-hint: [feature-slug]
 ---
 
@@ -20,7 +20,7 @@ If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob
 
 ## Check prerequisites
 
-If the feature has no `## UX` section and is user-facing, warn that tech framing without UX may cause rework, and offer to run `/ux-framing` first. The user may choose to proceed anyway.
+If the feature has no `## UX` section and is user-facing, warn that tech framing without UX may cause rework, and offer to run `/frame-ux` first. The user may choose to proceed anyway.
 
 ## Gather context
 
@@ -115,7 +115,7 @@ Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the 
 
 ## Wrap up
 
-Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/ux-framing`; otherwise the feature is framed, so offer to start `/implement-feature`. There is no status to flip (§10).
+Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer to start `/implement-feature`. There is no status to flip (§10).
 
 ---
 

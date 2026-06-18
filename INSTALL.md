@@ -63,10 +63,10 @@ You should see `livespec-authoring` enabled. Its skills become available as slas
 /livespec-context
 /scope-features
 /specify-feature
-/ux-framing
-/tech-framing
+/frame-ux
+/frame-tech
 /implement-feature
-/finalize-work
+/finalize-feature
 /sync-spec
 ```
 

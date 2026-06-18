@@ -1,10 +1,10 @@
 ---
-name: ux-framing
+name: frame-ux
 description: |
   Frames the user experience for a LiveSpec feature and records it in the feature's `## UX` section:
   user flow, key decisions, patterns used, states, content, and accessibility, optionally with mockup
   assets. Reads ux/ concepts for the design system. Use when framing UX for a feature before
-  implementation. Not for the core spec (/specify-feature) or technical approach (/tech-framing).
+  implementation. Not for the core spec (/specify-feature) or technical approach (/frame-tech).
 argument-hint: [feature-slug]
 ---
 
@@ -122,7 +122,7 @@ If framing established a reusable interaction or component rule that would apply
 
 ## Wrap up
 
-Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/tech-framing`; if tech framing is already done, the feature is fully framed, so offer to start `/implement-feature`. There is no status to flip (§10): readiness is simply that both `## UX` and `## Tech` are present and the spec items are ready to implement.
+Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer to start `/implement-feature`. There is no status to flip (§10): readiness is simply that both `## UX` and `## Tech` are present and the spec items are ready to implement.
 
 ---
 

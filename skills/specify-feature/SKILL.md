@@ -4,8 +4,8 @@ description: |
   Authors or refines a single LiveSpec feature file: the summary paragraph, requirements, nested
   acceptance criteria, assumptions, questions, issues, and concept links. Use when the user discusses
   new functionality, mentions a spec, requirements, or acceptance criteria for one feature, or wants an
-  existing feature sharpened. Owns the core spec, not UX framing (/ux-framing) or tech framing
-  (/tech-framing). Not for multi-feature decomposition (/scope-features) or implementation.
+  existing feature sharpened. Owns the core spec, not UX framing (/frame-ux) or tech framing
+  (/frame-tech). Not for multi-feature decomposition (/scope-features) or implementation.
 argument-hint: [feature-description or feature-slug]
 ---
 
@@ -17,7 +17,7 @@ Write a clear, well-scoped feature as a single markdown file under `features/`, 
 
 **You own the core spec:** the summary paragraph (§7.4), requirements and acceptance criteria (§8), assumptions, questions, issues, and the concept links in frontmatter (§9.2).
 
-**You do not own:** `## UX` notes (use `/ux-framing`), `## Tech` notes (use `/tech-framing`), or implementation.
+**You do not own:** `## UX` notes (use `/frame-ux`), `## Tech` notes (use `/frame-tech`), or implementation.
 
 ## Determine intent
 
@@ -80,7 +80,7 @@ A `REQ` is a top-level checkbox in `## Requirements`, at 0-space indent:
 Each REQ:
 
 - **Captures one distinct functional need**, solution-agnostic (the need, not the implementation).
-- **Describes observable behavior.** A business analyst should understand it from outside the system, through the UI, API responses, or observable effects. Internal schemas, class names, and endpoints belong in `## Tech` (via `/tech-framing`), not in a REQ. The exception is infrastructure features where the internal system is the product (e.g. "the API returns 429 when the rate limit is exceeded").
+- **Describes observable behavior.** A business analyst should understand it from outside the system, through the UI, API responses, or observable effects. Internal schemas, class names, and endpoints belong in `## Tech` (via `/frame-tech`), not in a REQ. The exception is infrastructure features where the internal system is the product (e.g. "the API returns 429 when the rate limit is exceeded").
 
 Avoid: "Add a checkbox button" (UI solution), "Use the X library" (implementation), "Make it fast" (not observable, and unmeasurable), "Add a `streak` column" (internal schema).
 
@@ -143,7 +143,7 @@ When the change is really a product decision (a new concept, or a brand-new feat
 
 ## Present and hand off
 
-Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/ux-framing` if UI is involved, `/tech-framing` before implementation, then `/implement-feature`.
+Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, then `/implement-feature`.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: finalize-work
+name: finalize-feature
 description: |
   Takes an implemented LiveSpec feature to production-ready: adds or updates tests, runs the project's
   CI/quality gate, commits the changes, and delegates spec reconciliation to /sync-spec. Use when the

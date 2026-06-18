@@ -81,10 +81,10 @@ Recognizable names from the Territory workflow, re-grounded on local files. Buil
 | `livespec-context` | Map the project at session start; bridge spec files ↔ codebase reality. | Merges old `load-context` + `territory-context`. Reads files; no sync. |
 | `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract). | Was `scope-work`. **Batches dropped** (pure Territory); outputs a plan of `[NEW]/[UPDATE]` feature files to write, then writes them. |
 | `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, ISS. | Was `specify-features`. Writes the `.md` directly per §7–§8. |
-| `ux-framing` | Frame UX into `## UX` notes (and future `UX_DIRECTION`, §15 #005). | Reads `ux/` concepts instead of `.territory/ux.md`. |
-| `tech-framing` | Frame technical approach into `## Tech` notes; explore the codebase. | Reads `tech/` concepts; writes `## Tech`. |
+| `frame-ux` | Frame UX into `## UX` notes (and future `UX_DIRECTION`, §15 #005). | Reads `ux/` concepts instead of `.territory/ux.md`. |
+| `frame-tech` | Frame technical approach into `## Tech` notes; explore the codebase. | Reads `tech/` concepts; writes `## Tech`. |
 | `implement-feature` | Work through ACs, write code, place `livespec:` markers (§9.4). | No status flips. Checks `[x]` ACs as they pass; markers anchor code. |
-| `finalize-work` | Tests, CI/quality gate, commit. | Delegates spec reconciliation to `sync-spec`. |
+| `finalize-feature` | Tests, CI/quality gate, commit. | Delegates spec reconciliation to `sync-spec`. |
 | `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), add `## Tech` notes, promote discovered standing rules to concepts. | Was `sync-back`. **Edits local files** instead of pushing to a server. |
 
 Subagents to port (strip MCP, point at files): `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, plus a `strategist` if useful. Source versions in `~/.claude/agents/*.md`.
@@ -119,5 +119,5 @@ Bootstrapping. CLAUDE.md first; plugin manifest, skills, and agents to follow. T
 
 1. Scaffold `.claude-plugin/{plugin.json,marketplace.json}` + `LICENSE` + `README.md`.
 2. Port `livespec-context` first (every other skill depends on locating and reading the project).
-3. Port the authoring chain: `scope-features` → `specify-feature` → framing (`ux-framing`, `tech-framing`) → `implement-feature` → `finalize-work` → `sync-spec`.
+3. Port the authoring chain: `scope-features` → `specify-feature` → framing (`frame-ux`, `frame-tech`) → `implement-feature` → `finalize-feature` → `sync-spec`.
 4. Port the subagents, stripping all `mcp__topo__*` tools.

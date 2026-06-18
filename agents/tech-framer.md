@@ -6,7 +6,7 @@ description: |
   context for thorough analysis. Writes the feature's ## Tech section.
 tools: Read, Glob, Grep, Edit, Write, AskUserQuestion
 skills:
-  - tech-framing
+  - frame-tech
 model: opus
 ---
 

@@ -4,7 +4,7 @@ description: |
   Product specifier for LiveSpec features. Use for complex specification work: several related
   features, large feature decomposition, or a spec-quality pass across many features. Provides
   isolated context for focused spec work. Does NOT handle UX or tech framing (use the ux-framer and
-  tech-framer agents, or the /ux-framing and /tech-framing skills).
+  tech-framer agents, or the /frame-ux and /frame-tech skills).
 tools: Read, Glob, Grep, Edit, Write, AskUserQuestion
 skills:
   - specify-feature
@@ -53,4 +53,4 @@ When a change is a genuine product decision (a new concept, or a feature only hi
 
 ## Output
 
-Return to the main conversation: which feature files you wrote or edited, a one-line summary of each (name, persona, key REQs), any questions left open, and the recommended next step (`/ux-framing` if UI is involved, then `/tech-framing`).
+Return to the main conversation: which feature files you wrote or edited, a one-line summary of each (name, persona, key REQs), any questions left open, and the recommended next step (`/frame-ux` if UI is involved, then `/frame-tech`).

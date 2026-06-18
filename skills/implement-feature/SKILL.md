@@ -5,7 +5,7 @@ description: |
   livespec: markers that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
   tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
   this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
-  scoping (/scope-features), or framing only (/ux-framing, /tech-framing).
+  scoping (/scope-features), or framing only (/frame-ux, /frame-tech).
 argument-hint: <feature-slug>
 ---
 
@@ -42,9 +42,9 @@ If the slug matches nothing, say so and run Picker mode.
 
 **Spec completeness**: the feature has a summary and at least one REQ with ACs, and its `## Questions` hold no blocker still open (`- [ ] Q-...`). If a blocking question is unresolved, surface it and resolve it (or defer explicitly) before coding.
 
-**UX framing**: if the feature is user-facing and has no `## UX` section, run `/ux-framing` for it and wait for completion. If the skill is unavailable, tell the user and ask whether to proceed without it.
+**UX framing**: if the feature is user-facing and has no `## UX` section, run `/frame-ux` for it and wait for completion. If the skill is unavailable, tell the user and ask whether to proceed without it.
 
-**Tech framing**: if the feature has no `## Tech` section, run `/tech-framing` for it and wait. If unavailable, tell the user and ask whether to proceed without it.
+**Tech framing**: if the feature has no `## Tech` section, run `/frame-tech` for it and wait. If unavailable, tell the user and ask whether to proceed without it.
 
 ### Step 3: Implement
 
@@ -76,7 +76,7 @@ If the code needs to behave differently from an AC, do not silently overwrite in
 
 ## Wrap up
 
-Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the `livespec:` markers) is the record. Then point at `/finalize-work` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
+Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the `livespec:` markers) is the record. Then point at `/finalize-feature` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
 
 ---
 

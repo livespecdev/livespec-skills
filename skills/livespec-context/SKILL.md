@@ -102,4 +102,4 @@ Raise these as observations and, where it is a product decision (a new constrain
 
 ## What this skill does not do
 
-It reads and reports. It does not write spec files. Hand off to `/scope-features`, `/specify-feature`, `/ux-framing`, `/tech-framing`, `/implement-feature`, or `/sync-spec` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.
+It reads and reports. It does not write spec files. Hand off to `/scope-features`, `/specify-feature`, `/frame-ux`, `/frame-tech`, `/implement-feature`, or `/sync-spec` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.

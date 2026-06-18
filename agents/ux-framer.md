@@ -6,7 +6,7 @@ description: |
   thorough UX analysis. Writes the feature's ## UX section and any mockup assets.
 tools: Read, Glob, Grep, Edit, Write, AskUserQuestion
 skills:
-  - ux-framing
+  - frame-ux
 model: opus
 ---
 
