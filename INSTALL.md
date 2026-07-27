@@ -35,7 +35,7 @@ To pin a specific tag or branch:
 If you have this repository checked out locally and want to test it without pushing, add the local directory as a marketplace:
 
 ```
-/plugin marketplace add /Users/eric/Dev/livespec-authoring
+/plugin marketplace add /path/to/livespec-authoring
 /plugin install livespec-authoring@livespec
 ```
 
@@ -46,7 +46,7 @@ The path points at the repository root (the directory containing `.claude-plugin
 For active development, launch Claude Code with the plugin loaded directly from disk, with no marketplace and no caching:
 
 ```
-$ claude --plugin-dir /Users/eric/Dev/livespec-authoring
+$ claude --plugin-dir /path/to/livespec-authoring
 ```
 
 This loads the plugin in-place, so edits to skills and agents are picked up without a cache copy. This is the recommended way to iterate on the skill prose.
@@ -81,7 +81,7 @@ The quickest end-to-end check uses the bundled fixture.
 1. Point Claude Code at the sample project (open that folder, or copy it somewhere and `cd` in):
 
    ```
-   $ cd /Users/eric/Dev/livespec-authoring/examples/sample-project
+   $ cd /path/to/livespec-authoring/examples/sample-project
    ```
 
 2. Run orientation:

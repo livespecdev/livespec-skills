@@ -2,28 +2,21 @@
 
 ## The project
 
-**livespec-authoring** is the companion tooling repository for **LiveSpec**, the open file format for product specifications (format spec lives at `/Users/eric/Dev/livespec`, canonical document `SPEC.md`, home `https://livespec.dev`).
+**livespec-authoring** is the companion tooling repository for **LiveSpec**, the open file format for product specifications (format spec lives in the separate `livespec` repository, canonical document `SPEC.md`, home `https://livespec.dev`).
 
 This repo hosts **Claude Code extensions** (skills, subagents, and a packaged plugin) that let humans and agents author and maintain LiveSpec specs **directly on the local files in the user's git repository**. No backend, no API, no MCP server, no proprietary application.
 
 It is the *forward authoring* toolchain for LiveSpec: scope, specify, frame, implement, and keep specs in sync with code, all on plain markdown files versioned in git.
 
-> Reverse-engineering an existing codebase into a LiveSpec project is **out of scope** for this repo. That backward pipeline lives in the separate `reverse-livespec` tooling (`/Users/eric/Dev/reverse-livespec`), which *produces* a `livespec/` project that the skills here then maintain.
+> Reverse-engineering an existing codebase into a LiveSpec project is **out of scope** for this repo. That backward pipeline lives in the separate `reverse-livespec` tooling, which *produces* a `livespec/` project that the skills here then maintain.
 
-## The architectural shift (read this first)
+## Core model (read this first)
 
-These skills are a port of a Territory-backed workflow (`/Users/eric/Dev/topo`). The single most important change:
-
-| Territory (old) | livespec-authoring (new) |
-|---|---|
-| Source of truth = Territory server, reached via `mcp__topo__*` MCP tools | Source of truth = **LiveSpec markdown files** in the user's repo |
-| `sync_product_context` pulls context into `.territory/` | Skills **read the files directly**; no sync step, no `.territory/` |
-| `create_feature`, `update_feature`, `add_spec_items`, `update_spec_items` | **Read/Write/Edit on `features/**/*.md`** |
-| `suggest_context_item`, `suggest_feature` (human review queue in the UI) | **Propose edits to `product/`, `ux/`, `tech/` files**; the human reviews via git diff / PR |
-| Feature `status: IDEA|SPECIFIED|IMPLEMENTED` | **No status.** LiveSpec §10 defines none. Progress = checkbox state of spec items (§8.1) |
-| Delivery `batch` (ordering, readiness) | **Dropped entirely.** Batches are pure Territory work-tracking with no LiveSpec equivalent. Sequencing a body of work lives in external tools (git branches, issue tracker), not in this toolchain |
-
-**Corollary: drop the "work" layer.** LiveSpec describes the software, not the work on it (`SPEC.md` §1). Anything that answers *"how is the work going?"* (assignees, due dates, kanban states, batch ordering and readiness, spec maturity enums) MUST NOT be written into spec files, nor reconstructed elsewhere by these skills. Where the old Territory skill did this, the port removes it: that concern belongs to external work-tracking tools.
+- **Source of truth = the LiveSpec markdown files** in the user's repo. No backend, no server, no sync step, no cache directory: skills read and write the files directly.
+- **Files, not an API.** Feature and concept edits are `Read`/`Write`/`Edit` on `features/**/*.md` and `{product|ux|tech}/**/*.md`.
+- **Propose, don't impose.** Edits to `product/`, `ux/`, `tech/` are product decisions: skills propose them, and the human reviews via git diff / PR.
+- **No status field.** LiveSpec §10 defines none. Progress is the checkbox state of spec items (§8.1).
+- **No work-tracking layer.** LiveSpec describes the software, not the work on it (`SPEC.md` §1). Anything that answers *"how is the work going?"* (assignees, due dates, kanban states, delivery batches/ordering/readiness, spec maturity enums) MUST NOT be written into spec files, nor reconstructed elsewhere by these skills. That concern belongs to external work-tracking tools (issue tracker, git branches).
 
 ## Locating the project
 
@@ -70,24 +63,22 @@ livespec-authoring/
 
 **Bundled format reference.** Skills and agents cite `SPEC.md §N` constantly, and they resolve those citations against the **vendored** copy in `reference/`, not against an external clone. Reference it with relative paths (`../../reference/SPEC.md` from a skill, `../reference/SPEC.md` from an agent): `${CLAUDE_PLUGIN_ROOT}` does NOT expand in skill or agent prose (only in hook, MCP, and LSP config), so it MUST NOT be used there. The copy is pinned to the version in `plugin.json`; when the format bumps, re-vendor from the `livespec` repo (`cp .../livespec/{SPEC,CHEATSHEET}.md reference/`) and update the pin. See `reference/README.md`.
 
-A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter carries `name`, `description` (with trigger phrases), and optional `argument-hint`. Subagents are single markdown files under `agents/` with frontmatter `name`, `description`, `tools`. **Agent tool lists MUST NOT reference `mcp__topo__*`**: use `Read`, `Glob`, `Grep`, `Edit`, `Write`, `AskUserQuestion` instead.
+A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter carries `name`, `description` (with trigger phrases), and optional `argument-hint`. Subagents are single markdown files under `agents/` with frontmatter `name`, `description`, `tools`. **Agent tool lists MUST NOT reference any MCP server**: use `Read`, `Glob`, `Grep`, `Edit`, `Write`, `AskUserQuestion` instead.
 
-## The skill suite (port plan)
+## The skill suite
 
-Recognizable names from the Territory workflow, re-grounded on local files. Build incrementally; each lands as its own `skills/{name}/SKILL.md`.
+| Skill | Purpose |
+|---|---|
+| `livespec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
+| `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
+| `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, ISS. Writes the `.md` directly per §7–§8. |
+| `frame-ux` | Frame UX into `## UX` notes (and future `UX_DIRECTION`, §15 #005). Reads `ux/` concepts. |
+| `frame-tech` | Frame technical approach into `## Tech` notes; explore the codebase; reads `tech/` concepts. |
+| `implement-feature` | Work through ACs, write code, place `livespec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
+| `finalize-feature` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync-spec`. |
+| `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), add `## Tech` notes, promote discovered standing rules to concepts. |
 
-| Skill | Purpose | Key change vs Territory |
-|---|---|---|
-| `livespec-context` | Map the project at session start; bridge spec files ↔ codebase reality. | Merges old `load-context` + `territory-context`. Reads files; no sync. |
-| `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract). | Was `scope-work`. **Batches dropped** (pure Territory); outputs a plan of `[NEW]/[UPDATE]` feature files to write, then writes them. |
-| `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, ISS. | Was `specify-features`. Writes the `.md` directly per §7–§8. |
-| `frame-ux` | Frame UX into `## UX` notes (and future `UX_DIRECTION`, §15 #005). | Reads `ux/` concepts instead of `.territory/ux.md`. |
-| `frame-tech` | Frame technical approach into `## Tech` notes; explore the codebase. | Reads `tech/` concepts; writes `## Tech`. |
-| `implement-feature` | Work through ACs, write code, place `livespec:` markers (§9.4). | No status flips. Checks `[x]` ACs as they pass; markers anchor code. |
-| `finalize-feature` | Tests, CI/quality gate, commit. | Delegates spec reconciliation to `sync-spec`. |
-| `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), add `## Tech` notes, promote discovered standing rules to concepts. | Was `sync-back`. **Edits local files** instead of pushing to a server. |
-
-Subagents to port (strip MCP, point at files): `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, plus a `strategist` if useful. Source versions in `~/.claude/agents/*.md`.
+Subagents: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`.
 
 > **Validation is deferred.** A deterministic LiveSpec validator (Level-3 conformance per §14) is intentionally *not* part of this toolchain for now. When it is built, the reference validator belongs in the `livespec` repo itself (it is constitutive of the standard), and a thin skill here would merely wrap it.
 
@@ -97,7 +88,7 @@ Subagents to port (strip MCP, point at files): `specifier`, `ux-framer`, `tech-f
 2. **Files are the source of truth.** No hidden state. A skill's output is a git diff a human can review. Prefer `Edit` over `Write` to keep diffs tight and preserve unknown content.
 3. **Spec, not work.** Never write work-tracking into `livespec/`. If a skill needs scratch state (a plan, a backlog), keep it in a gitignorable workspace dir, clearly outside the spec.
 4. **Respect modes and conformance.** Read the manifest `mode`; warn rather than rewrite; preserve unknown fields and sections (losslessness).
-5. **Propose, don't impose, on concepts.** Edits to `product/`, `ux/`, `tech/` are product decisions: surface them for human review (diff/PR), mirroring the old `suggest_*` intent.
+5. **Propose, don't impose, on concepts.** Edits to `product/`, `ux/`, `tech/` are product decisions: surface them for human review (diff/PR).
 6. **Reuse the format's own guidance.** `SPEC.md` §6.5 (concept vs feature vs spec item) and §7.5 (granularity) are the editorial rules; skills should cite them, not reinvent heuristics.
 7. **Don't duplicate `reverse-livespec`.** This repo authors forward. If asked to reverse-engineer a codebase, defer to that tool.
 
@@ -113,11 +104,4 @@ Commits MUST NOT mention Claude, Claude Code, or any AI agent as committer, auth
 
 ## Status
 
-Bootstrapping. CLAUDE.md first; plugin manifest, skills, and agents to follow. The LiveSpec format itself is `v1.0.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
-
-### Suggested next steps
-
-1. Scaffold `.claude-plugin/{plugin.json,marketplace.json}` + `LICENSE` + `README.md`.
-2. Port `livespec-context` first (every other skill depends on locating and reading the project).
-3. Port the authoring chain: `scope-features` → `specify-feature` → framing (`frame-ux`, `frame-tech`) → `implement-feature` → `finalize-feature` → `sync-spec`.
-4. Port the subagents, stripping all `mcp__topo__*` tools.
+The LiveSpec format itself is `v1.0.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
