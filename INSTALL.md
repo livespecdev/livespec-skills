@@ -17,7 +17,7 @@ You do **not** need to clone the LiveSpec format repository or visit livespec.de
 Once the repository is published:
 
 ```
-/plugin marketplace add etherond/livespec-authoring
+/plugin marketplace add livespecdev/livespec-authoring
 /plugin install livespec-authoring@livespec
 ```
 
@@ -27,7 +27,7 @@ Once the repository is published:
 To pin a specific tag or branch:
 
 ```
-/plugin marketplace add etherond/livespec-authoring#v0.1.0
+/plugin marketplace add livespecdev/livespec-authoring#v0.1.0
 ```
 
 ## Option B: test a local checkout (before publishing)

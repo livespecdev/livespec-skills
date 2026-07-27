@@ -7,7 +7,7 @@
     "name": "Eric Thérond"
   },
   "homepage": "https://livespec.dev",
-  "repository": "https://github.com/etherond/livespec-authoring",
+  "repository": "https://github.com/livespecdev/livespec-authoring",
   "license": "Apache-2.0",
   "keywords": [
     "livespec",

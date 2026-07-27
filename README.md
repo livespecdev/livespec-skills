@@ -20,7 +20,7 @@ Two ideas drive the design:
 ## Install
 
 ```
-/plugin marketplace add etherond/livespec-authoring
+/plugin marketplace add livespecdev/livespec-authoring
 /plugin install livespec-authoring@livespec
 ```
 
