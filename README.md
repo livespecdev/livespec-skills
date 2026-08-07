@@ -40,6 +40,17 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/implement-feature` | Works through the acceptance criteria, writes code, places `livespec:` markers, and checks ACs as they pass. |
 | `/finalize-feature` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
 | `/sync-spec` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
+| `/check-drift` | Reports where intent and code disagree: `[x]` items with no `livespec:` marker, dangling markers, code anchored to open items. |
+| `/check-spec` | Reports internal spec inconsistencies: features with no requirements, duplicate IDs, broken links, orphan concepts. |
+
+The two `check-*` skills are read-only diagnostics backed by scripts in `scripts/` (Python 3 stdlib, no dependencies). They can also be run directly:
+
+```bash
+python3 scripts/check_spec.py  [PROJECT_ROOT] [--feature SLUG] [--json]
+python3 scripts/check_drift.py [PROJECT_ROOT] [--code-root DIR] [--json]
+```
+
+Both exit 0 even when they report findings: they are diagnostics, not quality gates. Neither is the LiveSpec **validator**. Level-3 conformance (`SPEC.md` §14) is constitutive of the format and belongs in the [`livespec`](https://github.com/livespecdev/livespec) repository; these two answer editorial and spec-to-code questions that need the user's own codebase.
 
 ## Making the skills self-trigger
 

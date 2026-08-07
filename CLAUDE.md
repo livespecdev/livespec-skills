@@ -53,6 +53,10 @@ livespec-authoring/
 │   └── {skill-name}/SKILL.md  # one folder per skill
 ├── agents/
 │   └── {agent-name}.md        # subagent definitions (local-file tools only)
+├── scripts/                   # deterministic helpers behind the check-* skills
+│   ├── livespec.py            # shared parser (stdlib only, tolerant, read-only)
+│   ├── check_spec.py          # internal spec consistency
+│   └── check_drift.py         # spec ↔ code coherence via livespec: markers
 ├── reference/                 # vendored format spec, bundled with the plugin
 │   ├── SPEC.md                # byte-identical copy of upstream SPEC.md (pinned version)
 │   └── CHEATSHEET.md          # condensed reference
@@ -77,10 +81,24 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 | `implement-feature` | Work through ACs, write code, place `livespec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
 | `finalize-feature` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync-spec`. |
 | `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), add `## Tech` notes, promote discovered standing rules to concepts. |
+| `check-drift` | Report where intent and code disagree: `[x]` items with no marker, dangling markers, code anchored to open or cancelled items. Read-only. |
+| `check-spec` | Report internal spec inconsistencies: features with no REQ, duplicate IDs, broken links, orphan concepts. Read-only, spec files only. |
 
 Subagents: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`.
 
-> **Validation is deferred.** A deterministic LiveSpec validator (Level-3 conformance per §14) is intentionally *not* part of this toolchain for now. When it is built, the reference validator belongs in the `livespec` repo itself (it is constitutive of the standard), and a thin skill here would merely wrap it.
+> **Conformance validation is still deferred.** A deterministic LiveSpec validator (Level-3 per §14) is intentionally *not* part of this toolchain. When it is built, the reference validator belongs in the `livespec` repo itself (it is constitutive of the standard), and a thin skill here would merely wrap it.
+>
+> The `check-*` skills are **not** that validator, and the boundary must stay visible in their prose. They answer two questions the format deliberately leaves to tooling: editorial coherence across a project's files, and spec ↔ code coherence (§9.4 explicitly puts coverage rules and drift detection out of scope for the format). `check-drift` cannot live in the `livespec` repo at all: it needs the user's codebase.
+
+### The `scripts/` layer
+
+The `check-*` skills are backed by scripts rather than a reading pass, because their checks are mechanical and a reading pass does not scale past a few dozen features. Rules for anything added there:
+
+- **Python 3 stdlib only.** The plugin cannot install dependencies in the user's environment. `scripts/livespec.py` is the shared parser (tolerant: it never raises on malformed input); the checks import it, they do not re-parse.
+- **Read-only, always.** A script in this repo never writes to a LiveSpec project. Writing is the skills' job, through `Edit`, and stays reviewable as a diff.
+- **Exit 0 even with findings.** These are diagnostics. A non-zero exit turns them into a CI gate, which reintroduces the work-tracking layer through the back door.
+- **`--json` on every script.** The script constates, the model interprets. Findings carry a `spec_ref` (`§N`) so a skill can always show the user the rule behind a finding.
+- **Never assume a project path.** Use `find_projects()` / `resolve_project()`; a repo may hold several independent projects (§3.1).
 
 ## Working principles for this repo
 

@@ -100,6 +100,8 @@ Part of the job is noticing intent and reality drift apart, and saying so rather
 
 Raise these as observations and, where it is a product decision (a new constraint, a reworded REQ, a new feature), propose the file edit for the user to review as a diff rather than writing it silently. Concept and feature changes are product decisions; surface them.
 
+This is the narrative version, scoped to whatever you are currently looking at. For an exhaustive sweep of the whole project, hand off rather than reading every file: `/check-drift` for intent against code (unanchored `[x]` items, dangling `livespec:` markers), `/check-spec` for the specs against each other (features with no REQ, broken links, duplicate IDs). Both are read-only and script-backed.
+
 ## What this skill does not do
 
 It reads and reports. It does not write spec files. Hand off to `/scope-features`, `/specify-feature`, `/frame-ux`, `/frame-tech`, `/implement-feature`, or `/sync-spec` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.
