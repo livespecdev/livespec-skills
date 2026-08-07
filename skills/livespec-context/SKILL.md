@@ -87,7 +87,7 @@ When the user brainstorms or asks for feedback, ground it in the concept files, 
 - **Personas** (`product/persona/`): who is affected, what they care about.
 - **Goals and pain points** (`product/goal/`, `product/pain_point/`): does this serve them?
 - **Principles and constraints** (`product/principle/`, `product/constraint/`): what beliefs and standing limits apply.
-- **UX and tech concepts** (`ux/`, `tech/`): relevant patterns, decisions, conventions.
+- **UX and tech concepts** (`ux/`, `tech/`): relevant patterns, decisions, conventions — including any extension types the project defines beyond the core taxonomy (§6.2). A project-specific type often carries the axis that matters most for the question at hand, so name it when it applies rather than falling back on the core types alone.
 
 ## Surfacing gaps
 

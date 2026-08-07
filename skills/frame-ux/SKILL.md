@@ -22,7 +22,7 @@ If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob
 
 1. **The feature**: its summary, REQs, ACs, and any existing `## UX` section.
 2. **Personas** (`product/persona/*.md`) linked in frontmatter: goals, pain points, tech-savviness, context of use.
-3. **The design system** under `ux/` (§6.2): `ui_component` (components and their usage rules), `design_principle` (UX beliefs), `ux_pattern` (reusable interaction/layout patterns). Reuse these rather than inventing.
+3. **The UX context** under `ux/`. List the actual type directories (`ux/*/`) rather than assuming a fixed set: the core taxonomy (§6.2) is `ui_component` (components and their usage rules), `design_principle` (UX beliefs), and `ux_pattern` (reusable interaction/layout patterns), but a project may define extension types (§6.2) that carry axes the core set does not — a screen or surface inventory, form or navigation patterns, design tokens. An extension type you do not recognize is a valid part of this project's UX context, not noise: read the ones relevant to the feature. Reuse what you find rather than inventing.
 4. **Related features** for flow consistency.
 
 ## Analyze and propose
