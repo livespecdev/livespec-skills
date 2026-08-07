@@ -26,6 +26,17 @@ Two ideas drive the design:
 
 The marketplace is named `livespec`, hence the `@livespec` suffix. To test a local checkout before it is published, or to develop against it, see [`INSTALL.md`](INSTALL.md).
 
+### Updating
+
+Refresh the marketplace before updating the plugin, otherwise the update compares against a stale clone of this repository:
+
+```
+/plugin marketplace update livespec
+/plugin update livespec-authoring
+```
+
+Then restart Claude Code: an update is staged, not applied to the running session.
+
 ## The skills
 
 Invoke a skill with its slash command, or just describe what you want and let the dispatcher route.

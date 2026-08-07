@@ -120,6 +120,30 @@ The `check-*` skills are backed by scripts rather than a reading pass, because t
 
 Commits MUST NOT mention Claude, Claude Code, or any AI agent as committer, author, or contributor. No `Co-Authored-By: Claude ...` trailers or "Generated with" lines. The human author is the sole committer of record. (Same rule as the LiveSpec repo.)
 
+### Releasing (bump the version, or nothing ships)
+
+**Any commit that changes what the plugin does MUST bump `version` in `.claude-plugin/plugin.json` before it is pushed.** Pushing skill or script changes without a bump is a silent no-op for every machine that already installed the previous version.
+
+The reason is mechanical: Claude Code materializes an installed plugin in a cache keyed by version, `~/.claude/plugins/cache/{marketplace}/{plugin}/{version}/`, and records the resolved `version` and `gitCommitSha` in `~/.claude/plugins/installed_plugins.json`. When the declared version is unchanged, the target path already exists and `claude plugin update` has nothing to do, however many commits the repository has moved on.
+
+This does not show up on a machine whose marketplace entry is a local `directory` source pointing at this working copy (`known_marketplaces.json`): there, edits appear in the next session with no install step at all. It only bites on machines that installed from the GitHub remote, which is exactly where it is hardest to notice. Do not use "it works on my machine" as evidence that a release shipped.
+
+Release checklist:
+
+1. Bump `version` in `.claude-plugin/plugin.json`. Semver on `0.x`: new skill, new script, or changed skill behavior is a minor; wording and bug fixes are a patch. `marketplace.json` currently declares no version for the entry, so there is nothing to keep in sync there. If one is ever added, the two MUST agree, and `claude plugin tag` fails the release when they do not.
+2. `claude plugin validate .`
+3. Commit the bump, then push `main`.
+4. `claude plugin tag --push` to cut the `livespec-authoring--v{version}` git tag.
+
+On the consuming machine, refreshing the marketplace first is what picks up new commits; updating the plugin alone can compare against a stale clone:
+
+```bash
+claude plugin marketplace update livespec
+claude plugin update livespec-authoring
+```
+
+Then restart Claude Code: the update is staged, not applied live. Verify with `claude plugin list` (or the recorded `gitCommitSha` in `installed_plugins.json`) rather than assuming.
+
 ## Status
 
 The LiveSpec format itself is `v1.0.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
