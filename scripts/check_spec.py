@@ -46,6 +46,7 @@ CORE_TAXONOMY = {
     "ui_component": "ux",
     "design_principle": "ux",
     "ux_pattern": "ux",
+    "screen": "ux",
     "coding_standard": "tech",
     "architecture_decision": "tech",
     "external_system": "tech",

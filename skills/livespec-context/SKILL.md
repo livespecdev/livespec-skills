@@ -11,7 +11,7 @@ argument-hint: [path-or-feature-slug]
 
 # LiveSpec Context
 
-> **Format reference.** The `§N` citations throughout the LiveSpec skills point to the bundled spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
+> **Format reference.** The `§N` citations throughout the LiveSpec skills point to the bundled spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
 
 LiveSpec specs live as plain markdown files in the repository. There is no server and no sync step: you read the files directly. Your job is to locate the project, understand what it says the software should do, and bridge that against what the code actually does.
 
@@ -30,7 +30,7 @@ Read the manifest. Note `name`, `format_version`, and `mode` (`loose` default, o
 
 The project root has exactly four meaningful top-level folders (§3): `product/`, `ux/`, `tech/`, `features/`. Everything else (README, code, `node_modules/`) is not LiveSpec and you ignore it.
 
-1. **Concepts.** `Glob` `product/*/*.md`, `ux/*/*.md`, `tech/*/*.md`. The directory name is the concept type slug and the link key (§6.1). The core taxonomy is §6.2: under `product/` you will see `persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`; under `ux/` `ui_component`, `design_principle`, `ux_pattern`; under `tech/` `coding_standard`, `architecture_decision`, `external_system`. Unknown types are valid extensions, not errors (§6.2). For each concept, the opening paragraph after the H1 is its summary (§6.4).
+1. **Concepts.** `Glob` `product/*/*.md`, `ux/*/*.md`, `tech/*/*.md`. The directory name is the concept type slug and the link key (§6.1). The core taxonomy is §6.2: under `product/` you will see `persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`; under `ux/` `ui_component`, `design_principle`, `ux_pattern`, `screen`; under `tech/` `coding_standard`, `architecture_decision`, `external_system`. Unknown types are valid extensions, not errors (§6.2). For each concept, the opening paragraph after the H1 is its summary (§6.4).
 2. **Features.** `Glob` `features/**/*.md`. The slug is the filename; the area is the path between `features/` and the file (§7.1). The opening paragraph is the summary (§7.4). The body carries spec items.
 3. **Links.** Read frontmatter `links:` (§9.2), keyed by singular type slug. `feature:` MAY be an untyped list or a typed object with `requires` / `triggers` / `extends` (§7.2). Links are unidirectional in storage but you SHOULD reason about them both ways (§9.3).
 

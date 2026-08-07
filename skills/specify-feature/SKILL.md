@@ -11,7 +11,7 @@ argument-hint: [feature-description or feature-slug]
 
 # Specify Feature
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Write a clear, well-scoped feature as a single markdown file under `features/`, focused on user value and observable behavior. A feature describes **target state**: what the software *is*, not the work to do. It should read the same before and after implementation. Structure matters, agents and humans consume atomic, typed, linked spec items far better than prose (`SPEC.md` §8).
 
@@ -43,6 +43,7 @@ If what was described is really a behavior of an existing feature, add a REQ or 
 - **Pain points and goals** (`product/pain_point/`, `product/goal/`): the "why" you will link to.
 - **Constraints** (`product/constraint/*.md`): standing limits this feature must respect; link them rather than restating them as REQs.
 - **Entities and external systems** (`product/entity/`, `tech/external_system/`): domain objects it manipulates, services it integrates with.
+- **Screens** (`ux/screen/*.md`): the surfaces the feature lands on, when the project keeps a screen inventory.
 - **Existing features** (`Glob features/**`): overlap or dependencies.
 
 ## Right-sizing
@@ -115,12 +116,13 @@ links:
   persona: [daily-tracker]
   constraint: [offline-first-logging]
   entity: [habit]
+  screen: [habit-list]
   feature:
     requires: [create-habit]
 ---
 ```
 
-`constraint: [...]` already means "respects", `entity: [...]` "manipulates", `external_system: [...]` "integrates with" (§7.2); no explicit relation typing needed for concepts. Link the relations that structurally matter; in-prose `[[type:slug]]` mentions are reading aids, not a substitute (§9.5). Never emit an empty frontmatter block (§5).
+`constraint: [...]` already means "respects", `entity: [...]` "manipulates", `external_system: [...]` "integrates with", `screen: [...]` "lands on" (§7.2); no explicit relation typing needed for concepts. Link the relations that structurally matter; in-prose `[[type:slug]]` mentions are reading aids, not a substitute (§9.5). Never emit an empty frontmatter block (§5).
 
 ## Validate before writing
 

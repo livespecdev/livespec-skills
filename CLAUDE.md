@@ -146,4 +146,4 @@ Then restart Claude Code: the update is staged, not applied live. Verify with `c
 
 ## Status
 
-The LiveSpec format itself is `v1.0.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
+The LiveSpec format itself is `v0.1.0-draft` and not frozen, so skills SHOULD pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.

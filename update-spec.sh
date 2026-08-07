@@ -31,11 +31,16 @@ REF_DIR="$SCRIPT_DIR/reference"
 FILES=(SPEC.md CHEATSHEET.md)
 
 # Plugin docs that pin the format version in prose; kept in sync.
+# Every skill and agent carries the pin in its "Format reference" note, so
+# they are globbed in rather than listed one by one.
 PINNED_DOCS=(
   "reference/README.md"
   "README.md"
   "CLAUDE.md"
 )
+for f in "$SCRIPT_DIR"/skills/*/SKILL.md "$SCRIPT_DIR"/agents/*.md; do
+  if [ -f "$f" ]; then PINNED_DOCS+=("${f#"$SCRIPT_DIR"/}"); fi
+done
 
 die() { printf 'update-spec: %s\n' "$1" >&2; exit 1; }
 

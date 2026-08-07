@@ -10,7 +10,7 @@ argument-hint: [feature-slug]
 
 # Tech Framing
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the technical approach for a feature and write it into the feature's `## Tech` section (`SPEC.md` §7.3). LiveSpec does not yet define a `TECH_DIRECTION` spec-item type (deferred, §15 #005), so technical decisions live as free-form notes under `## Tech`, written declaratively as target state.
 

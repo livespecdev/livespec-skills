@@ -10,7 +10,7 @@ Scope intent into features, specify them, frame the UX and the technical approac
 
 A LiveSpec project is any directory containing a `livespec.yaml` manifest. The skills locate that root, read the four fixed folders (`product/`, `ux/`, `tech/`, `features/`), and read or write the markdown files according to the [format spec](https://livespec.dev). There is no hidden state: everything is plain files versioned in git.
 
-You do not clone the LiveSpec repository or visit livespec.dev to use this. The format spec is **bundled with the plugin** at `reference/SPEC.md` (pinned to `v1.0.0-draft`, with a condensed `reference/CHEATSHEET.md`); the skills read it on demand to resolve format edge cases. Your repository only ever needs a `livespec.yaml` and the four folders.
+You do not clone the LiveSpec repository or visit livespec.dev to use this. The format spec is **bundled with the plugin** at `reference/SPEC.md` (pinned to `v0.1.0-draft`, with a condensed `reference/CHEATSHEET.md`); the skills read it on demand to resolve format edge cases. Your repository only ever needs a `livespec.yaml` and the four folders.
 
 Two ideas drive the design:
 
@@ -95,7 +95,7 @@ For heavier or isolated work, the skills can delegate to subagents in `agents/`:
 
 ## Status
 
-Bootstrapping, against LiveSpec `v1.0.0-draft`. The format is not yet frozen, so the skills pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
+Bootstrapping, against LiveSpec `v0.1.0-draft`. The format is not yet frozen, so the skills pin the `SPEC.md` sections they rely on and expect churn until `1.0.0` is locked.
 
 ## License
 

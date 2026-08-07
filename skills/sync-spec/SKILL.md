@@ -11,7 +11,7 @@ argument-hint: <feature-slug>
 
 # Sync Spec
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Reconcile the LiveSpec files with the reality of what was built. There is no server: this is `Edit` on local `features/` and concept files, surfaced as a git diff the user reviews. Work in this order: **summarize → confirm → edit → report → discover**.
 
@@ -74,6 +74,7 @@ Reflect on the implementation and identify reusable rules that emerged (§6.5):
 - A technical pattern other features should follow → `architecture_decision` or a `*_convention` type under `tech/`.
 - A limit or quantitative rule that constrains multiple features → `constraint` under `product/`.
 - A coding or API rule not yet documented → `coding_standard` / `api_convention`.
+- A new page, route, or full-screen flow the implementation introduced, in a project that keeps `ux/screen/` → a `screen` under `ux/` (§6.2), following the sections its sibling screen files already use (a concept body is free-form, §6.4), plus `links.screen` on the feature. A durable change to an existing surface is a proposed edit to its screen file; the acceptance criteria stay in the feature.
 
 For each, propose the concept file and let the user approve via the diff before writing (this mirrors the old human-review queue: product-level decisions are proposed, not imposed). Also check whether the feature should link an existing concept it relied on, and propose adding that link (§9.2).
 

@@ -10,7 +10,7 @@ argument-hint: [feature-slug]
 
 # UX Framing
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the user experience for a feature and write it into the feature's `## UX` section (`SPEC.md` §7.3). LiveSpec does not yet define a `UX_DIRECTION` spec-item type (deferred, §15 #005), so UX decisions live as free-form notes under `## UX`, written declaratively as target state.
 
@@ -22,7 +22,7 @@ If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob
 
 1. **The feature**: its summary, REQs, ACs, and any existing `## UX` section.
 2. **Personas** (`product/persona/*.md`) linked in frontmatter: goals, pain points, tech-savviness, context of use.
-3. **The UX context** under `ux/`. List the actual type directories (`ux/*/`) rather than assuming a fixed set: the core taxonomy (§6.2) is `ui_component` (components and their usage rules), `design_principle` (UX beliefs), and `ux_pattern` (reusable interaction/layout patterns), but a project may define extension types (§6.2) that carry axes the core set does not — a screen or surface inventory, form or navigation patterns, design tokens. An extension type you do not recognize is a valid part of this project's UX context, not noise: read the ones relevant to the feature. Reuse what you find rather than inventing.
+3. **The UX context** under `ux/`. List the actual type directories (`ux/*/`) rather than assuming a fixed set: the core taxonomy (§6.2) is `ui_component` (components and their usage rules), `design_principle` (UX beliefs), `ux_pattern` (reusable interaction/layout patterns), and `screen` (durable interface surfaces: what the surface is, how it is reached, how it connects to the rest), but a project may define extension types (§6.2) that carry axes the core set does not: form or navigation patterns, design tokens, layouts. An extension type you do not recognize is a valid part of this project's UX context, not noise: read the ones relevant to the feature. Reuse what you find rather than inventing.
 4. **Related features** for flow consistency.
 
 ## Analyze and propose
@@ -116,9 +116,18 @@ Habit list → tap habit row → today's completion toggles on (streak updates i
 
 If you reused a `ux/` concept that is not yet linked, propose adding it to the feature's `links` (e.g. `ux_pattern: [optimistic-update]`, §9.2).
 
+## Screens
+
+When the project keeps `ux/screen/` files, treat them as the surfaces the feature lands on (§6.2):
+
+- **Read before framing.** The screen file is where the surface is already described: how it is reached, who reaches it, what it is made of, and where it leads. Frame inside that, and name the part of the surface the feature touches instead of redescribing the page.
+- **Link the feature.** Every screen the feature acts on belongs in the feature's `links.screen` (§9.2). That link is what makes "which features live on this screen" readable in reverse (§9.3); never write a list of features into a screen file.
+- **New surface = new screen concept.** If framing introduces a page or a full-screen flow that did not exist, propose `ux/screen/{slug}.md` alongside the `## UX` section, and let the user confirm it via the diff. A concept body is free-form (§6.4): follow the sections the project's existing screen files already use rather than imposing a template, and where there is none yet, cover what the surface is, how it is reached, and how it connects to the rest.
+- **Screen change = proposed edit.** If framing changes a surface durably (a new region, a new state, a new navigation edge), propose the edit to the screen file. Feature-specific behavior stays in the feature: a screen file carries no acceptance criteria (§6.5).
+
 ## Propose new concepts, do not impose
 
-If framing established a reusable interaction or component rule that would apply to other features, that is a concept (a `ux_pattern`, `ui_component`, or `design_principle`, §6.5), not a feature note. Propose it as a new file under `ux/{type}/{slug}.md` and let the user confirm via the diff before writing; product-level UX decisions are reviewed, not silently committed.
+If framing established a reusable interaction or component rule that would apply to other features, that is a concept (a `ux_pattern`, `ui_component`, `design_principle`, or `screen`, §6.5), not a feature note. Propose it as a new file under `ux/{type}/{slug}.md` and let the user confirm via the diff before writing; product-level UX decisions are reviewed, not silently committed.
 
 ## Wrap up
 

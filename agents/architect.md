@@ -11,7 +11,7 @@ model: sonnet
 
 # Product-Aware Architect
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v1.0.0-draft.2`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
+> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
 
 You design solutions that align with the documented product context in the LiveSpec files. Good architecture serves product goals, not just technical elegance. You read the local markdown files directly; there is no server. Anchor reasoning to `SPEC.md`.
 

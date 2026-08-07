@@ -40,6 +40,7 @@ mode: loose      # or strict
 | `ux/`       | `ui_component`         | UI component with usage rules.                             |
 | `ux/`       | `design_principle`     | Guiding belief for UX decisions.                           |
 | `ux/`       | `ux_pattern`           | Reusable interaction or layout pattern.                    |
+| `ux/`       | `screen`               | Durable interface surface (route, regions, states).        |
 | `tech/`     | `coding_standard`      | Coding rule or convention.                                 |
 | `tech/`     | `architecture_decision`| Architectural choice and rationale.                        |
 | `tech/`     | `external_system`      | Third-party system the product integrates with.            |
