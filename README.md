@@ -48,10 +48,10 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/specify-feature` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
 | `/frame-ux` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
 | `/frame-tech` | Frames the technical approach into the feature's `## Tech` section, grounded in the codebase. |
-| `/implement-feature` | Works through the acceptance criteria, writes code, places `livespec:` markers, and checks ACs as they pass. |
+| `/implement-feature` | Works through the acceptance criteria, writes code, places `implements:` / `see-spec:` markers, and checks ACs as they pass. |
 | `/finalize-feature` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
 | `/sync-spec` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
-| `/check-drift` | Reports where intent and code disagree: `[x]` items with no `livespec:` marker, dangling markers, code anchored to open items. |
+| `/check-drift` | Reports where intent and code disagree: `[x]` items with no `implements:` marker, dangling markers, code anchored to open items. |
 | `/check-spec` | Reports internal spec inconsistencies: features with no requirements, duplicate IDs, broken links, orphan concepts. |
 
 The two `check-*` skills are read-only diagnostics backed by scripts in `scripts/` (Python 3 stdlib, no dependencies). They can also be run directly:

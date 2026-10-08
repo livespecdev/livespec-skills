@@ -42,7 +42,7 @@ LiveSpec defines no `status` field for features (§10). Do not invent one. Progr
 
 - `- [ ]` open / pending, `- [x]` done / closed, `- [-]` cancelled (won't do).
 - A `REQ` is implemented when its code exists and its `AC`s pass; you read that from the `[x]` marks, not from any maturity enum.
-- A `livespec:` marker in source code (`// livespec: {feature-slug}#{spec-item-id}`, §9.4) anchors a spec item to the code that implements it. `Grep` for `livespec:` to find what is wired up.
+- A code marker (§9.4) anchors a spec item to the code: `// implements: {feature-slug}#{spec-item-id}` where the code realizes it, `// see-spec: ...` where the code depends on it (an assumption, a limitation, an open question). Older code may carry the legacy `livespec:` verb, read as `implements:`. `Grep` for `implements:|see-spec:|livespec:` to find what is wired up.
 
 When you describe where a body of work stands, describe it as checkbox state plus marker coverage, never as "SPECIFIED" or "IMPLEMENTED".
 
@@ -60,11 +60,11 @@ Your job is to bridge them: understand intent before building, implement against
 Check both sources and report on both:
 
 1. **In the spec:** find the feature (`Grep`/`Glob` `features/`), read its REQs and ACs.
-2. **In the code:** find the implementation (`Grep` for the behavior, or follow `livespec:` markers).
+2. **In the code:** find the implementation (`Grep` for the behavior, or follow `implements:` markers).
 3. **Report on both, and flag gaps:** spec exists but no code (an AC still `[ ]`), code exists with no spec item, or the code does something the spec does not describe.
 
 > **In the spec** (`features/habits/log-completion.md`): REQ-2 says a completion logged offline is preserved and reconciled when connectivity returns, with AC-2.3 requiring two-device reconciliation to keep a single completion per day.
-> **In the code** (`src/sync/reconcile.ts`): offline logging and reconciliation exist and carry `livespec: log-completion#REQ-2`. Two-device dedupe (AC-2.3) is not handled: a same-day double log produces two rows. AC-2.3 is still `[ ]`.
+> **In the code** (`src/sync/reconcile.ts`): offline logging and reconciliation exist and carry `implements: log-completion#REQ-2`. Two-device dedupe (AC-2.3) is not handled: a same-day double log produces two rows. AC-2.3 is still `[ ]`.
 
 ### Before implementing
 
@@ -94,13 +94,13 @@ When the user brainstorms or asks for feedback, ground it in the concept files, 
 Part of the job is noticing intent and reality drift apart, and saying so rather than silently smoothing it over:
 
 - Spec exists, not implemented: an AC is still `[ ]` and no code matches.
-- Implemented, no spec: code with no feature or `livespec:` marker behind it.
+- Implemented, no spec: code with no feature or code marker behind it.
 - Implementation differs from spec: the AC says one thing, the code does another.
 - Spec is stale: a constraint or assumption no longer matches the architecture.
 
 Raise these as observations and, where it is a product decision (a new constraint, a reworded REQ, a new feature), propose the file edit for the user to review as a diff rather than writing it silently. Concept and feature changes are product decisions; surface them.
 
-This is the narrative version, scoped to whatever you are currently looking at. For an exhaustive sweep of the whole project, hand off rather than reading every file: `/check-drift` for intent against code (unanchored `[x]` items, dangling `livespec:` markers), `/check-spec` for the specs against each other (features with no REQ, broken links, duplicate IDs). Both are read-only and script-backed.
+This is the narrative version, scoped to whatever you are currently looking at. For an exhaustive sweep of the whole project, hand off rather than reading every file: `/check-drift` for intent against code (unanchored `[x]` items, dangling code markers), `/check-spec` for the specs against each other (features with no REQ, broken links, duplicate IDs). Both are read-only and script-backed.
 
 ## What this skill does not do
 

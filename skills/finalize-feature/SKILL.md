@@ -16,7 +16,7 @@ Complete the production-readiness workflow for a feature: **test → check → c
 
 ## Step 1: Verify implementation status
 
-`Read` `features/**/{slug}.md`. Confirm the acceptance criteria are implemented (their code exists and carries `livespec:` markers, §9.4); they need not be tested yet. If some ACs are still genuinely unimplemented (`- [ ]` with no code), tell the user what is missing and ask whether to proceed anyway.
+`Read` `features/**/{slug}.md`. Confirm the acceptance criteria are implemented (their code exists and carries `implements:` markers, §9.4); they need not be tested yet. If some ACs are still genuinely unimplemented (`- [ ]` with no code), tell the user what is missing and ask whether to proceed anyway.
 
 ## Step 2: Add or update tests
 
@@ -43,7 +43,7 @@ Run the most comprehensive check. If it fails, fix the issues and re-run. Do not
 
 **Only after the gate passes.**
 
-1. Review what will be committed: implementation files, test files, the feature file (checked ACs and `livespec:` markers), and any concept files touched.
+1. Review what will be committed: implementation files, test files, the feature file (checked ACs and code markers), and any concept files touched.
 2. Match the project's commit style (read recent `git log`).
 3. Git safety:
    - Never update git config; never use `--no-verify` or skip hooks.

@@ -2,7 +2,7 @@
 name: implement-feature
 description: |
   Implements a LiveSpec feature by working through its acceptance criteria, writing code, placing
-  livespec: markers that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
+  code markers (implements: / see-spec:) that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
   tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
   this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
   scoping (/scope-features), or framing only (/frame-ux, /frame-tech).
@@ -13,7 +13,7 @@ argument-hint: <feature-slug>
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `livespec:` markers (`SPEC.md` §9.4). LiveSpec has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
+Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `implements:` / `see-spec:` markers (`SPEC.md` §9.4). LiveSpec has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
 
 **Do not start coding until framing is complete.**
 
@@ -53,12 +53,14 @@ Only once framing is in place:
 1. Create a working task list from the acceptance criteria (`TaskCreate`), one item per AC.
 2. Briefly state what you are about to build: the feature, who it serves, the UX and tech approach in one line each, and the AC count.
 3. Write the code, AC by AC, following the `UX` and `TECH` directions and respecting linked constraints. A direction you cannot follow is a divergence: surface it (see below), do not silently implement something else.
-4. **Place `livespec:` markers** (§9.4). At each code site that implements a spec item, add a comment in the host language's native syntax carrying `livespec: {feature-slug}#{spec-item-id}`:
-   - `// livespec: log-completion#REQ-2` (JS/TS), `# livespec: log-completion#AC-2.1` (Python), `<!-- livespec: log-completion#REQ-1 -->` (HTML).
-   - The payload is `livespec:` then one or more spaces then `{slug}#{id}`, no internal whitespace, case-sensitive (§9.4). The slug is the feature slug only; the area is never part of the marker, so markers survive a feature being moved between areas (§9.4).
-   - When one code site serves several items **of the same feature**, list their IDs in one marker, comma-separated, no whitespace: `// livespec: log-completion#REQ-2,REQ-3,AC-2.1` (§9.4). This avoids repeating the slug; it is equivalent to one marker per ID. Items in different features still take one marker each.
+4. **Place code markers** (§9.4). At each code site that implements a spec item, add a comment in the host language's native syntax carrying `implements: {feature-slug}#{spec-item-id}`:
+   - `// implements: log-completion#REQ-2` (JS/TS), `# implements: log-completion#AC-2.1` (Python), `<!-- implements: log-completion#REQ-1 -->` (HTML).
+   - Pick the verb from the item type. `implements:` for what the code realizes: `REQ`, `AC`, `UX`, `TECH`. `see-spec:` for what the code depends on without realizing it: an `AS` it relies on (`// see-spec: log-completion#AS-1` above the code that assumes one completion per day), a `LIM` it works around, a `Q` it awaits. Readers accept either verb on any item, but only `implements:` counts toward coverage, so the right verb keeps `/check-drift` accurate.
+   - Never write the legacy `livespec:` verb. When you edit a line that carries one, rewrite it with the fitting verb.
+   - The payload is the verb, `:`, one or more spaces, then `{slug}#{id}`, no internal whitespace, case-sensitive (§9.4). The slug is the feature slug only; the area is never part of the marker, so markers survive a feature being moved between areas (§9.4).
+   - When one code site serves several items **of the same feature**, list their IDs in one marker, comma-separated, no whitespace: `// implements: log-completion#REQ-2,REQ-3,AC-2.1` (§9.4). This avoids repeating the slug; it is equivalent to one marker per ID. Items in different features still take one marker each.
    - A marker on a `REQ` implicitly covers its nested ACs unless a more specific AC-level marker exists (§9.4). Mark at the REQ level for a cohesive implementation, at the AC level when criteria land in different places.
-   - A `UX` or `TECH` direction MAY carry a marker where one code site embodies it (`// livespec: log-completion#TECH-3` on the upsert handler, §9.4). Skip it when the direction is diffuse (a layout, a label): an unmarked direction is not a gap.
+   - A `UX` or `TECH` direction MAY carry a marker where one code site embodies it (`// implements: log-completion#TECH-3` on the upsert handler, §9.4). Skip it when the direction is diffuse (a layout, a label): an unmarked direction is not a gap.
 5. **Check ACs as they pass.** When a criterion is implemented and verified, `Edit` the feature to flip that AC `- [ ]` → `- [x]` (§8.1). Mark a REQ `[x]` when its ACs are satisfied; a REQ `[x]` with open ACs is allowed but is a lint warning, so only do it deliberately (§8.2). Flip a `UX` or `TECH` direction to `[x]` once the code applies it. Never renumber or reuse IDs (§8.3); to drop a criterion that turned out wrong, mark it `[-]` with a reason rather than deleting it.
 6. Keep edits to the feature file tight: change only the checkboxes (and, where useful, add a resolution note, see below). Preserve the rest of the file (losslessness, §14).
 
@@ -77,7 +79,7 @@ If the code needs to behave differently from an AC, do not silently overwrite in
 
 ## Wrap up
 
-Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the `livespec:` markers) is the record. Then point at `/finalize-feature` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
+Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the code markers) is the record. Then point at `/finalize-feature` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
 
 ---
 

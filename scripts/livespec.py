@@ -66,8 +66,11 @@ H2_RE = re.compile(r"^##\s+(?P<title>.+?)\s*$")
 RESOLUTION_RE = re.compile(r"^\s*→ (?P<note>.*)$")  # §8.1 resolution note
 
 # §9.4 marker payload: no whitespace inside the id list.
+# The verb names the relation (§9.4): `implements` or `see-spec`; `livespec` is
+# the legacy spelling of `implements`. The lookbehind keeps `reimplements:` out.
+MARKER_VERBS = ("implements", "see-spec", "livespec")
 MARKER_RE = re.compile(
-    r"livespec:[ \t]+(?P<slug>[a-z0-9]+(?:-[a-z0-9]+)*)#(?P<ids>[A-Za-z]+-[0-9.]+(?:,[A-Za-z]+-[0-9.]+)*)"
+    r"(?<![\w-])(?P<verb>implements|see-spec|livespec):[ \t]+(?P<slug>[a-z0-9]+(?:-[a-z0-9]+)*)#(?P<ids>[A-Za-z]+-[0-9.]+(?:,[A-Za-z]+-[0-9.]+)*)"
 )
 # §9.5 in-prose reference.
 PROSE_REF_RE = re.compile(r"\[\[(?P<payload>[^\[\]\s][^\[\]]*?)\]\]")
@@ -550,6 +553,16 @@ class Marker:
     file: str
     line: int
     raw: str
+    verb: str = "implements"   # as written: implements | see-spec | livespec
+
+    @property
+    def legacy(self) -> bool:
+        return self.verb == "livespec"
+
+    @property
+    def realizes(self) -> bool:
+        """True when the marker claims the code realizes the item (§9.4)."""
+        return self.verb in ("implements", "livespec")
 
 
 MARKDOWN_EXT = {".md", ".markdown", ".mdx"}
@@ -599,18 +612,19 @@ def _mask_markdown(text: str) -> str:
 
 
 def scan_markers(root: Path, exclude: list[Path] | None = None) -> list[Marker]:
-    """Find every `livespec:` marker in the tree (§9.4). Case-sensitive."""
+    """Find every code marker in the tree (§9.4): `implements:`, `see-spec:`,
+    and the legacy `livespec:`. Case-sensitive."""
     markers: list[Marker] = []
     for path in iter_source_files(root, exclude):
         try:
             text = path.read_text(encoding="utf-8", errors="strict")
         except (UnicodeDecodeError, OSError):
             continue
-        if "livespec:" not in text:
+        if not any(f"{v}:" in text for v in MARKER_VERBS):
             continue
         if path.suffix.lower() in MARKDOWN_EXT:
             text = _mask_markdown(text)
-            if "livespec:" not in text:
+            if not any(f"{v}:" in text for v in MARKER_VERBS):
                 continue
         for lineno, line in enumerate(text.splitlines(), start=1):
             for m in MARKER_RE.finditer(line):
@@ -621,6 +635,7 @@ def scan_markers(root: Path, exclude: list[Path] | None = None) -> list[Marker]:
                         file=str(path.relative_to(root)),
                         line=lineno,
                         raw=m.group(0),
+                        verb=m.group("verb"),
                     )
                 )
     return markers

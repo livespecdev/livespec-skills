@@ -2,7 +2,7 @@
 name: check-drift
 description: |
   Reports where LiveSpec intent and codebase reality disagree: spec items marked done with no
-  livespec: marker anchoring them, markers pointing at features or IDs that no longer exist, code
+  implements: marker anchoring them, markers pointing at features or IDs that no longer exist, code
   anchored to items still open or cancelled, and what carries no code yet. Use when the user asks
   what is actually built, whether the spec matches the code, to check marker coverage, or before a
   review. Read-only diagnostic: fixes belong to /sync-spec (spec side) or /implement-feature (code
@@ -14,7 +14,7 @@ argument-hint: "[feature-slug]"
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Two sources of truth: the LiveSpec files hold intent, the codebase holds reality (§1). This skill compares them mechanically, using the one bridge the format defines: the `livespec: {feature-slug}#{spec-item-id}` marker (§9.4).
+Two sources of truth: the LiveSpec files hold intent, the codebase holds reality (§1). This skill compares them mechanically, using the one bridge the format defines: the code marker `implements: {feature-slug}#{spec-item-id}` and its companion `see-spec:` (§9.4). The legacy `livespec:` verb is read as `implements:`.
 
 The format defines the marker syntax and nothing more. Coverage rules, drift detection, and verification semantics are explicitly left to tooling (§9.4, "Scope of this section"). This skill is that tooling. It does not extend the format, and a project that ignores it stays perfectly conformant.
 
@@ -41,13 +41,16 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 |---|---|---|
 | `marker-unknown-feature` | error | The code points at a feature slug with no file. Almost always a renamed or deleted feature file; the marker is now dangling. |
 | `marker-unknown-id` | error | The feature exists, the ID does not. Someone deleted a spec item instead of cancelling it with `[-]` (§8.3), or mistyped the ID. |
-| `marker-on-cancelled` | warning | Code is anchored to an item marked `[-]`. Either the item was cancelled but the code stayed, or the cancellation was wrong. |
-| `marker-on-open` | warning | Code exists and claims to implement an item still `[ ]`. Usually the spec was not checked off after the work landed. |
+| `marker-on-cancelled` | warning | Code is anchored to an item marked `[-]`. Either the item was cancelled but the code stayed, or the cancellation was wrong. On an `AS`, the assumption was invalidated: the code that relies on it needs a second look. |
+| `marker-on-open` | warning | An `implements:` marker on a `REQ`, `AC`, `UX` or `TECH` still `[ ]`. Usually the spec was not checked off after the work landed. |
+| `marker-on-closed` | info | Code points at a `Q` now answered or a `LIM` now lifted. The code was written around the open state and may keep a workaround or a guess that no longer holds. |
+| `marker-legacy-verb` | info | Markers written with the legacy `livespec:` verb, one finding per file with a count. They still resolve (as `implements:`); the fix is a rewrite to `implements:`, or `see-spec:` for AS, Q, LIM. |
+| `marker-verb-fit` | info | Markers whose verb does not fit the item type (`implements:` on an AS, `see-spec:` on a REQ), one finding per file. They resolve anyway (§9.4); only `implements:` counts toward coverage, so a `see-spec:` on a REQ leaves it unanchored. |
 | `done-unmarked` | warning | An item is `[x]` but nothing in the code is anchored to it. Either the marker was never placed, or the item was checked off optimistically. |
 | `open-unmarked` | info | An item is `[ ]` with no code behind it. Consistent, and the normal state of unbuilt work. Inventory, not a defect. |
 | `feature-unmarked` | info | No marker anywhere for that feature. Expected before implementation starts; notable once items are `[x]`. |
 
-Coverage follows §9.4: a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is. `UX` and `TECH` directions are resolved and checked when a marker points at them (`marker-on-open`, `marker-on-cancelled`), but they are not coverage targets: a direction with no marker is not reported, since many have no single code site.
+Coverage follows §9.4 and counts `implements:` markers only (and legacy `livespec:` ones): a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is. `UX` and `TECH` directions are resolved and checked when a marker points at them (`marker-on-open`, `marker-on-cancelled`), but they are not coverage targets: a direction with no marker is not reported, since many have no single code site.
 
 ## Report it as a divergence, not as a backlog
 

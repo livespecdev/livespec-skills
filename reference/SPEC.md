@@ -51,7 +51,7 @@ Following Birgitta Böckeler's framing ([Martin Fowler, *SDD: 3 Tools*](https://
 - **Spec-anchored** treats spec and code as two first-class, independently authored artifacts kept in sync by explicit linkage (§9.4).
 - **Spec-as-source** treats the spec as *the* artifact and code as regenerable on demand.
 
-The §9.4 `livespec:` markers exist precisely to make anchoring **mechanical**: any tool can resolve a spec item back to the code that implements it, and any code site back to the intent it serves. LiveSpec does not assume code is generated from the spec, nor that the spec is reconstructed from the code, both are authored by humans and agents, and linked. Workflow concerns that follow from this stance (drift detection, coverage rules, regeneration semantics) are deliberately left to tooling (§9.4, §15 #014).
+The §9.4 code markers (`implements:`, `see-spec:`) exist precisely to make anchoring **mechanical**: any tool can resolve a spec item back to the code that implements it, and any code site back to the intent it serves. LiveSpec does not assume code is generated from the spec, nor that the spec is reconstructed from the code, both are authored by humans and agents, and linked. Workflow concerns that follow from this stance (drift detection, coverage rules, regeneration semantics) are deliberately left to tooling (§9.4, §15 #014).
 
 ### Core principle: the software, not the work
 
@@ -609,7 +609,7 @@ Rules:
 - The note MAY appear anywhere in the body (before or after other continuation lines), but writers SHOULD place it last for readability.
 - The `→ ` prefix is part of the syntax, not the note content: tools extracting the note MUST strip it.
 
-Resolution notes are particularly valuable on `Q` (the answer), `LIM` (how it was lifted, or the workaround), `AS` (what was validated or invalidated), and cancelled `UX` / `TECH` items (why the direction was abandoned, and what replaced it). On `REQ`/`AC`, the code itself is usually the answer (via `livespec:` markers, §9.4): a resolution note here is optional commentary, not a substitute for anchoring.
+Resolution notes are particularly valuable on `Q` (the answer), `LIM` (how it was lifted, or the workaround), `AS` (what was validated or invalidated), and cancelled `UX` / `TECH` items (why the direction was abandoned, and what replaced it). On `REQ`/`AC`, the code itself is usually the answer (via `implements:` markers, §9.4): a resolution note here is optional commentary, not a substitute for anchoring.
 
 A parser that does not recognize the `→ ` convention will read the line as ordinary body prose; the document remains valid. Resolution notes are therefore a **Level 1** feature: writing them is OPTIONAL, recognizing them is OPTIONAL, and ignoring them is conforming.
 
@@ -774,38 +774,52 @@ A LiveSpec project describes software that exists (or is being built) in a codeb
 #### Marker format
 
 ```
-livespec: {feature-slug}#{spec-item-id}(,{spec-item-id})*
+{verb}: {feature-slug}#{spec-item-id}(,{spec-item-id})*
 ```
+
+`{verb}` is one of two keywords, which say how the code relates to the items it points at:
+
+| Verb          | Meaning                                                                  | Writers SHOULD use it for   |
+|---------------|--------------------------------------------------------------------------|-----------------------------|
+| `implements`  | This code realizes the item: it is where the behavior or the choice lives. | `REQ`, `AC`, `UX`, `TECH`   |
+| `see-spec`    | This code depends on or relates to the item, without realizing it: it relies on an assumption, carries a known limitation, or awaits an answer. | `AS`, `Q`, `LIM`            |
 
 The marker MUST appear inside a comment using the host language's native comment syntax. The format defines the **payload**, not the comment delimiter:
 
 ```js
-// livespec: full-text-search#REQ-3
+// implements: full-text-search#REQ-3
 ```
 ```python
-# livespec: full-text-search#AC-1.2
+# implements: full-text-search#AC-1.2
 ```
 ```html
-<!-- livespec: idempotency#REQ-1 -->
+<!-- implements: idempotency#REQ-1 -->
 ```
+```ts
+// see-spec: full-text-search#AS-1
+```
+
+**Verb and item type.** Both verbs are valid on every spec item type. Readers MUST resolve a marker whatever the pairing of verb and type, so that a marker written with the less fitting verb still anchors its item. Writers SHOULD pick the verb from the table above. The verb carries one semantic difference that tools MAY rely on: only `implements` claims that the code realizes the item, so coverage computations (§15 #014) SHOULD count `implements` markers only.
 
 A single marker MAY point to several spec items **of the same feature** by listing their IDs after the `#`, separated by commas with no surrounding whitespace:
 
 ```js
-// livespec: analyze-current-page#REQ-1,REQ-2,AC-3.2
+// implements: analyze-current-page#REQ-1,REQ-2,AC-3.2
 ```
 
-This list form exists to avoid repeating the feature slug when one code site serves several items of the same feature. It is exactly equivalent to one single-item marker per ID. The feature slug appears once and scopes every ID in the list; an ID in the list MUST NOT carry its own `feature-slug#` prefix. To reference items across **different** features, a source file uses one marker per feature (a file MAY carry many markers).
+This list form exists to avoid repeating the feature slug when one code site serves several items of the same feature. It is exactly equivalent to one single-item marker per ID, with the same verb. The feature slug appears once and scopes every ID in the list; an ID in the list MUST NOT carry its own `feature-slug#` prefix. To reference items across **different** features, a source file uses one marker per feature (a file MAY carry many markers).
 
 A source file MAY carry zero, one, or many markers. A marker pointing to a `REQ` implicitly covers its nested `AC`s unless more specific AC-level markers exist elsewhere; this applies per listed ID.
 
-A marker MAY point to a `UX` or `TECH` item (`// livespec: source-flags#TECH-3`): it anchors the code that embodies the direction, so that a tool can show where a design or implementation choice lives and notice when that code disappears.
+An `implements` marker on a `UX` or `TECH` item (`// implements: source-flags#TECH-3`) anchors the code that embodies the direction, so that a tool can show where a design or implementation choice lives and notice when that code disappears. A `see-spec` marker on an `AS`, `Q`, or `LIM` lets a tool find the code to revisit when that item closes: an assumption invalidated, a question answered, a limitation lifted.
 
-The payload grammar is `livespec:` followed by one or more spaces, then `{feature-slug}#{spec-item-id}`, optionally followed by one or more `,{spec-item-id}` with no internal whitespace anywhere in the payload. Tools MUST match case-sensitively. Tools MUST recognize the list form and resolve every listed ID. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
+The payload grammar is the verb immediately followed by `:`, then one or more spaces, then `{feature-slug}#{spec-item-id}`, optionally followed by one or more `,{spec-item-id}` with no internal whitespace anywhere in the payload. Tools MUST match case-sensitively. Tools MUST recognize the list form and resolve every listed ID. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
+
+**Legacy verb.** Drafts before this one used a single verb, `livespec:`. Readers MUST still recognize `livespec:` and treat it exactly as `implements:`. Writers MUST NOT emit it. The verbs name the relation rather than the format, so code anchored to a LiveSpec project carries no product name.
 
 #### Resolution
 
-A `livespec:` marker resolves by:
+A marker resolves by:
 1. Locating the feature file by searching `features/**/{feature-slug}.md`.
 2. Finding, for each listed ID, the spec item with the matching ID inside that file (per §8.3).
 
@@ -821,7 +835,7 @@ LiveSpec v1 defines **the syntax of the link, and only the syntax**. The format 
 
 These are **tooling concerns**, not format concerns. A CI hook, an IDE plugin, or an agent-driven verifier MAY implement any of them on top of the marker syntax; doing so is out of scope for the format itself. Standardizing any subset of these semantics is tracked in §15 #014.
 
-The format guarantees one thing: **if a `livespec:` marker is present in source code, any conformant LiveSpec tool will recognize it and resolve it to a spec item**. That minimum is what makes spec↔code linking interoperable across tools and workflows.
+The format guarantees one thing: **if a marker (`implements:`, `see-spec:`, or legacy `livespec:`) is present in source code, any conformant LiveSpec tool will recognize it and resolve it to a spec item**. That minimum is what makes spec↔code linking interoperable across tools and workflows.
 
 ### 9.5 In-prose references
 
@@ -856,7 +870,7 @@ In-prose references MAY appear in:
 - Feature body prose (anywhere after the H1, in any section).
 - Spec item bodies (§8.1), alongside same-file `[REQ-3]` and cross-feature `[feature-slug#REQ-3]` references.
 
-They MUST NOT appear in frontmatter values (which use structured `links:` per §9.2), in slugs themselves, or in `livespec:` code markers (which use the unambiguous `feature-slug#spec-item-id` form per §9.4).
+They MUST NOT appear in frontmatter values (which use structured `links:` per §9.2), in slugs themselves, or in code markers (which use the unambiguous `feature-slug#spec-item-id` form per §9.4).
 
 #### Relation to `links:` frontmatter
 
@@ -997,12 +1011,14 @@ Tools claim conformance at one of three levels:
 - MUST validate against the canonical JSON schemas
 - MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `screen`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
-- MUST recognize `livespec:` code markers (§9.4) when scanning source files and resolve them to spec items, including the multi-ID list form (`#REQ-1,REQ-2`)
+- MUST recognize code markers (§9.4) when scanning source files and resolve them to spec items: both verbs (`implements:`, `see-spec:`) on any spec item type, the legacy `livespec:` verb, and the multi-ID list form (`#REQ-1,REQ-2`)
+- MUST NOT emit the legacy `livespec:` verb when writing markers
 
 ### Level 3: Linter
 - All Level 2 requirements
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
-- MUST emit diagnostics for broken `livespec:` code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
+- MUST emit diagnostics for broken code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
+- SHOULD emit diagnostics for markers using the legacy `livespec:` verb (§9.4)
 - SHOULD emit diagnostics for resolution-note misuses (§8.1): multiple `→ ` lines on one item, or a `→ ` line on an open (`[ ]`) item
 - MUST emit diagnostics for child items nested under an `AS`, `Q`, `LIM`, `UX`, or `TECH` item (§8.1)
 - SHOULD emit diagnostics for unknown relation names under `links.feature` (anything other than `requires`, `triggers`, `extends` in v1)

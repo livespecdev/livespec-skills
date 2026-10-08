@@ -168,27 +168,29 @@ A reference may appear in prose without `links:`, and vice-versa. When a relatio
 
 ## Spec ↔ code linking
 
-In any source file, in a host-language comment:
+In any source file, in a host-language comment, with the verb that fits the item:
 
 ```js
-// livespec: full-text-search#REQ-3
+// implements: full-text-search#REQ-3      (REQ, AC, UX, TECH: this code realizes it)
 ```
 
 ```python
-# livespec: full-text-search#AC-1.2
+# see-spec: full-text-search#AS-1          (AS, Q, LIM: this code depends on it)
 ```
 
 ```html
-<!-- livespec: idempotency#REQ-1 -->
+<!-- implements: idempotency#REQ-1 -->
 ```
+
+Both verbs are accepted on every item type, so a marker with the less fitting verb still resolves; only `implements` counts toward coverage. The legacy `livespec:` verb is still read (as `implements:`) but never written.
 
 One marker MAY list several items of the **same** feature, comma-separated, no whitespace in the payload:
 
 ```js
-// livespec: analyze-current-page#REQ-1,REQ-2,AC-3.2
+// implements: analyze-current-page#REQ-1,REQ-2,AC-3.2
 ```
 
-Marker = literal `livespec:` + space(s) + `{feature-slug}#{spec-item-id}`, optionally followed by `,{spec-item-id}` for more items of that feature. Feature slugs are globally unique within `features/`, so the area is not in the marker: markers survive feature moves. Reference items in different features with one marker each.
+Marker = verb + `:` + space(s) + `{feature-slug}#{spec-item-id}`, optionally followed by `,{spec-item-id}` for more items of that feature. Feature slugs are globally unique within `features/`, so the area is not in the marker: markers survive feature moves. Reference items in different features with one marker each.
 
 ## Anti-patterns
 

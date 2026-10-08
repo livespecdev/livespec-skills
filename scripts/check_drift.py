@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """check-drift: coherence between LiveSpec intent and codebase reality.
 
-Cross-references the checkbox state of spec items (§8.1) with the `livespec:`
+Cross-references the checkbox state of spec items (§8.1) with the `implements:` / `see-spec:`
 markers found in source code (§9.4). Answers: does the code say the same thing
 as the spec?
 
@@ -37,10 +37,18 @@ CHECKS = [
     "marker-unknown-id",
     "marker-on-cancelled",
     "marker-on-open",
+    "marker-on-closed",
+    "marker-legacy-verb",
+    "marker-verb-fit",
     "done-unmarked",
     "open-unmarked",
     "feature-unmarked",
 ]
+
+
+# §9.4: the verb writers SHOULD use for each item type. Readers accept any pairing.
+REALIZABLE = ("REQ", "AC", "UX", "TECH")
+REFERENCE_ONLY = ("AS", "Q", "LIM")
 
 
 def anchor_targets(project: Project, features):
@@ -59,7 +67,7 @@ def anchor_targets(project: Project, features):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Check LiveSpec intent against codebase reality.")
     parser.add_argument("project", nargs="?", help="project root (defaults to discovery from CWD)")
-    parser.add_argument("--code-root", help="directory to scan for livespec: markers (defaults to the git repo root)")
+    parser.add_argument("--code-root", help="directory to scan for code markers (defaults to the git repo root)")
     parser.add_argument("--feature", help="restrict the report to one feature slug")
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--only", help="comma-separated checks to run")
@@ -113,8 +121,15 @@ def main(argv=None) -> int:
     in_scope = {f.slug for f in features}
 
     # ---- marker side: every marker must resolve (§9.4)
+    # Coverage counts only markers that claim the code realizes the item
+    # (`implements:`, or the legacy `livespec:`); `see-spec:` markers resolve
+    # and are checked, but never cover an item.
     direct: dict = {}   # (feature_slug, item_id) -> [Marker]
+    legacy_by_file: dict = {}   # file -> count of `livespec:` markers
+    misfit_by_file: dict = {}   # file -> [(line, verb, item_id)]
     for marker in markers:
+        if marker.legacy:
+            legacy_by_file[marker.file] = legacy_by_file.get(marker.file, 0) + 1
         feature = project.feature(marker.slug)
         if feature is None:
             if "marker-unknown-feature" in enabled and not args.feature:
@@ -137,25 +152,62 @@ def main(argv=None) -> int:
                         message=f"marker points at {marker.slug}#{item_id}, absent from the feature file. IDs are immutable (§8.3): the item was deleted instead of cancelled, or the ID is a typo.",
                     )
                 continue
-            direct.setdefault((marker.slug, item_id), []).append(marker)
+            if marker.realizes:
+                direct.setdefault((marker.slug, item_id), []).append(marker)
+            fits = REALIZABLE if marker.realizes else REFERENCE_ONLY
+            if item.type not in fits:
+                misfit_by_file.setdefault(marker.file, []).append((marker.line, marker.verb, item_id))
             if item.cancelled and "marker-on-cancelled" in enabled:
+                if item.type == "AS":
+                    message = f"code relies on {item_id}, an assumption dropped [-]: revisit this code. {item.body[:80]}"
+                else:
+                    message = f"code is anchored to {item_id}, marked [-] cancelled: {item.body[:80]}"
                 report.add(
                     check="marker-on-cancelled", severity="warning", spec_ref="§8.1",
                     file=marker.file, line=marker.line,
-                    feature=marker.slug, item=item_id,
-                    message=f"code is anchored to {item_id}, marked [-] cancelled: {item.body[:80]}",
+                    feature=marker.slug, item=item_id, message=message,
                 )
-            elif item.open and item.type in ("REQ", "AC", "UX", "TECH") and "marker-on-open" in enabled:
-                # A marker on an open LIM points at the code where the limitation lives,
-                # and on an open Q at the code the question is about: neither is a
-                # divergence. An open direction means "decided, not yet applied",
-                # so code anchored to it disagrees with the spec, as for REQ/AC.
+            elif item.done and item.type in ("Q", "LIM") and "marker-on-closed" in enabled:
+                # The code was written around an open question or a known
+                # limitation; now that it is answered or lifted, the code may
+                # carry a workaround or a guess that no longer holds.
+                what = "a question now answered" if item.type == "Q" else "a limitation now lifted"
+                report.add(
+                    check="marker-on-closed", severity="info", spec_ref="§9.4",
+                    file=marker.file, line=marker.line,
+                    feature=marker.slug, item=item_id,
+                    message=f"code points at {item_id}, {what}: check whether it still needs its workaround. {item.body[:80]}",
+                )
+            elif item.open and marker.realizes and item.type in REALIZABLE and "marker-on-open" in enabled:
+                # Only markers that claim to realize the item: a see-spec marker on
+                # an open item is a plain reference. An open direction means
+                # "decided, not yet applied", so code realizing it disagrees with
+                # the spec, as for REQ/AC.
                 report.add(
                     check="marker-on-open", severity="warning", spec_ref="§8.1",
                     file=marker.file, line=marker.line,
                     feature=marker.slug, item=item_id,
                     message=f"code is anchored to {item_id}, still [ ] open: {item.body[:80]}",
                 )
+
+    if "marker-legacy-verb" in enabled:
+        # One finding per file: a codebase written before the rename carries
+        # hundreds of them, and the fix is one search-and-replace.
+        for file, count in sorted(legacy_by_file.items()):
+            report.add(
+                check="marker-legacy-verb", severity="info", spec_ref="§9.4",
+                file=file, line=1,
+                message=f"{count} marker(s) use the legacy `livespec:` verb, still read as `implements:`. Rewrite them as `implements:` (or `see-spec:` for AS, Q, LIM).",
+            )
+    if "marker-verb-fit" in enabled:
+        for file, misfits in sorted(misfit_by_file.items()):
+            line, verb, item_id = misfits[0]
+            report.add(
+                check="marker-verb-fit", severity="info", spec_ref="§9.4",
+                file=file, line=line,
+                message=f"{len(misfits)} marker(s) pair a verb with an item type it does not fit ({verb}: ...#{item_id} first). "
+                        f"They resolve anyway; writers use `implements:` for REQ, AC, UX, TECH and `see-spec:` for AS, Q, LIM.",
+            )
 
     # ---- spec side: coverage of each anchorable item
     def covered(feature, item) -> bool:
@@ -186,7 +238,7 @@ def main(argv=None) -> int:
                     check="done-unmarked", severity="warning", spec_ref="§9.4",
                     file=feature.rel, line=item.line,
                     feature=feature.slug, item=item.id,
-                    message=f"{item.id} is [x] but no livespec: marker anchors it: {item.body[:80]}",
+                    message=f"{item.id} is [x] but no implements: marker anchors it: {item.body[:80]}",
                 )
         elif item.open and not is_covered and "open-unmarked" in enabled:
             report.add(
@@ -206,7 +258,7 @@ def main(argv=None) -> int:
                 report.add(
                     check="feature-unmarked", severity="info", spec_ref="§9.4",
                     file=feature.rel, line=1, feature=feature.slug,
-                    message=f"no livespec: marker anywhere in the code for this feature ({state}).",
+                    message=f"no implements: marker anywhere in the code for this feature ({state}).",
                 )
 
     resolved = sum(len(v) for v in direct.values())
@@ -219,7 +271,7 @@ def main(argv=None) -> int:
     }
     if not markers:
         report.notes.append(
-            "no livespec: marker found in the scanned tree. Either the code is elsewhere "
+            "no code marker (implements:, see-spec:) found in the scanned tree. Either the code is elsewhere "
             "(pass --code-root) or nothing has been anchored yet (§9.4)."
         )
     if code_root == project.root:

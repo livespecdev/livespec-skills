@@ -19,7 +19,7 @@ Reconcile the LiveSpec files with the reality of what was built. There is no ser
 
 ## Step 1: Analyze what changed
 
-`Read` the feature (`features/**/{slug}.md`) and compare it against the implementation (the code, the `livespec:` markers, §9.4). Determine:
+`Read` the feature (`features/**/{slug}.md`) and compare it against the implementation (the code, the `implements:` / `see-spec:` markers, §9.4). Determine:
 
 - **Acceptance criteria**: which ACs are now satisfied and should be `[x]`; which were dropped and should be `[-]` with a reason (§8.1, §8.3). Never renumber or delete IDs.
 - **Resolution notes**: which `Q` items the implementation answered and which `LIM` items it lifted, to record with a `→ ` note (§8.1).

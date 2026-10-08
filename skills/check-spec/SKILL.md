@@ -87,7 +87,7 @@ Lead with errors, group warnings by kind, and give counts instead of exhaustive 
 
 Three categories deserve caution before you propose a fix:
 
-- **`unknown-item-type`**: `TE-` items usually mean the project adopted tech directions before §8.2 defined them as `TECH`. Renaming `TE-N` to `TECH-N` keeps the numbers but breaks every inbound `[TE-N]` reference and `livespec:` marker, so propose it as one migration covering the feature file, its in-prose references, and the code markers, and let the user decide. Do not convert them to REQs on your own: that changes the meaning of the spec. `ISS-` items need a read before any rename: those that describe a gap the software still has become `LIM-N`, stated in the present tense; those that record a fixed bug or a task were work tracking (§8.2) and are candidates for removal, which the user decides after checking that no marker or reference points at them.
+- **`unknown-item-type`**: `TE-` items usually mean the project adopted tech directions before §8.2 defined them as `TECH`. Renaming `TE-N` to `TECH-N` keeps the numbers but breaks every inbound `[TE-N]` reference and code marker marker, so propose it as one migration covering the feature file, its in-prose references, and the code markers, and let the user decide. Do not convert them to REQs on your own: that changes the meaning of the spec. `ISS-` items need a read before any rename: those that describe a gap the software still has become `LIM-N`, stated in the present tense; those that record a fixed bug or a task were work tracking (§8.2) and are candidates for removal, which the user decides after checking that no marker or reference points at them.
 
 - **`ac-id-mismatch`**: renumbering breaks inbound references, and IDs are immutable (§8.3). Often the honest fix is to leave the ID alone and live with the cosmetic mismatch.
 - **`orphan-concept`**: absence of links is not a defect. §9.5 is explicit that a missing reference must not be treated as one.
@@ -104,4 +104,4 @@ In `strict` mode (§12.2) the manifest enforces section names, order, and placem
 
 ## What this skill does not do
 
-It never reads the codebase: spec-to-code coherence, marker coverage, and dangling `livespec:` markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: editorial quality is `/specify-feature` and the `specifier` agent.
+It never reads the codebase: spec-to-code coherence, marker coverage, and dangling code markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: editorial quality is `/specify-feature` and the `specifier` agent.
