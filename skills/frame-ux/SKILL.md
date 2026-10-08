@@ -12,7 +12,7 @@ argument-hint: [feature-slug]
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Frame the user experience for a feature and write it into the feature's `## UX` section (`SPEC.md` §7.3). LiveSpec does not yet define a `UX_DIRECTION` spec-item type (deferred, §15 #005), so UX decisions live as free-form notes under `## UX`, written declaratively as target state.
+Frame the user experience for a feature and write it into the feature's `## UX` section (`SPEC.md` §7.3). Each durable UX decision is a `UX` spec item (§8.2): a checkbox line `- [ ] UX-N: ...`, written declaratively as target state. Free-form prose under `## UX` carries what items cannot: the user flow, the rationale, references to assets.
 
 ## Identify the feature
 
@@ -63,11 +63,11 @@ assets:
     path: assets/log-completion/check-in.svg
 ```
 
-Create one asset per key screen or state; do not over-produce. Reference them from the `## UX` notes.
+Create one asset per key screen or state; do not over-produce. Reference them from the `## UX` prose.
 
 ## Review before writing
 
-Before touching the file, present the full proposed `## UX` section for review: the user flow, key decisions, patterns, states, content, and accessibility notes, plus any assets you plan to create. Ask the user to approve, adjust, or rethink. Iterate until approved.
+Before touching the file, present the full proposed `## UX` section for review: the `UX` items (patterns, states, content, accessibility), the user flow and rationale, plus any assets you plan to create. Ask the user to approve, adjust, or rethink. Iterate until approved.
 
 ## Write the `## UX` section
 
@@ -77,42 +77,33 @@ Before touching the file, present the full proposed `## UX` section for review: 
 - "The first input in the modal receives focus on open."
 - Avoid: "Replace the dropdown with a combobox", "Add auto-focus" (imperative, work-shaped, belongs in a PR description).
 
-`Edit` the feature to add or update the `## UX` section (§7.3). In `loose` mode it MAY sit anywhere; in `strict` mode it follows the canonical order (Requirements → Assumptions → Questions → Issues → UX → Tech, §7.3, §12). Preserve everything else in the file (losslessness, §14); never rewrite REQs or renumber IDs here.
+`Edit` the feature to add or update the `## UX` section (§7.3). In `loose` mode it MAY sit anywhere; in `strict` mode it follows the canonical order (Requirements → Assumptions → Questions → Limitations → UX → Tech, §7.3, §12). Preserve everything else in the file (losslessness, §14); never rewrite REQs or renumber IDs here.
 
 ```markdown
 ## UX
 
-The check-in is a single tap on the habit row, with an optimistic toggle so it feels instant even offline. Reuses the existing list-row and toast patterns; the only new element is the offline-pending badge.
+- [ ] UX-1: Today's completion toggles with a single tap anywhere on the habit row, not only on an icon.
+- [ ] UX-2: The toggle is optimistic: the row shows the new state before the write confirms, per [[ux_pattern:optimistic-update]].
+- [ ] UX-3: A logged-but-unsynced completion shows an offline-pending badge labelled "Not synced yet", cleared on sync.
+- [ ] UX-4: With no habits yet, the list shows the create-habit call to action in place of rows.
+- [ ] UX-5: The toggle is reachable by keyboard and exposes its checked state to screen readers; the pending badge is announced, not conveyed by color alone.
+
+The check-in has to feel instant even offline, so nothing waits on the network. It reuses the existing list-row and toast patterns; the pending badge is the only new element.
 
 ### User flow
 
 Habit list → tap habit row → today's completion toggles on (streak updates immediately) → tap again to undo.
 
-### Key decisions
-
-- Optimistic toggle: the row reflects the new state before the write confirms, reusing [[ux_pattern:optimistic-update]].
-- Offline-pending badge: a logged-but-unsynced completion shows a small badge, cleared on sync.
-
-### States
-
-- Empty: no habits yet shows the create-habit call to action.
-- Offline: completions log normally; the pending badge communicates sync status.
-- Error: a sync conflict resolves silently to a single completion (see AC-2.3); no user-facing error.
-
-### Content
-
-- Row affordance: the whole row is tappable, not just an icon.
-- Pending badge label: "Not synced yet".
-
-### Accessibility
-
-- The toggle is reachable by keyboard and exposes its checked state to screen readers.
-- The pending badge is announced, not conveyed by color alone.
-
 ### Assets
 
 - Mockup: one-tap check-in, default and offline states (`assets/log-completion/check-in.svg`).
 ```
+
+**What becomes an item.** Each choice the implementation must follow is a `UX` item: a component or pattern, a layout, how a state is shown, a label, an accessibility treatment. Apply the substitution test (§6.5, *Requirement vs. direction*): if a different interface could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong, it is an AC: note it for `/specify-feature` instead of writing it under `## UX` (a sync conflict that "resolves silently to one completion" is AC-2.3, not a UX choice).
+
+**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body. Extend the existing `UX-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement-feature`, `/sync-spec`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [UX-6]: ...`) and add the new direction as a new item (§8.1).
+
+**What stays prose.** The summary of the approach and why, the user flow, sketches and asset references. Prose explains the items; it does not carry decisions of its own. A decision that only exists in prose cannot be referenced, anchored, or closed.
 
 If you reused a `ux/` concept that is not yet linked, propose adding it to the feature's `links` (e.g. `ux_pattern: [optimistic-update]`, §9.2).
 

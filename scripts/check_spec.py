@@ -52,7 +52,7 @@ CORE_TAXONOMY = {
     "external_system": "tech",
 }
 
-SAME_FILE_REF_RE = re.compile(r"\[(?P<id>(?:REQ|AC|AS|Q|ISS)-[0-9.]+)\](?!\()")
+SAME_FILE_REF_RE = re.compile(r"\[(?P<id>(?:REQ|AC|AS|Q|LIM|UX|TECH)-[0-9.]+)\](?!\()")
 
 CHECKS = [
     "feature-no-requirements",
@@ -61,6 +61,7 @@ CHECKS = [
     "ac-orphan",
     "ac-nesting",
     "ac-id-mismatch",
+    "item-nesting",
     "malformed-item",
     "unknown-item-type",
     "item-annotation",
@@ -78,7 +79,7 @@ CHECKS = [
     "empty-frontmatter",
     "missing-title",
     "open-question",
-    "open-issue",
+    "open-limitation",
 ]
 
 
@@ -153,6 +154,14 @@ def check_items(report: Report, doc, enabled) -> None:
                         message=f"{item.id} is nested under {item.parent_id}; its ID should read AC-{expected}.N.",
                     )
 
+        if item.type != "AC" and item.indent > 0 and "item-nesting" in enabled:
+            report.add(
+                check="item-nesting", severity="error", spec_ref="§8.1",
+                file=doc.rel, line=item.line, item=item.id,
+                message=f"{item.id} is nested {item.indent} spaces deep; only ACs nest, under their REQ. "
+                        f"Write it as a top-level item.",
+            )
+
         if "resolution-note" in enabled:
             if len(item.resolution_notes) > 1:
                 report.add(
@@ -174,9 +183,9 @@ def check_items(report: Report, doc, enabled) -> None:
                 feature=getattr(doc, "slug", None),
                 message=f"{item.id}: {item.body}",
             )
-        if item.type == "ISS" and item.open and "open-issue" in enabled:
+        if item.type == "LIM" and item.open and "open-limitation" in enabled:
             report.add(
-                check="open-issue", severity="info", spec_ref="§8.2",
+                check="open-limitation", severity="info", spec_ref="§8.2",
                 file=doc.rel, line=item.line, item=item.id,
                 feature=getattr(doc, "slug", None),
                 message=f"{item.id}: {item.body}",
@@ -220,11 +229,15 @@ def check_items(report: Report, doc, enabled) -> None:
             by_type.setdefault(type_slug, []).append((lineno, item_id))
         for type_slug, occurrences in sorted(by_type.items()):
             first_line, first_id = occurrences[0]
+            hint = {
+                "TE": " If 'TE' stands for tech directions, the §8.2 type is TECH.",
+                "ISS": " ISS was renamed LIM (known limitation); a defect scheduled for a fix belongs in the issue tracker, not the spec.",
+            }.get(type_slug, "")
             report.add(
                 check="unknown-item-type", severity="warning", spec_ref="§8.2",
                 file=doc.rel, line=first_line,
                 message=f"{len(occurrences)} item(s) of type '{type_slug}' ({first_id} and following). "
-                        f"§8.2 defines REQ, AC, AS, Q, ISS only; a reader that does not know '{type_slug}' will skip them.",
+                        f"§8.2 defines REQ, AC, AS, Q, LIM, UX, TECH only; a reader that does not know '{type_slug}' will skip them.{hint}",
             )
 
     if "malformed-item" in enabled:
@@ -484,7 +497,9 @@ def main(argv=None) -> int:
         "REQ": sum(1 for i in all_items if i.type == "REQ"),
         "AC": sum(1 for i in all_items if i.type == "AC"),
         "open Q": sum(1 for i in all_items if i.type == "Q" and i.open),
-        "open ISS": sum(1 for i in all_items if i.type == "ISS" and i.open),
+        "open LIM": sum(1 for i in all_items if i.type == "LIM" and i.open),
+        "UX": sum(1 for i in all_items if i.type == "UX"),
+        "TECH": sum(1 for i in all_items if i.type == "TECH"),
     }
     if project.mode == "strict":
         report.notes.append("project is in strict mode (§12.2): section names, order, and placement are enforced; this script does not check them.")

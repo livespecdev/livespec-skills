@@ -50,12 +50,12 @@ SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")  # §9.1
 # reports it instead.
 ITEM_RE = re.compile(
     r"^(?P<indent>[ \t]*)- \[(?P<state>[ xX\-])\]\s+"
-    r"(?P<type>REQ|AC|AS|Q|ISS)-(?P<num>[0-9]+(?:\.[0-9]+)*)"
+    r"(?P<type>REQ|AC|AS|Q|LIM|UX|TECH)-(?P<num>[0-9]+(?:\.[0-9]+)*)"
     r"(?P<annot>(?:[ \t]+\[[^\]\n]*\])*)[ \t]*:\s?(?P<body>.*)$"
 )
 # A checkbox line inside a spec section that does not match ITEM_RE.
 LOOSE_CHECKBOX_RE = re.compile(r"^(?P<indent>[ \t]*)- \[(?P<state>[ xX\-])\]\s*(?P<rest>.*)$")
-# Same shape as a spec item but with a type outside the §8.2 set (e.g. TE-1, UX-3).
+# Same shape as a spec item but with a type outside the §8.2 set (e.g. TE-1, UXD-3).
 UNKNOWN_TYPED_RE = re.compile(
     r"^(?P<indent>[ \t]*)- \[(?P<state>[ xX\-])\]\s+"
     r"(?P<type>[A-Z][A-Z_]{0,14})-(?P<num>[0-9]+(?:\.[0-9]+)*)"
@@ -78,7 +78,9 @@ SPEC_SECTIONS = {
     "requirements": "REQ",
     "assumptions": "AS",
     "questions": "Q",
-    "issues": "ISS",
+    "limitations": "LIM",
+    "ux": "UX",
+    "tech": "TECH",
 }
 
 
@@ -86,7 +88,7 @@ SPEC_SECTIONS = {
 
 @dataclass
 class SpecItem:
-    type: str            # REQ | AC | AS | Q | ISS
+    type: str            # REQ | AC | AS | Q | LIM | UX | TECH
     id: str              # e.g. REQ-1, AC-1.2
     state: str           # " " | "x" | "-"
     body: str

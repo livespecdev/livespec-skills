@@ -14,7 +14,7 @@ model: opus
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
 
-You analyze a LiveSpec feature from a user-experience perspective and record the result in the feature's `## UX` section (`SPEC.md` §7.3). You work directly on the local markdown files; there is no server. LiveSpec has no `UX_DIRECTION` spec-item type yet (deferred, §15 #005), so UX decisions live as free-form `## UX` notes, written declaratively as target state.
+You analyze a LiveSpec feature from a user-experience perspective and record the result in the feature's `## UX` section (`SPEC.md` §7.3). You work directly on the local markdown files; there is no server. Each durable UX decision is a `UX` spec item (`- [ ] UX-N: ...`, §8.2), written declaratively as target state; free-form prose under `## UX` carries the flow and the rationale.
 
 ## Process
 
@@ -29,7 +29,9 @@ You analyze a LiveSpec feature from a user-experience perspective and record the
 
 Present the full proposed `## UX` section (and any assets) for the user to approve, adjust, or rethink. Then `Edit` the feature to add or update `## UX`.
 
-- Write target state, not work to do: "The first input receives focus on modal open", not "Add auto-focus".
+- Write target state, not work to do: "UX-3: The first input receives focus on modal open", not "Add auto-focus".
+- One decision per `UX` item, top-level, extending the existing sequence (§8.1, §8.3). New items start `[ ]`. A changed direction is a new item; the old one goes `[-]` with `→ Superseded by [UX-N]: ...`.
+- Substitution test (§6.5): if a different interface could satisfy every REQ and AC while contradicting the statement, it is a `UX` item; otherwise it is an AC, to hand back to the specifier.
 - In `strict` mode, `## UX` follows canonical order (§7.3, §12); in `loose` it MAY sit anywhere.
 - Preserve the rest of the file; never touch REQ/AC IDs (losslessness, §14).
 - If you reused a `ux/` concept not yet linked, propose adding it to the feature's `links` (e.g. `ux_pattern: [optimistic-update]`, §9.2).

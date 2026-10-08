@@ -37,7 +37,7 @@ Show the user what you found: existing features that overlap, features that part
 Decompose the intent into a flat list of entities to write:
 
 - **[NEW]** a new feature file under `features/{area}/{slug}.md`.
-- **[UPDATE]** new REQs / ACs (or an `ISS` for a known defect, §8.2) added to an existing feature.
+- **[UPDATE]** new REQs / ACs (or a `LIM` for a known, accepted limitation, §8.2) added to an existing feature.
 - **[CONCEPT]** a standing rule, domain object, or convention worth extracting as a concept under `product|ux|tech/` and linking from features. Surface these for review; do not assume them.
 
 ### What is a feature vs a concept vs a spec item
@@ -119,7 +119,7 @@ For each **[NEW]** feature, `Write` `features/{area}/{slug}.md`:
 - A `## Requirements` section with `- [ ] REQ-N:` items, each AC nested exactly 2 spaces under its REQ as `- [ ] AC-N.M:` (§8.1). `## Assumptions`, `## Questions` as needed. Omit empty sections (§7.3).
 - In `strict` mode, use canonical section names in canonical order (§7.3, §12); in `loose`, canonical names are recommended.
 
-For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `ISS` items) with the **next free integer** in that section. IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
+For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `LIM` items) with the **next free integer** in that section. IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
 
 ### Concepts
 

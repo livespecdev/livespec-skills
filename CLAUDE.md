@@ -29,7 +29,7 @@ The skills write files; `SPEC.md` defines what valid files look like. Non-negoti
 - **Four fixed top-level folders**: `product/`, `ux/`, `tech/`, `features/`. No others (§3). New concerns become extension *types* inside these four, never new folders.
 - **Concept files**: `{product|ux|tech}/{type}/{slug}.md`, type slug = directory name = link key (§6.1). Core taxonomy in §6.2.
 - **Feature files**: `features/{slug}.md` or `features/{area}/{slug}.md` (§7.1). Open with a single summary paragraph (§7.4).
-- **Spec items**: GFM checkboxes `- [ ] REQ-1: ...`, ACs nested 2 spaces under their REQ, types `REQ / AC / AS / Q / ISS` (§8). IDs are **file-scoped, immutable, never renumbered**; gaps are valid; cancel with `[-]`, don't delete (§8.3).
+- **Spec items**: GFM checkboxes `- [ ] REQ-1: ...`, ACs nested 2 spaces under their REQ, types `REQ / AC / AS / Q / LIM / UX / TECH` (§8). `UX` and `TECH` are directions (how this feature is built), separated from REQ/AC (what it does) by the substitution test in §6.5. IDs are **file-scoped, immutable, never renumbered**; gaps are valid; cancel with `[-]`, don't delete (§8.3).
 - **Links**: frontmatter `links:` keyed by singular type slug (§9.2). In-prose `[[type:slug]]` are reading aids, not a substitute (§9.5).
 - **Spec ↔ code**: the `livespec: {feature-slug}#{spec-item-id}` comment marker (§9.4) is how "live" is mechanical. `implement-*` and `sync-*` skills place and reconcile these markers.
 - **Losslessness**: when editing an existing file, preserve unknown frontmatter keys (`x-*`), unrecognized H2 sections, and existing IDs on write (Level 2, §14). Never emit an empty frontmatter block (§5).
@@ -75,12 +75,12 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 |---|---|
 | `livespec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
 | `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
-| `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, ISS. Writes the `.md` directly per §7–§8. |
-| `frame-ux` | Frame UX into `## UX` notes (and future `UX_DIRECTION`, §15 #005). Reads `ux/` concepts. |
-| `frame-tech` | Frame technical approach into `## Tech` notes; explore the codebase; reads `tech/` concepts. |
+| `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, LIM. Writes the `.md` directly per §7–§8. |
+| `frame-ux` | Frame UX into `UX` items + supporting prose under `## UX`. Reads `ux/` concepts. |
+| `frame-tech` | Frame technical approach into `TECH` items + supporting prose under `## Tech`; explore the codebase; reads `tech/` concepts. |
 | `implement-feature` | Work through ACs, write code, place `livespec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
 | `finalize-feature` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync-spec`. |
-| `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), add `## Tech` notes, promote discovered standing rules to concepts. |
+| `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), flip or supersede `UX`/`TECH` directions, promote discovered standing rules to concepts. |
 | `check-drift` | Report where intent and code disagree: `[x]` items with no marker, dangling markers, code anchored to open or cancelled items. Read-only. |
 | `check-spec` | Report internal spec inconsistencies: features with no REQ, duplicate IDs, broken links, orphan concepts. Read-only, spec files only. |
 

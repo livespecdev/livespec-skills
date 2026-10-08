@@ -47,7 +47,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 | `open-unmarked` | info | An item is `[ ]` with no code behind it. Consistent, and the normal state of unbuilt work. Inventory, not a defect. |
 | `feature-unmarked` | info | No marker anywhere for that feature. Expected before implementation starts; notable once items are `[x]`. |
 
-Coverage follows §9.4: a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is.
+Coverage follows §9.4: a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is. `UX` and `TECH` directions are resolved and checked when a marker points at them (`marker-on-open`, `marker-on-cancelled`), but they are not coverage targets: a direction with no marker is not reported, since many have no single code site.
 
 ## Report it as a divergence, not as a backlog
 
@@ -63,7 +63,7 @@ Do not treat every finding as a defect to fix. A `done-unmarked` item on code wr
 
 This skill reports and stops. It writes nothing, neither spec files nor code.
 
-- Spec is behind reality (items to check off, resolution notes, new REQs or ISS discovered): `/sync-spec`.
+- Spec is behind reality (items to check off, resolution notes, new REQs or LIM discovered): `/sync-spec`.
 - Code is behind the spec (items still open, markers to place): `/implement-feature`.
 - Dangling markers: the fix is a judgment call. A renamed feature means the marker needs updating; a deleted spec item means the item should have been `[-]` cancelled and probably needs restoring, since IDs are immutable (§8.3). Propose it, let the user decide.
 

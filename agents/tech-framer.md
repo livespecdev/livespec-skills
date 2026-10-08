@@ -14,7 +14,7 @@ model: opus
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
 
-You analyze a LiveSpec feature from an implementation perspective and record the result in the feature's `## Tech` section (`SPEC.md` §7.3). You work directly on the local markdown files; there is no server. LiveSpec has no `TECH_DIRECTION` spec-item type yet (deferred, §15 #005), so technical decisions live as free-form `## Tech` notes, written declaratively as target state.
+You analyze a LiveSpec feature from an implementation perspective and record the result in the feature's `## Tech` section (`SPEC.md` §7.3). You work directly on the local markdown files; there is no server. Each durable technical decision is a `TECH` spec item (`- [ ] TECH-N: ...`, §8.2), written declaratively as target state; free-form prose under `## Tech` carries the rationale, diagrams, and testing strategy.
 
 ## Prerequisites
 
@@ -32,7 +32,9 @@ If the feature is user-facing and has no `## UX` section, warn that tech framing
 
 Present the full proposed `## Tech` section for the user to approve, adjust, or rethink. Then `Edit` the feature to add or update `## Tech`.
 
-- Write target state, not work to do: "Input validation happens server-side in the route handler", not "Add validation to the handler". The spec should still read correctly six months later.
+- Write target state, not work to do: "TECH-2: Input validation happens server-side in the route handler", not "Add validation to the handler". The spec should still read correctly six months later.
+- One decision per `TECH` item, top-level, extending the existing sequence (§8.1, §8.3). New items start `[ ]`. A changed direction is a new item; the old one goes `[-]` with `→ Superseded by [TECH-N]: ...`.
+- Substitution test (§6.5): if another implementation could satisfy every REQ and AC while contradicting the statement, it is a `TECH` item; otherwise it is an AC, to hand back to the specifier.
 - In `strict` mode, `## Tech` comes last in canonical order (§7.3, §12); in `loose` it MAY sit anywhere.
 - Preserve the rest of the file; never touch REQ/AC IDs (losslessness, §14).
 

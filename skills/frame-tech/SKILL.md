@@ -12,7 +12,7 @@ argument-hint: [feature-slug]
 
 > **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Frame the technical approach for a feature and write it into the feature's `## Tech` section (`SPEC.md` §7.3). LiveSpec does not yet define a `TECH_DIRECTION` spec-item type (deferred, §15 #005), so technical decisions live as free-form notes under `## Tech`, written declaratively as target state.
+Frame the technical approach for a feature and write it into the feature's `## Tech` section (`SPEC.md` §7.3). Each durable technical decision is a `TECH` spec item (§8.2): a checkbox line `- [ ] TECH-N: ...`, written declaratively as target state. Free-form prose under `## Tech` carries what items cannot: the rationale, diagrams, the testing strategy.
 
 ## Identify the feature
 
@@ -52,7 +52,7 @@ Pull it into a coherent plan: architecture overview, main components/modules/lay
 
 ## Review before writing
 
-Present the full proposed `## Tech` section and any concepts you intend to propose. Use `AskUserQuestion` to confirm: approve, adjust, or rethink. Iterate until approved.
+Present the full proposed `## Tech` section (the `TECH` items, then the supporting prose) and any concepts you intend to propose. Use `AskUserQuestion` to confirm: approve, adjust, or rethink. Iterate until approved.
 
 ## Write the `## Tech` section
 
@@ -67,40 +67,28 @@ Present the full proposed `## Tech` section and any concepts you intend to propo
 ```markdown
 ## Tech
 
-Completions are an append-only local log, reconciled with the server on connectivity. This keeps logging fully offline-capable (respects [[constraint:offline-first-logging]]) and makes two-device reconciliation a deterministic merge rather than a conflict prompt.
+- [ ] TECH-1: Completions live in an append-only local log keyed by `(habit_id, day)`, the source of truth while offline.
+- [ ] TECH-2: A sync worker drains the log to the server when connectivity returns, idempotent per `(habit_id, day)`.
+- [ ] TECH-3: `PUT /habits/{id}/completions/{day}` is an idempotent upsert: repeated calls for the same day converge to one completion.
+- [ ] TECH-4: Streaks are derived from the log on read, never stored as an independent value.
 
-### Architecture
-
-- Local store: an append-only completion log keyed by `(habit_id, day)`, the source of truth while offline.
-- Sync worker: drains the log to the server when connectivity returns, idempotent per `(habit_id, day)`.
-- Streak view: derived from the log, never stored as an independent value.
-
-### Data model
-
-- A completion is `(habit_id, day, logged_at)`. Uniqueness is on `(habit_id, day)`; a duplicate is a no-op merge (satisfies AC-2.3).
-
-### API
-
-- `PUT /habits/{id}/completions/{day}` is idempotent: repeated calls for the same day converge to one completion.
-
-### Key decisions
-
-- Idempotent upsert by `(habit_id, day)`: makes reconciliation order-independent, so two devices logging the same day cannot create duplicates.
-- Derived streaks: avoids a stored value drifting out of sync with the log.
-
-### Constraints applied
-
-- [[constraint:offline-first-logging]]: logging and streak reads work with no network.
+The log keeps logging fully offline-capable (respects [[constraint:offline-first-logging]]). The idempotent upsert makes reconciliation order-independent, which is how two devices logging the same day end with a single completion ([AC-2.3]). Derived streaks cannot drift out of sync with the log.
 
 ### Testing strategy
 
-- Unit: streak derivation across gaps, backfill within the 7-day window (REQ-3).
+- Unit: streak derivation across gaps, backfill within the 7-day window ([REQ-3]).
 - Integration: offline log then reconcile; same-day double log on two devices yields one completion.
 
-### Deferred / out of scope
+### Out of scope
 
-- Multiple completions per day (AS-1): single boolean per day in v1.
+- Multiple completions per day ([AS-1]): single boolean per day in v1.
 ```
+
+**What becomes an item.** Each choice the implementation must follow is a `TECH` item: a module boundary, a data shape, an API contract, a storage location, a library, an integration path. Apply the substitution test (§6.5, *Requirement vs. direction*): if another implementation could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong (a latency budget, an error the user sees), it is an AC: note it for `/specify-feature` instead.
+
+**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body: a schema or a snippet goes in the prose, and the item names it. Extend the existing `TECH-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement-feature`, `/sync-spec`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [TECH-5]: ...`) and add the new direction as a new item (§8.1).
+
+**What stays prose.** The rationale that ties the items together, the constraints they satisfy, diagrams, the testing strategy, what is out of scope. Prose explains the items; it does not carry decisions of its own.
 
 ## Propose new concepts, do not impose
 
@@ -111,7 +99,7 @@ If framing established something reusable, that is a concept, not a feature note
 - A coding rule → `coding_standard`.
 - A newly integrated third-party service → `external_system` under `tech/`.
 
-Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the diff before writing. Then link it from the feature (`architecture_decision: [slug]`, `external_system: [slug]`, §9.2). Distinguish a feature-specific behavior (a REQ, owned by `/specify-feature`) from a standing rule (a concept): if it applies elsewhere, promote it (§6.5).
+Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the diff before writing. Then link it from the feature (`architecture_decision: [slug]`, `external_system: [slug]`, §9.2). Distinguish three things (§6.5): a feature-specific behavior is a REQ or AC, owned by `/specify-feature`; a feature-specific implementation choice is a `TECH` item; a rule that applies elsewhere is a concept, linked from the feature. A `TECH` item MAY still say how this feature applies a concept, when that involves a choice of its own.
 
 ## Wrap up
 

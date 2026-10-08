@@ -2,7 +2,7 @@
 name: sync-spec
 description: |
   Reconciles LiveSpec files with what was actually built: checks resolved acceptance criteria, adds
-  resolution notes, updates ## Tech / ## UX notes, captures new behavior as REQs or ISS items, and
+  resolution notes, updates ## Tech / ## UX notes, captures new behavior as REQs or LIM items, and
   promotes standing rules discovered during development to concepts for review. Presents a summary
   before editing. Use when the user signals completion ("done", "ship it", "looks good"), wants to sync
   what was built, or update the spec. Not for active debugging or repos with no livespec.yaml.
@@ -22,8 +22,8 @@ Reconcile the LiveSpec files with the reality of what was built. There is no ser
 `Read` the feature (`features/**/{slug}.md`) and compare it against the implementation (the code, the `livespec:` markers, §9.4). Determine:
 
 - **Acceptance criteria**: which ACs are now satisfied and should be `[x]`; which were dropped and should be `[-]` with a reason (§8.1, §8.3). Never renumber or delete IDs.
-- **Resolution notes**: which `Q` or `ISS` items the implementation answered, to record with a `→ ` note (§8.1).
-- **`## Tech` / `## UX` notes**: implementation decisions worth capturing as durable target-state description (§7.3).
+- **Resolution notes**: which `Q` items the implementation answered and which `LIM` items it lifted, to record with a `→ ` note (§8.1).
+- **`UX` / `TECH` directions**: which open directions the implementation applied (`[x]`), which it abandoned (`[-]` with a `→ ` note naming the replacement), and which durable choices it made that no item records yet (new `UX-N` / `TECH-N`, §8.2). Supporting rationale goes in the `## UX` / `## Tech` prose.
 - **New behavior**: did the implementation add behavior the spec never described? That is a new REQ/AC (evolution) or a new feature (genuinely new capability), see the framework below.
 - **Discoveries**: standing rules, patterns, or constraints that emerged and belong as concepts (§6.5).
 
@@ -55,8 +55,8 @@ Only after confirmation:
 
 **Direct edits** (features are the work product):
 - `Edit` checkboxes `- [ ]` → `- [x]` / `- [-]` (§8.1). One `→ ` resolution note per closed item at most (§8.1).
-- `Edit` `## Tech` / `## UX` to add durable notes, declaratively (target state, not "what I did").
-- Append new REQs/ACs/ISS with the **next free integer** in their section; immutable IDs, gaps valid, never renumber (§8.3).
+- `Edit` `## Tech` / `## UX`: flip applied directions to `[x]`; record a changed direction as a new item, with the old one `[-]` and `→ Superseded by [TECH-N]: ...` (never rewrite a closed direction to say the opposite); add new directions declaratively (target state, not "what I did").
+- Append new REQs/ACs/LIM/UX/TECH items with the **next free integer** in their section; immutable IDs, gaps valid, never renumber (§8.3).
 - Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14). Keep the diff tight.
 
 **Proposed edits** (product decisions, reviewed via diff):
@@ -91,8 +91,8 @@ Before planning, classify each change. The deciding question: **is this the same
 The intent is unchanged; the approach evolved. Examples: a better technical approach for the same outcome, edge cases discovered during implementation, a UX refinement for the same goal, a bug that revealed a spec gap.
 
 - Functional clarifications → edit the REQ/AC body (bodies are mutable, §8.3) or add a new AC.
-- UX changes → `## UX` notes.
-- Technical changes → `## Tech` notes.
+- UX changes → `UX` items (a changed direction supersedes the old item, §8.1).
+- Technical changes → `TECH` items, same rule.
 - Newly discovered edge cases → new ACs under the relevant REQ.
 
 ### New functionality → a new feature
@@ -105,11 +105,12 @@ The product's functional coverage expanded: a capability that did not exist, a d
 
 | Change | Where | How |
 |---|---|---|
-| Implementation approach | `## Tech` notes | `Edit` the feature |
-| UI/UX decision | `## UX` notes | `Edit` the feature |
+| Implementation choice | `TECH` item in `## Tech` (+ prose for rationale) | `Edit` the feature |
+| UI/UX choice | `UX` item in `## UX` (+ prose for rationale) | `Edit` the feature |
+| Changed direction | old item `[-]` + `→ Superseded by [...]`, new item | `Edit` the feature |
 | Functional clarification | REQ/AC body | `Edit` the feature |
 | Resolved AC | `[x]` (+ optional `→` note) | `Edit` the feature |
-| Answered Q / resolved ISS | `[x]` + `→` resolution note | `Edit` the feature |
+| Answered Q / lifted LIM | `[x]` + `→` resolution note | `Edit` the feature |
 | Dropped criterion | `[-]` + reason | `Edit` the feature |
 | Missing edge case | new AC under its REQ | `Edit` the feature |
 | Reusable pattern / rule | concept under `tech/` or `product/` | propose, write on approval |

@@ -43,9 +43,10 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 | `duplicate-id` | error | The same ID twice in one section. IDs are file-scoped and immutable (§8.3); inbound references become ambiguous. Fix by extending the sequence, never by renumbering. |
 | `ac-orphan` | error | An AC with no parent REQ above it. An AC's parent is determined structurally by nesting (§8.2). |
 | `ac-nesting` | error | An AC nested more than 2 spaces deep. Sub-trees under an AC are invalid (§8.1); decompose into several REQs. |
+| `item-nesting` | error | A non-AC item (REQ, AS, Q, LIM, UX, TECH) indented under another item. Only ACs nest, one level under their REQ (§8.1). |
 | `ac-id-mismatch` | warning | `AC-3.1` sitting under `REQ-2`. The AC number should mirror its parent's index (§8.3). Renumbering breaks references, so weigh the fix. |
 | `malformed-item` | warning | A checkbox line in a spec section that does not parse as a spec item: missing type prefix, missing ID, or missing `:`. |
-| `unknown-item-type` | warning | Items using a type outside the five defined in §8.2, most often `UX-` and `TE-`. Reported once per file and per type, with a count. |
+| `unknown-item-type` | warning | Items using a type outside the seven defined in §8.2 (REQ, AC, AS, Q, LIM, UX, TECH), most often `TE-` (now `TECH`) or `ISS-` (now `LIM`) from projects that predate those types. Reported once per file and per type, with a count. |
 | `resolution-note` | error/warning | More than one `→ ` note on an item (error), or a note on an item still open (warning). See §8.1. |
 | `req-done-open-ac` | warning | A REQ `[x]` with ACs still `[ ]`. Permitted, and worth surfacing (§8.2). Cancelled `[-]` ACs do not count. |
 | `req-open-all-ac-done` | info | Every AC is `[x]` but the REQ is not. Usually just an unchecked box. |
@@ -74,7 +75,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 
 **Open items**
 
-`open-question` and `open-issue` list every `[ ]` Q and ISS. They are an inventory, not findings. Surface them when the user wants to know what is unresolved.
+`open-question` and `open-limitation` list every `[ ]` Q and LIM. They are an inventory, not findings. Surface them when the user wants to know what is unresolved.
 
 ## Interpret, do not dump
 
@@ -86,7 +87,7 @@ Lead with errors, group warnings by kind, and give counts instead of exhaustive 
 
 Three categories deserve caution before you propose a fix:
 
-- **`unknown-item-type`**: `UX-` and `TE-` items usually mean the project anticipated `UX_DIRECTION` and `TECH_DIRECTION`, which §15 #005 plans to formalize as block-level items. Report the interoperability cost honestly (a third-party tool reading §8.2 skips those items entirely) and leave the call to the user. Do not convert them to REQs on your own: that changes the meaning of the spec.
+- **`unknown-item-type`**: `TE-` items usually mean the project adopted tech directions before §8.2 defined them as `TECH`. Renaming `TE-N` to `TECH-N` keeps the numbers but breaks every inbound `[TE-N]` reference and `livespec:` marker, so propose it as one migration covering the feature file, its in-prose references, and the code markers, and let the user decide. Do not convert them to REQs on your own: that changes the meaning of the spec. `ISS-` items need a read before any rename: those that describe a gap the software still has become `LIM-N`, stated in the present tense; those that record a fixed bug or a task were work tracking (§8.2) and are candidates for removal, which the user decides after checking that no marker or reference points at them.
 
 - **`ac-id-mismatch`**: renumbering breaks inbound references, and IDs are immutable (§8.3). Often the honest fix is to leave the ID alone and live with the cosmetic mismatch.
 - **`orphan-concept`**: absence of links is not a defect. §9.5 is explicit that a missing reference must not be treated as one.

@@ -100,7 +100,7 @@ Deeper nesting (`AC-1.1.1`) is invalid; if a REQ wants sub-structure, split it i
 
 - `AS` items in `## Assumptions`: what the spec relies on, to be flagged if invalidated.
 - `Q` items in `## Questions`: unresolved questions (but prefer to resolve them now, see below).
-- `ISS` items in `## Issues`: known defects or limitations of this feature.
+- `LIM` items in `## Limitations`: known, accepted gaps between what the feature should do and what it does today, in the present tense. Never a task, never a bug scheduled for a fix (that goes in the issue tracker, §8.2).
 
 ### Resolve questions immediately
 

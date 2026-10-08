@@ -44,7 +44,12 @@ CHECKS = [
 
 
 def anchor_targets(project: Project, features):
-    """Spec items that can carry a marker: REQ and AC only (§9.4)."""
+    """Spec items whose marker coverage is reported: REQ and AC only.
+
+    UX and TECH directions MAY carry markers too (§9.4) and those markers are
+    resolved, but a direction with no marker is not a gap: many directions
+    (a layout, a wording choice) have no single code site to point at.
+    """
     for feature in features:
         for item in feature.items:
             if item.type in ("REQ", "AC"):
@@ -140,10 +145,11 @@ def main(argv=None) -> int:
                     feature=marker.slug, item=item_id,
                     message=f"code is anchored to {item_id}, marked [-] cancelled: {item.body[:80]}",
                 )
-            elif item.open and item.type in ("REQ", "AC") and "marker-on-open" in enabled:
-                # Only REQ/AC: a marker on an open ISS points at the code where the
-                # issue lives, and on an open Q at the code the question is about.
-                # Neither is a divergence.
+            elif item.open and item.type in ("REQ", "AC", "UX", "TECH") and "marker-on-open" in enabled:
+                # A marker on an open LIM points at the code where the limitation lives,
+                # and on an open Q at the code the question is about: neither is a
+                # divergence. An open direction means "decided, not yet applied",
+                # so code anchored to it disagrees with the spec, as for REQ/AC.
                 report.add(
                     check="marker-on-open", severity="warning", spec_ref="§8.1",
                     file=marker.file, line=marker.line,

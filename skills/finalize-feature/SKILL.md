@@ -58,7 +58,7 @@ Delegate to `/sync-spec` for this feature to reconcile the spec files with what 
 
 - Confirm the right ACs are `[x]` (and any dropped one is `[-]` with a reason).
 - Add or sharpen `## Tech` notes for decisions made during implementation.
-- Record answers to `Q`/`ISS` as resolution notes (`→ `, §8.1).
+- Record answered `Q` and lifted `LIM` as resolution notes (`→ `, §8.1).
 - Promote any standing rule discovered during the work to a concept for the user to review.
 
 If `/sync-spec` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).

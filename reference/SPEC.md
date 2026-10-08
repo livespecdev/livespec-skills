@@ -285,7 +285,7 @@ Concept↔concept links are unidirectional in storage but SHOULD be presented bi
 
 ### 6.5 Choosing: concept, feature, or spec item
 
-LiveSpec offers three places to record a given piece of product knowledge: as a **concept** in `product/`, `ux/`, or `tech/`; as a **feature** under `features/`; or as a **spec item** (REQ, AC, AS, Q, ISS) inside a feature. The choice is editorial, not mechanical: the format won't stop you from putting a cross-cutting rule inside a single feature, or from declaring a deliverable as a concept. But the wrong choice produces silent duplication, ownership confusion, and drift. This section gives you the editorial rule for *when* to use each.
+LiveSpec offers three places to record a given piece of product knowledge: as a **concept** in `product/`, `ux/`, or `tech/`; as a **feature** under `features/`; or as a **spec item** (REQ, AC, AS, Q, LIM, UX, TECH) inside a feature. The choice is editorial, not mechanical: the format won't stop you from putting a cross-cutting rule inside a single feature, or from declaring a deliverable as a concept. But the wrong choice produces silent duplication, ownership confusion, and drift. This section gives you the editorial rule for *when* to use each.
 
 **One question, three answers.** The same deciding question applies across all three frontiers:
 
@@ -351,6 +351,34 @@ Symptoms that point to **spec item**:
 
 When in doubt, prefer **spec item first, extract later**: a REQ is cheap to add and easy to promote to a sibling feature once scope justifies it. Premature feature splitting fragments the spec; consolidating later is harder than splitting later.
 
+#### Requirement vs. direction
+
+Inside a feature, a statement about the interface or the implementation could plausibly be written as an `AC` (*"the badge has a tooltip"*) or as a `UX` / `TECH` direction (*"the badge uses the design-system `Tooltip`, opened on hover and on keyboard focus"*). **A requirement states what the feature does; a direction states how this feature is built to do it.** Requirements and acceptance criteria are the acceptance contract of the feature. Directions record the design and implementation choices made for it, among several that would satisfy the same contract.
+
+The deciding question is **substitution**: could another implementation satisfy every REQ and AC of the feature while contradicting this statement? If yes, the statement is a direction. If no (contradicting it would make some observable behavior wrong), it is an `AC`, or a `REQ` when no existing requirement covers it.
+
+Symptoms that point to **`REQ` / `AC`**:
+
+- A user, an integrator, or a test can observe it from outside the system.
+- Breaking it is a defect, whatever the implementation.
+- It would survive a full rewrite of the feature on a different stack or design system.
+
+Symptoms that point to **`UX` / `TECH`**:
+
+- It names a choice: a component, a pattern, a layout, a library, a data shape, a module boundary, a storage location.
+- A reviewer could reasonably have chosen otherwise, and the item exists so that the choice is not re-litigated or silently undone.
+- It would change in a redesign or a refactor that leaves the feature's behavior intact.
+
+A direction that holds beyond this feature (it pre-existed it, or other features must follow it too) is a concept (`ux_pattern`, `design_principle`, `coding_standard`, `architecture_decision`, or an extension type), per *Concept vs. spec item* above. The feature links to the concept instead of restating it. A `UX` or `TECH` item MAY still record how this feature applies the concept, when that application involves a choice of its own.
+
+#### Limitation vs. tracker issue, constraint, or assumption
+
+A `LIM` records a gap between what the feature should do and what it does, accepted for now. Three neighbors are easy to confuse with it:
+
+- **A defect to fix** goes in the issue tracker. It becomes a `LIM` only if the team decides to live with it, or if a reader of the spec would otherwise rely on behavior the software does not have.
+- **A deliberate, standing limit** (*"a list holds at most 500 todos"*) is not a gap: it is the intended behavior, a `REQ` or a `constraint` concept.
+- **An unverified belief** the spec relies on is an `AS`. A `LIM` is known to be true of the software today.
+
 #### Illustrative examples
 
 | Statement                                                                  | Goes as                          | Why                                                                                       |
@@ -367,6 +395,11 @@ When in doubt, prefer **spec item first, extract later**: a REQ is cheap to add 
 | *"Daily transfer limit is €3,000."*                                        | `constraint` in `product/`       | Standing quantitative rule that multiple features must respect.                                            |
 | *"Payments go through Stripe."*                                            | `external_system` in `tech/`     | A third-party system the product integrates with, referenced by every feature that touches payment.        |
 | *"The board editor is a full-screen canvas at `/boards/[id]/edit`."*       | `screen` in `ux/`                | A durable surface many features modify; the screen file describes the place, the features describe what ships on it. |
+| *"Two collaborators marking the same todo done within seconds produce two completion events."* | `LIM` in the mark-done feature | A known gap the team lives with; readers of completion metrics need to know it. |
+| *"The CSV export crashes on an empty list."* (fix planned)                 | the issue tracker                | A defect scheduled for a fix is work, not a description of the software (§1).                              |
+| *"Search results show in a dropdown panel navigable with the arrow keys."* | `UX` in the search feature       | A choice among several valid result presentations; contradicting it leaves the search REQs satisfied.       |
+| *"Search uses PostgreSQL full-text search (`tsvector`) for v1."*           | `TECH` in the search feature     | An implementation choice specific to this feature; the latency REQ would hold with another engine.         |
+| *"A query that times out shows a fallback message after 2s."*              | `AC` in the search feature       | Observable behavior: an implementation that contradicts it is defective, whatever the stack.               |
 
 **Boundary rule (both directions).** If, while writing a feature, you state a rule that *would clearly apply elsewhere*, stop and write it as a concept first, then link from the feature. Conversely, if a "concept" you're writing has acceptance criteria, a deliverable scope, and would observably advance the product when implemented, you're writing a feature: move it to `features/`.
 
@@ -457,20 +490,20 @@ The body MAY contain free-form markdown content: prose, H2/H3 headings, lists, c
 | `## Requirements`         | `REQ` items (with nested `AC` items)                                         |
 | `## Assumptions`          | `AS` items                                                                   |
 | `## Questions`            | `Q` items                                                                    |
-| `## Issues`               | `ISS` items                                                                  |
-| `## UX`                   | Free-form UX notes (and future `UX_DIRECTION` items, §15 #005)               |
-| `## Tech`                 | Free-form technical notes (and future `TECH_DIRECTION` items, §15 #005)      |
+| `## Limitations`          | `LIM` items                                                                  |
+| `## UX`                   | `UX` items, and free-form UX notes (rationale, flow description, sketches)  |
+| `## Tech`                 | `TECH` items, and free-form technical notes (rationale, diagrams, snippets) |
 
-> **Ephemeral implementation context** (decisions in progress, handoff state, "I'm here, next step is X") belongs in git commits, PR descriptions, or external task trackers, not in the spec. This follows from the core principle (§1): LiveSpec describes the software, not the work on it. Durable architectural decisions go to `## Tech` or to an `architecture_decision` concept.
+> **Ephemeral implementation context** (decisions in progress, handoff state, "I'm here, next step is X") belongs in git commits, PR descriptions, or external task trackers, not in the spec. This follows from the core principle (§1): LiveSpec describes the software, not the work on it. Durable decisions specific to the feature go to `UX` or `TECH` items (§8.2); decisions that span features go to a concept such as `architecture_decision` (§6.5).
 
 **Behavior by mode** (see §12):
 
 - **Loose mode (default):** Writers SHOULD use canonical section names where applicable, but MAY use any H2 name. Spec items are identified by their inline syntax wherever they appear. Tools MUST preserve unrecognized sections on write (losslessness).
-- **Strict mode:** H2 section names MUST be drawn from the canonical set above. Each spec item type MUST appear only in its intended section (e.g. an `ISS` item inside `## Requirements` is a lint error). Section ordering MUST follow the canonical order: Requirements → Assumptions → Questions → Issues → UX → Tech.
+- **Strict mode:** H2 section names MUST be drawn from the canonical set above. Each spec item type MUST appear only in its intended section (e.g. a `LIM` item inside `## Requirements`, or a `TECH` item inside `## UX`, is a lint error). Section ordering MUST follow the canonical order: Requirements → Assumptions → Questions → Limitations → UX → Tech.
 
 **Empty sections:** H2 sections with no content SHOULD be omitted rather than left empty. A missing section is the canonical way to say "nothing here."
 
-**Section content:** Within any section (canonical or otherwise), free-form prose, H3 sub-headings, and inline spec items can intermix freely. H3 sub-headings are visual organizers and carry no semantic meaning for the parser. AC nesting (§8) is determined by markdown list indentation, not by section structure.
+**Section content:** Within any section (canonical or otherwise), free-form prose, H3 sub-headings, and inline spec items can intermix freely. In `## UX` and `## Tech`, the items carry the decisions and the prose carries their explanation: writers SHOULD state each durable decision as a `UX` or `TECH` item rather than leaving it in prose only, so that it can be referenced, anchored in code, and closed. H3 sub-headings are visual organizers and carry no semantic meaning for the parser. AC nesting (§8) is determined by markdown list indentation, not by section structure.
 
 ### 7.4 Opening paragraph conventions
 
@@ -507,7 +540,7 @@ When deciding whether to merge two features into one, ask the same questions in 
 
 ## 8. Spec Items
 
-Spec items are atomic, addressable units inside a feature: requirements, acceptance criteria, assumptions, questions, issues, and design directions.
+Spec items are atomic, addressable units inside a feature: requirements, acceptance criteria, assumptions, questions, known limitations, and design directions.
 
 ### 8.1 Inline syntax
 
@@ -524,9 +557,9 @@ Spec items appear as GitHub-flavored checkbox list items:
 
 | Field        | Format                                                       | Required |
 |--------------|--------------------------------------------------------------|----------|
-| Indent       | 0 spaces (REQ/AS/Q/ISS), 2 spaces (AC under its parent REQ)  | Yes      |
+| Indent       | 0 spaces (REQ/AS/Q/LIM/UX/TECH), 2 spaces (AC under its REQ) | Yes      |
 | Checkbox     | `- [ ]`, `- [x]`, or `- [-]` (see "Checkbox states" below)   | Yes      |
-| Type prefix  | `REQ`, `AC`, `AS`, `Q`, `ISS`                                | Yes      |
+| Type prefix  | `REQ`, `AC`, `AS`, `Q`, `LIM`, `UX`, `TECH`                  | Yes      |
 | ID           | See §8.3                                                     | Yes      |
 | Body         | After `:` (may span multiple lines, see below)               | Yes      |
 
@@ -534,11 +567,13 @@ Spec items appear as GitHub-flavored checkbox list items:
 
 | Token  | Generic meaning            | Per-type interpretation                                                    |
 |--------|----------------------------|----------------------------------------------------------------------------|
-| `[ ]`  | Open / pending             | REQ/AC: not yet done. AS: not yet validated. Q: unanswered. ISS: unresolved.  |
-| `[x]`  | Done / closed              | REQ/AC: implemented. AS: validated / confirmed. Q: answered. ISS: resolved.   |
+| `[ ]`  | Open / pending             | REQ/AC: not yet done. AS: not yet validated. Q: unanswered. LIM: still present. UX/TECH: decided, not yet applied in the code. |
+| `[x]`  | Done / closed              | REQ/AC: implemented. AS: validated / confirmed. Q: answered. LIM: lifted. UX/TECH: applied in the code. |
 | `[-]`  | Cancelled / won't do       | Explicitly decided not to pursue. Body SHOULD state the reason.             |
 
 The `[-]` state preserves the historical record of a dropped item without removing it (which would lose decision context) or falsely checking it. GitHub renders `[-]` with strikethrough.
+
+For `UX` and `TECH` items, `[-]` means the direction was abandoned or superseded. A direction that replaces another is a new item with a new ID; the abandoned item stays `[-]` and SHOULD carry a resolution note pointing at its replacement (e.g. `→ Superseded by [TECH-4]: ...`). Rewriting the body of a closed direction to say the opposite of what it said MUST NOT be used to record a change of direction.
 
 #### Multi-line bodies
 
@@ -559,8 +594,8 @@ When a spec item is closed (`[x]` or `[-]`), authors MAY record **why** or **how
 - [x] Q-1: Does the export need pagination beyond 100 results?
   → Yes, paginate by 50 with an opaque cursor. Decided 2026-03-12.
 
-- [x] ISS-2: [AC-2.1] currently fails on Safari 16.
-  → Fixed by `structuredClone` polyfill in 2c4a9f1.
+- [x] LIM-2: On Safari 16, [AC-2.1] does not hold: the export button stays disabled.
+  → Lifted by the `structuredClone` polyfill in 2c4a9f1.
 
 - [-] AC-3.2: Retry banner on network failure.
   → Dropped in favor of the generic toast (see [feature-error-handling#REQ-1]).
@@ -574,7 +609,7 @@ Rules:
 - The note MAY appear anywhere in the body (before or after other continuation lines), but writers SHOULD place it last for readability.
 - The `→ ` prefix is part of the syntax, not the note content: tools extracting the note MUST strip it.
 
-Resolution notes are particularly valuable on `Q` (the answer), `ISS` (how resolved or workaround), and `AS` (what was validated or invalidated). On `REQ`/`AC`, the code itself is usually the answer (via `livespec:` markers, §9.4): a resolution note here is optional commentary, not a substitute for anchoring.
+Resolution notes are particularly valuable on `Q` (the answer), `LIM` (how it was lifted, or the workaround), `AS` (what was validated or invalidated), and cancelled `UX` / `TECH` items (why the direction was abandoned, and what replaced it). On `REQ`/`AC`, the code itself is usually the answer (via `livespec:` markers, §9.4): a resolution note here is optional commentary, not a substitute for anchoring.
 
 A parser that does not recognize the `→ ` convention will read the line as ordinary body prose; the document remains valid. Resolution notes are therefore a **Level 1** feature: writing them is OPTIONAL, recognizing them is OPTIONAL, and ignoring them is conforming.
 
@@ -582,7 +617,7 @@ A parser that does not recognize the `→ ` convention will read the line as ord
 
 Bodies MAY contain **inline** markdown formatting: `**bold**`, `*italic*`, `` `code` ``, `[link](url)`, etc.
 
-Bodies MUST NOT contain **block-level** constructs (headings, fenced code blocks, tables, blockquotes). If a requirement needs that level of elaboration, the prose belongs in `## Tech` or `## UX` notes, with the REQ referencing it by name.
+Bodies MUST NOT contain **block-level** constructs (headings, fenced code blocks, tables, blockquotes). If a requirement needs that level of elaboration, the prose belongs in `## Tech` or `## UX` notes, with the REQ referencing it by name, or by ID when the elaboration is a `UX` or `TECH` item (`[TECH-2]`).
 
 #### Nesting depth
 
@@ -596,6 +631,8 @@ ACs MUST be nested exactly **one indentation level** (2 spaces) below their pare
 
 If a REQ would naturally produce sub-structure, decompose it into multiple REQs rather than introducing AC sub-trees. This keeps the parsing model simple and the document scannable.
 
+`AS`, `Q`, `LIM`, `UX`, and `TECH` items MUST NOT have nested child items. A direction that needs sub-points is several directions.
+
 #### Visual spacing
 
 Writers SHOULD insert a blank line between top-level spec items when a section contains more than three of them, to improve scannability. The blank line is semantically meaningless to LiveSpec parsers: both tight and loose markdown lists are valid.
@@ -606,14 +643,14 @@ Within a spec item body, references to other spec items use bracketed-ID syntax:
 
 | Reference target               | Syntax                          |
 |--------------------------------|---------------------------------|
-| Same-feature spec item         | `[REQ-3]`, `[AC-3.2]`, `[Q-1]`  |
-| Spec item in another feature   | `[feature-slug#REQ-3]`          |
+| Same-feature spec item         | `[REQ-3]`, `[AC-3.2]`, `[TECH-1]` |
+| Spec item in another feature   | `[feature-slug#REQ-3]`            |
 
 Example:
 
 ```markdown
 - [ ] Q-1: Does [REQ-3] need pagination when the result list exceeds 100 entries?
-- [ ] ISS-2: [AC-2.1] currently fails on Safari 16 (works on Chrome and Firefox).
+- [ ] LIM-2: On Safari 16, [AC-2.1] does not hold: the export button stays disabled (Chrome and Firefox are unaffected).
 ```
 
 Tools MAY render these as navigable links and use them to build a reverse-reference index ("where is REQ-3 referenced?").
@@ -626,17 +663,45 @@ Tools MAY render these as navigable links and use them to build a reverse-refere
 | `AC`  | Acceptance Criterion  | Nested under a REQ (2-space indent) | Specific testable condition for its parent REQ.      |
 | `AS`  | Assumption            | Top-level in `## Assumptions`       | Assumption the spec relies on; flag if invalidated.  |
 | `Q`   | Question              | Top-level in `## Questions`         | Unresolved question that blocks or shapes the spec.  |
-| `ISS` | Issue                 | Top-level in `## Issues`            | Known issue, defect, or limitation affecting this feature. |
+| `LIM` | Known limitation      | Top-level in `## Limitations`       | Known, accepted gap between what this feature should do and what it does today. |
+| `UX`  | UX direction          | Top-level in `## UX`                | Interface or interaction choice made for this feature (component, pattern, layout, state, wording). |
+| `TECH`| Tech direction        | Top-level in `## Tech`              | Implementation choice made for this feature (data shape, module boundary, library, storage, integration). |
 
 **AC linkage.** An AC's parent REQ is determined **structurally** by markdown list nesting: no explicit reference is needed. An AC that is not nested under a REQ is a lint error.
 
 **REQ done semantics.** A REQ marked `[x]` while one or more of its ACs are still `[ ]` is permitted but SHOULD trigger a lint warning. Teams may legitimately consider a REQ "done enough" when non-critical ACs remain open, but the discrepancy is worth surfacing. ACs in the `[-]` (cancelled) state do not contribute to this warning.
 
-> **Future:** `UX_DIRECTION` and `TECH_DIRECTION` will be formalized as block-level (not inline) spec items. See §15 #005.
+**Limitations.** A `LIM` item describes the software as it is today (§1): a defect the team lives with, a case the feature does not cover, a degraded mode. It states the gap and its observable effect in the present tense, so that a reader (or an agent) does not build on a behavior the software does not have. `[x]` means the limitation was lifted; `[-]` means it is no longer regarded as a limitation, for example because the behavior became intended and is now a `REQ` or a `constraint`. The resolution note says which.
+
+A `LIM` is not a work item. A defect scheduled for a fix belongs in the project's issue tracker, not in the spec; writers SHOULD record it as a `LIM` only when it is accepted for the foreseeable future, or when readers of the spec must know about it to work correctly. A `LIM` body MUST NOT be phrased as a task (*"Rename the column"*, *"Need to handle X"*): the task goes in the tracker, and the spec keeps the state (*"The `llm_model` column holds a single model ID, although an analysis uses several models"*).
+
+> Drafts before this one named this type `ISS` (Issue) and its section `## Issues`. The rename narrows the meaning: bug tracking is out of scope (§1). Tools SHOULD point authors at `LIM` when they meet `ISS` items.
+
+**Directions.** `UX` and `TECH` items record how the feature is built, as opposed to what it does (`REQ` / `AC`). The editorial test that separates them is in §6.5 (*Requirement vs. direction*). A direction is written declaratively, as the target state of the software (*"Badges use the design-system `Tooltip`"*), never as a task (*"Add a tooltip"*).
+
+Directions are not part of the acceptance contract: their checkbox state does not contribute to the REQ done-semantics warning above, and a REQ MAY be `[x]` while a related direction is still `[ ]`. A direction MAY reference the requirements it serves (`[REQ-2]`) and the concepts it applies (`[[ux_pattern:inline-validation]]`, §9.5).
+
+Example:
+
+```markdown
+## UX
+
+- [x] UX-1: Source flags render as neutral pills under the criterion name, with an info icon and no alert color.
+- [x] UX-2: Each pill opens the design-system `Tooltip` on hover and on keyboard focus, linked via `aria-describedby`.
+
+The pills stay informative rather than alarming: the score is unaffected, so nothing in their styling suggests a penalty.
+
+## Tech
+
+- [x] TECH-1: Flags are derived when criterion scores are mapped for the page, and passed as props to `CriteriaCard`, which holds no parsing logic.
+- [-] TECH-2: Flags are stored in a dedicated `source_flags` table.
+  → Superseded by [TECH-3]: the existing JSONB column already carries them, no migration needed.
+- [x] TECH-3: Flags live in the existing `criterion_scores.signals` JSONB column.
+```
 
 ### 8.3 Identifiers
 
-**REQ / AS / Q / ISS IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, scoped to its parent H2 section. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `ISS-1`.
+**REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, scoped to its parent H2 section. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
 
 **AC IDs** use the form `AC-{parent_req_index}.{ac_index}` reflecting structural nesting:
 
@@ -733,6 +798,8 @@ A single marker MAY point to several spec items **of the same feature** by listi
 This list form exists to avoid repeating the feature slug when one code site serves several items of the same feature. It is exactly equivalent to one single-item marker per ID. The feature slug appears once and scopes every ID in the list; an ID in the list MUST NOT carry its own `feature-slug#` prefix. To reference items across **different** features, a source file uses one marker per feature (a file MAY carry many markers).
 
 A source file MAY carry zero, one, or many markers. A marker pointing to a `REQ` implicitly covers its nested `AC`s unless more specific AC-level markers exist elsewhere; this applies per listed ID.
+
+A marker MAY point to a `UX` or `TECH` item (`// livespec: source-flags#TECH-3`): it anchors the code that embodies the direction, so that a tool can show where a design or implementation choice lives and notice when that code disappears.
 
 The payload grammar is `livespec:` followed by one or more spaces, then `{feature-slug}#{spec-item-id}`, optionally followed by one or more `,{spec-item-id}` with no internal whitespace anywhere in the payload. Tools MUST match case-sensitively. Tools MUST recognize the list form and resolve every listed ID. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
 
@@ -873,8 +940,8 @@ LiveSpec defines two modes of operation, declared by the `mode` field in `livesp
 
 The default mode, optimized for individual contributors, small teams, and projects in active discovery. Designed to feel frictionless to newcomers.
 
-- H2 section names MAY be anything; canonical names (Requirements, Assumptions, Questions, Issues, UX, Tech) are RECOMMENDED but not enforced.
-- Spec items are identified by their inline syntax wherever they appear. An `ISS` item inside `## Requirements` is permitted (lint warning at most).
+- H2 section names MAY be anything; canonical names (Requirements, Assumptions, Questions, Limitations, UX, Tech) are RECOMMENDED but not enforced.
+- Spec items are identified by their inline syntax wherever they appear. A `LIM` item inside `## Requirements` is permitted (lint warning at most).
 - User story format (§7.4) is SHOULD.
 - Section ordering is unconstrained.
 - Tools MUST preserve unrecognized H2 sections and their content on write (losslessness).
@@ -937,6 +1004,7 @@ Tools claim conformance at one of three levels:
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
 - MUST emit diagnostics for broken `livespec:` code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
 - SHOULD emit diagnostics for resolution-note misuses (§8.1): multiple `→ ` lines on one item, or a `→ ` line on an open (`[ ]`) item
+- MUST emit diagnostics for child items nested under an `AS`, `Q`, `LIM`, `UX`, or `TECH` item (§8.1)
 - SHOULD emit diagnostics for unknown relation names under `links.feature` (anything other than `requires`, `triggers`, `extends` in v1)
 - SHOULD emit diagnostics for broken or ambiguous in-prose `[[ ]]` references (§9.5): unresolved slug, or shorthand slug matching two or more entities
 
@@ -954,7 +1022,7 @@ These are known limitations or undecided design points. Each will be addressed i
 | 002 | Concept extension mechanism: how third parties register new types                             |
 | 003 | Spec-item ID strategy: opaque IDs vs positional vs current human IDs                          |
 | 004 | Bidirectional AC ↔ REQ linking: formal frontmatter or inline?                                 |
-| 005 | UX_DIRECTION and TECH_DIRECTION as first-class block spec items                                |
+| 005 | ~~UX_DIRECTION and TECH_DIRECTION as first-class block spec items~~ Resolved: inline `UX` and `TECH` spec items (§8.2), with the editorial test in §6.5 |
 | 006 | External assets: Figma, Loom, Miro URL support                                                |
 | 007 | i18n: multilingual specs, translatable section names                                          |
 | 008 | Deprecation lifecycle: `deprecated` status, archival conventions                              |
@@ -1035,11 +1103,14 @@ As a power user, I want to search across all my documents so that I can find con
 
 ## UX
 
-Search input uses inline autocomplete. Results show in a dropdown panel with keyboard navigation.
+- [ ] UX-1: The search input offers inline autocomplete as the user types.
+- [ ] UX-2: Results show in a dropdown panel under the input, navigable with the arrow keys and closed with Escape.
 
 ## Tech
 
-Use PostgreSQL full-text search (tsvector) for v1. Reconsider with Meilisearch if latency budget is exceeded.
+- [ ] TECH-1: Search uses PostgreSQL full-text search (`tsvector`) for v1.
+
+PostgreSQL keeps the stack to a single datastore. Meilisearch is the fallback if the latency budget of [REQ-2] is exceeded.
 ```
 
 ---
