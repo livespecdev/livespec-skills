@@ -20,7 +20,7 @@ The format defines the marker syntax and nothing more. Coverage rules, drift det
 
 ## Run the script
 
-The diagnostic is deterministic, so a script does it, not a reading pass. It lives at `scripts/check_drift.py` relative to the plugin root; this file is `skills/check-drift/SKILL.md`, so the script sits two levels up in `../../scripts/`. Resolve that to an absolute path from the location of this SKILL.md before running (`${CLAUDE_PLUGIN_ROOT}` does not expand in skill prose). If the path is not obvious, `Glob` for `**/livespec-authoring/scripts/check_drift.py`.
+The diagnostic is deterministic, so a script does it, not a reading pass. It lives at `scripts/check_drift.py` relative to the plugin root; this file is `skills/check-drift/SKILL.md`, so the script sits two levels up in `../../scripts/`. Resolve that to an absolute path from the location of this SKILL.md before running (`${CLAUDE_PLUGIN_ROOT}` does not expand in skill prose). If the path is not obvious, `Glob` for `**/scripts/check_drift.py`.
 
 ```bash
 python3 <plugin-root>/scripts/check_drift.py [PROJECT_ROOT] [--feature SLUG] [--code-root DIR] [--json]

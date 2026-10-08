@@ -1,4 +1,4 @@
-# livespec-authoring
+# livespec-skills
 
 Companion tooling for **[LiveSpec](https://livespec.dev)**, the open file format for product specifications that stay current with the code they describe.
 
@@ -20,8 +20,8 @@ Two ideas drive the design:
 ## Install
 
 ```
-/plugin marketplace add livespecdev/livespec-authoring
-/plugin install livespec-authoring@livespec
+/plugin marketplace add livespecdev/livespec-skills
+/plugin install livespec@livespec
 ```
 
 The marketplace is named `livespec`, hence the `@livespec` suffix. To test a local checkout before it is published, or to develop against it, see [`INSTALL.md`](INSTALL.md).
@@ -32,7 +32,7 @@ Refresh the marketplace before updating the plugin, otherwise the update compare
 
 ```
 /plugin marketplace update livespec
-/plugin update livespec-authoring
+/plugin update livespec
 ```
 
 Then restart Claude Code: an update is staged, not applied to the running session.
@@ -67,13 +67,13 @@ Both exit 0 even when they report findings: they are diagnostics, not quality ga
 
 Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a `livespec.yaml`, the skills already fire on their own: ask "how does the export feature work?" and `/livespec-context` orients itself against the spec; say "implement the export feature" and `/implement-feature` takes over. You rarely need to type the slash command.
 
-That routing is model-driven and best-effort, not a hard rule keyed on `livespec.yaml`. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-authoring):
+That routing is model-driven and best-effort, not a hard rule keyed on `livespec.yaml`. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-skills):
 
 ```markdown
 ## Specs
 
 This repository is a LiveSpec project (see `livespec.yaml`). Use the
-`livespec-authoring` skills to read and maintain the spec:
+`livespec` plugin skills to read and maintain the spec:
 
 - At session start, or before working on any feature, use `livespec-context`
   to orient against the spec.

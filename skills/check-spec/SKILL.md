@@ -19,7 +19,7 @@ Do the specs hold together? This skill reads the LiveSpec files and only those: 
 
 ## Run the script
 
-The diagnostic is deterministic, so a script does it, not a reading pass. It lives at `scripts/check_spec.py` relative to the plugin root; this file is `skills/check-spec/SKILL.md`, so the script sits two levels up in `../../scripts/`. Resolve that to an absolute path from the location of this SKILL.md before running (`${CLAUDE_PLUGIN_ROOT}` does not expand in skill prose). If the path is not obvious, `Glob` for `**/livespec-authoring/scripts/check_spec.py`.
+The diagnostic is deterministic, so a script does it, not a reading pass. It lives at `scripts/check_spec.py` relative to the plugin root; this file is `skills/check-spec/SKILL.md`, so the script sits two levels up in `../../scripts/`. Resolve that to an absolute path from the location of this SKILL.md before running (`${CLAUDE_PLUGIN_ROOT}` does not expand in skill prose). If the path is not obvious, `Glob` for `**/scripts/check_spec.py`.
 
 ```bash
 python3 <plugin-root>/scripts/check_spec.py [PROJECT_ROOT] [--feature SLUG] [--only CHECKS] [--skip CHECKS] [--json]

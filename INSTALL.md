@@ -1,6 +1,6 @@
-# Installing and testing livespec-authoring
+# Installing and testing the LiveSpec plugin
 
-`livespec-authoring` is a Claude Code plugin: a set of skills and subagents that author and maintain LiveSpec specs on the local markdown files in your repository. This guide covers installing it for real use, testing a local checkout before it is published, and iterating on it during development.
+`livespec-skills` is the repository of `livespec`, a Claude Code plugin: a set of skills and subagents that author and maintain LiveSpec specs on the local markdown files in your repository. This guide covers installing it for real use, testing a local checkout before it is published, and iterating on it during development.
 
 All commands below are typed at the Claude Code prompt unless prefixed with a shell `$`.
 
@@ -17,17 +17,17 @@ You do **not** need to clone the LiveSpec format repository or visit livespec.de
 Once the repository is published:
 
 ```
-/plugin marketplace add livespecdev/livespec-authoring
-/plugin install livespec-authoring@livespec
+/plugin marketplace add livespecdev/livespec-skills
+/plugin install livespec@livespec
 ```
 
 - The first command registers this repo as a plugin marketplace. The marketplace is named `livespec` (from `.claude-plugin/marketplace.json`).
-- The second installs the `livespec-authoring` plugin from that marketplace. The `@livespec` suffix names the marketplace to install from.
+- The second installs the `livespec` plugin from that marketplace. The `@livespec` suffix names the marketplace to install from.
 
 To pin a specific tag or branch:
 
 ```
-/plugin marketplace add livespecdev/livespec-authoring#v0.1.0
+/plugin marketplace add livespecdev/livespec-skills#v0.1.0
 ```
 
 ## Option B: test a local checkout (before publishing)
@@ -35,18 +35,18 @@ To pin a specific tag or branch:
 If you have this repository checked out locally and want to test it without pushing, add the local directory as a marketplace:
 
 ```
-/plugin marketplace add /path/to/livespec-authoring
-/plugin install livespec-authoring@livespec
+/plugin marketplace add /path/to/livespec-skills
+/plugin install livespec@livespec
 ```
 
-The path points at the repository root (the directory containing `.claude-plugin/`), not at the `.claude-plugin/` folder itself. A relative path such as `./livespec-authoring` also works.
+The path points at the repository root (the directory containing `.claude-plugin/`), not at the `.claude-plugin/` folder itself. A relative path such as `./livespec-skills` also works.
 
 ### Faster dev loop: `--plugin-dir`
 
 For active development, launch Claude Code with the plugin loaded directly from disk, with no marketplace and no caching:
 
 ```
-$ claude --plugin-dir /path/to/livespec-authoring
+$ claude --plugin-dir /path/to/livespec-skills
 ```
 
 This loads the plugin in-place, so edits to skills and agents are picked up without a cache copy. This is the recommended way to iterate on the skill prose.
@@ -57,7 +57,7 @@ This loads the plugin in-place, so edits to skills and agents are picked up with
 /plugin list
 ```
 
-You should see `livespec-authoring` enabled. Its skills become available as slash commands:
+You should see `livespec` enabled. Its skills become available as slash commands:
 
 ```
 /livespec-context
@@ -72,7 +72,7 @@ You should see `livespec-authoring` enabled. Its skills become available as slas
 
 The subagents (`specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`) become available to the Agent tool. Skills and agents are discovered by convention from the plugin's `skills/` and `agents/` directories; there is no registration step.
 
-If the plugin namespaces its commands, they may appear as `/livespec-authoring:livespec-context` and so on. `/plugin details livespec-authoring@livespec` shows exactly what was registered.
+If the plugin namespaces its commands, they may appear as `/livespec:livespec-context` and so on. `/plugin details livespec@livespec` shows exactly what was registered.
 
 ## Smoke test
 
@@ -81,7 +81,7 @@ The quickest end-to-end check uses the bundled fixture.
 1. Point Claude Code at the sample project (open that folder, or copy it somewhere and `cd` in):
 
    ```
-   $ cd /path/to/livespec-authoring/examples/sample-project
+   $ cd /path/to/livespec-skills/examples/sample-project
    ```
 
 2. Run orientation:
@@ -119,7 +119,7 @@ If you installed from a marketplace (Option A or B), updates are controlled by t
 ## Uninstall
 
 ```
-/plugin uninstall livespec-authoring@livespec
+/plugin uninstall livespec@livespec
 /plugin marketplace remove livespec
 ```
 

@@ -2,7 +2,7 @@
 
 ## The project
 
-**livespec-authoring** is the companion tooling repository for **LiveSpec**, the open file format for product specifications (format spec lives in the separate `livespec` repository, canonical document `SPEC.md`, home `https://livespec.dev`).
+**livespec-skills** is the companion tooling repository (it ships the Claude Code plugin `livespec`) for **LiveSpec**, the open file format for product specifications (format spec lives in the separate `livespec` repository, canonical document `SPEC.md`, home `https://livespec.dev`).
 
 This repo hosts **Claude Code extensions** (skills, subagents, and a packaged plugin) that let humans and agents author and maintain LiveSpec specs **directly on the local files in the user's git repository**. No backend, no API, no MCP server, no proprietary application.
 
@@ -42,7 +42,7 @@ When unsure whether something is a concept, a feature, or a spec item, apply the
 Packaged as a single Claude Code plugin at the repo root (installable via `claude marketplace add`), following the standard plugin layout:
 
 ```
-livespec-authoring/
+livespec-skills/
 ├── CLAUDE.md                  # this file (working instructions for the repo)
 ├── README.md                  # public-facing intro (TBD)
 ├── LICENSE                    # permissive (Apache-2.0 planned)
@@ -133,13 +133,13 @@ Release checklist:
 1. Bump `version` in `.claude-plugin/plugin.json`. Semver on `0.x`: new skill, new script, or changed skill behavior is a minor; wording and bug fixes are a patch. `marketplace.json` currently declares no version for the entry, so there is nothing to keep in sync there. If one is ever added, the two MUST agree, and `claude plugin tag` fails the release when they do not.
 2. `claude plugin validate .`
 3. Commit the bump, then push `main`.
-4. `claude plugin tag --push` to cut the `livespec-authoring--v{version}` git tag.
+4. `claude plugin tag --push` to cut the `livespec--v{version}` git tag.
 
 On the consuming machine, refreshing the marketplace first is what picks up new commits; updating the plugin alone can compare against a stale clone:
 
 ```bash
 claude plugin marketplace update livespec
-claude plugin update livespec-authoring
+claude plugin update livespec
 ```
 
 Then restart Claude Code: the update is staged, not applied live. Verify with `claude plugin list` (or the recorded `gitCommitSha` in `installed_plugins.json`) rather than assuming.
