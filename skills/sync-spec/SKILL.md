@@ -1,19 +1,19 @@
 ---
 name: sync-spec
 description: |
-  Reconciles LiveSpec files with what was actually built: checks resolved acceptance criteria, adds
+  Reconciles spec files with what was actually built: checks resolved acceptance criteria, adds
   resolution notes, updates ## Tech / ## UX notes, captures new behavior as REQs or LIM items, and
   promotes standing rules discovered during development to concepts for review. Presents a summary
   before editing. Use when the user signals completion ("done", "ship it", "looks good"), wants to sync
-  what was built, or update the spec. Not for active debugging or repos with no livespec.yaml.
+  what was built, or update the spec. Not for active debugging or repos with no spec manifest.
 argument-hint: <feature-slug>
 ---
 
 # Sync Spec
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Reconcile the LiveSpec files with the reality of what was built. There is no server: this is `Edit` on local `features/` and concept files, surfaced as a git diff the user reviews. Work in this order: **summarize → confirm → edit → report → discover**.
+Reconcile the spec files with the reality of what was built. There is no server: this is `Edit` on local `features/` and concept files, surfaced as a git diff the user reviews. Work in this order: **summarize → confirm → edit → report → discover**.
 
 **Never edit silently.** Present the planned changes and get confirmation first, so the developer reviews without leaving the CLI.
 

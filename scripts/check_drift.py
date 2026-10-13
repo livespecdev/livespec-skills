@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""check-drift: coherence between LiveSpec intent and codebase reality.
+"""check-drift: coherence between spec intent and codebase reality.
 
 Cross-references the checkbox state of spec items (§8.1) with the `implements:` / `see-spec:`
 markers found in source code (§9.4). Answers: does the code say the same thing
@@ -65,7 +65,7 @@ def anchor_targets(project: Project, features):
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="Check LiveSpec intent against codebase reality.")
+    parser = argparse.ArgumentParser(description="Check spec intent against codebase reality.")
     parser.add_argument("project", nargs="?", help="project root (defaults to discovery from CWD)")
     parser.add_argument("--code-root", help="directory to scan for code markers (defaults to the git repo root)")
     parser.add_argument("--feature", help="restrict the report to one feature slug")

@@ -20,7 +20,7 @@ It is the *forward authoring* toolchain for LiveSpec: scope, specify, frame, imp
 
 ## Locating the project
 
-A LiveSpec project is the directory containing a `livespec.yaml` (`SPEC.md` §3). Skills MUST locate the project root by searching for `livespec.yaml`, honoring the common patterns from §3.1 (`./`, `docs/livespec/`, `.livespec/`, `specs/`). A repo MAY contain several projects (monorepo); each `livespec.yaml` is an independent root with its own slug namespace. Never assume a fixed path.
+A LiveSpec project is the directory containing a manifest, `product-spec.yaml` or `livespec.yaml` (`SPEC.md` §3, §4). The names are equivalent. Skills MUST locate the project root by searching for either name, honoring the common patterns from §3.1 (`./`, `docs/spec/`, `.spec/`, `specs/`, and the older `docs/livespec/`, `.livespec/`). A repo MAY contain several projects (monorepo); each `livespec.yaml` is an independent root with its own slug namespace. Never assume a fixed path.
 
 ## The format is the contract
 
@@ -33,7 +33,7 @@ The skills write files; `SPEC.md` defines what valid files look like. Non-negoti
 - **Links**: frontmatter `links:` keyed by singular type slug (§9.2). In-prose `[[type:slug]]` are reading aids, not a substitute (§9.5).
 - **Spec ↔ code**: the `implements: {feature-slug}#{spec-item-id}` comment marker, with `see-spec:` for items the code depends on without realizing (§9.4), is how "live" is mechanical. Readers also accept the legacy `livespec:` verb; skills never write it. `implement-*` and `sync-*` skills place and reconcile these markers.
 - **Losslessness**: when editing an existing file, preserve unknown frontmatter keys (`x-*`), unrecognized H2 sections, and existing IDs on write (Level 2, §14). Never emit an empty frontmatter block (§5).
-- **Modes**: read `mode` from `livespec.yaml`. In `loose` (default), canonical section names are RECOMMENDED; in `strict`, section names/order/placement are enforced (§12). Skills SHOULD warn, not silently rewrite, on strict violations.
+- **Modes**: read `mode` from the manifest. In `loose` (default), canonical section names are RECOMMENDED; in `strict`, section names/order/placement are enforced (§12). Skills SHOULD warn, not silently rewrite, on strict violations.
 
 When unsure whether something is a concept, a feature, or a spec item, apply the decision framework in `SPEC.md` §6.5.
 
@@ -73,7 +73,7 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 
 | Skill | Purpose |
 |---|---|
-| `livespec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
+| `spec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
 | `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
 | `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, LIM. Writes the `.md` directly per §7–§8. |
 | `frame-ux` | Frame UX into `UX` items + supporting prose under `## UX`. Reads `ux/` concepts. |
@@ -113,6 +113,7 @@ The `check-*` skills are backed by scripts rather than a reading pass, because t
 ## Style preferences
 
 - Skill/agent prose: direct and operational. Avoid AI tells: **no em dashes**, avoid the "it's X, not Y" filler pattern (consistent with the LiveSpec repo's house style).
+- **Keep the format's name out of skill and agent prose**, descriptions included: say "the spec", "the spec files", "the format". A team MUST be able to adopt these skills without the brand showing up in what the agent tells them. The name stays only where it is a technical identifier (`livespec.yaml`, the legacy `livespec:` verb, the `livespec` plugin namespace, the `reverse-livespec` tool).
 - When a skill writes spec content, follow the LiveSpec style: markdown tables for contracts, concrete complete examples over abstract ones.
 - Cite `SPEC.md §N` in skill instructions wherever a rule comes from the format, so skills stay traceable to the spec as it evolves.
 

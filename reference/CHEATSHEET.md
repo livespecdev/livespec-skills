@@ -8,7 +8,7 @@ Condensed reference for humans and agents. The normative source is `SPEC.md`.
 
 ```
 my-project/
-├── livespec.yaml          # Manifest (required)
+├── product-spec.yaml      # Manifest (required; or livespec.yaml)
 ├── product/{type}/{slug}.md
 ├── ux/{type}/{slug}.md
 ├── tech/{type}/{slug}.md
@@ -18,6 +18,8 @@ my-project/
 The four top-level folders are **fixed and exhaustive**. Extensions go through sub-types, never new top-level folders.
 
 ## Manifest
+
+One per project root, named `product-spec.yaml` or `livespec.yaml` (equivalent, never both).
 
 ```yaml
 format_version: "1.0"

@@ -1,7 +1,7 @@
 ---
 name: implement-feature
 description: |
-  Implements a LiveSpec feature by working through its acceptance criteria, writing code, placing
+  Implements a spec feature by working through its acceptance criteria, writing code, placing
   code markers (implements: / see-spec:) that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
   tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
   this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
@@ -11,9 +11,9 @@ argument-hint: <feature-slug>
 
 # Implement Feature
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `implements:` / `see-spec:` markers (`SPEC.md` §9.4). LiveSpec has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
+Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `implements:` / `see-spec:` markers (`SPEC.md` §9.4). The format has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
 
 **Do not start coding until framing is complete.**
 
@@ -26,7 +26,7 @@ If the slug matches nothing, say so and run Picker mode.
 
 ## Picker mode
 
-1. Locate the project root (nearest `livespec.yaml`, §3.1).
+1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1).
 2. `Glob features/**/*.md` and read each feature's spec-item state.
 3. Present, via `AskUserQuestion`, the features that are framed (have `## UX` where user-facing, and `## Tech`) and still have open (`- [ ]`) ACs, with their progress (e.g. "log-completion (3/8 ACs done)").
 4. If nothing is ready, say so and point at `/scope-features` or `/specify-feature`.

@@ -1,7 +1,7 @@
 ---
 name: scope-features
 description: |
-  Decomposes natural-language intent into a plan of LiveSpec features to write or update (and any
+  Decomposes natural-language intent into a plan of spec features to write or update (and any
   concepts worth extracting), iterates with the user, then writes the feature files. Use when the user
   describes what to build, says "scope this", "plan this work", or wants to break an idea into features.
   Not for specifying a single known feature (/specify-feature), implementation (/implement-feature), or
@@ -11,15 +11,15 @@ argument-hint: <natural-language-description>
 
 # Scope Features
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Decompose intent into LiveSpec features and write them as files under `features/`. There is no batch or delivery layer: LiveSpec describes the software, not the work on it (`SPEC.md` §1). Ordering a body of work is a git-branch and issue-tracker concern, out of scope here.
+Decompose intent into spec features and write them as files under `features/`. There is no batch or delivery layer: the format describes the software, not the work on it (`SPEC.md` §1). Ordering a body of work is a git-branch and issue-tracker concern, out of scope here.
 
 **Write nothing until the user approves the decomposition plan.**
 
 ## Phase 1: Research
 
-1. Locate the project root (nearest `livespec.yaml`, §3.1) and read its `mode` (§12).
+1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12).
 2. Parse `$ARGUMENTS` for intent. If empty, ask the user what they want to build.
 3. Find existing coverage so you propose `[UPDATE]` instead of duplicating:
    - `Grep` the project for key terms from the intent (feature bodies, spec-item text, concept summaries).

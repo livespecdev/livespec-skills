@@ -15,7 +15,7 @@
 1. [Philosophy](#1-philosophy)
 2. [Conventions & Conformance Language](#2-conventions--conformance-language)
 3. [Repository Layout](#3-repository-layout)
-4. [The Project Manifest](#4-the-project-manifest-livespecyaml)
+4. [The Project Manifest](#4-the-project-manifest)
 5. [Entities](#5-entities)
 6. [Concepts](#6-concepts)
 7. [Features](#7-features)
@@ -85,11 +85,11 @@ Tools claiming LiveSpec conformance MUST satisfy all **MUST** requirements at th
 
 ## 3. Repository Layout
 
-A LiveSpec project is a directory tree rooted at a folder containing a `livespec.yaml` manifest. The canonical layout:
+A LiveSpec project is a directory tree rooted at a folder containing a project manifest (§4). The canonical layout:
 
 ```
 my-project/
-├── livespec.yaml              # Project manifest (required)
+├── livespec.yaml              # Project manifest (required; or product-spec.yaml, §4)
 ├── product/                   # Product context: why, who, what
 │   └── {type}/{slug}.md
 ├── ux/                        # User experience context
@@ -103,29 +103,31 @@ my-project/
 
 **Rules:**
 
-- The directory containing `livespec.yaml` is the **project root**.
+- The directory containing the manifest is the **project root**.
 - All paths in this spec are relative to the project root unless stated otherwise.
 - The four semantically-meaningful top-level directories are **exhaustive and fixed**: `product/`, `ux/`, `tech/`, `features/`. LiveSpec defines **no mechanism** for adding new top-level directories with LiveSpec semantics. Concerns that span audiences (e.g. developer experience), or that look like sub-domains (e.g. ops, security, compliance, data, business), MUST be modeled as extension types **within the existing four**, never as new top-level folders. This constraint is deliberate: it preserves cross-tool interoperability and prevents the format from fragmenting.
 - A project MAY contain additional top-level files and directories (e.g. `README.md`, `.git/`, `compiled/`, `node_modules/`). These have no semantic meaning to LiveSpec; conformant tools MUST ignore them unless explicitly opted in.
 
 ### 3.1 Project location patterns
 
-A LiveSpec project can live anywhere, at the root of a repository, or nested inside a wider codebase. The presence of `livespec.yaml` is what defines the project root; everything else is convention. Common patterns:
+A LiveSpec project can live anywhere, at the root of a repository, or nested inside a wider codebase. The presence of a manifest (§4) is what defines the project root; everything else is convention. Common patterns, shown with the neutral manifest name (each works the same with `livespec.yaml`):
 
-| Pattern                          | Use case                                                              |
-|----------------------------------|-----------------------------------------------------------------------|
-| `./livespec.yaml`                | Repository dedicated to a product spec (e.g. `acme/product-spec`).    |
-| `docs/livespec/livespec.yaml`    | Spec colocated with code inside an application repository.            |
-| `.livespec/livespec.yaml`        | Spec kept as "infra" in a hidden top-level folder (`.github/` style). |
-| `specs/livespec.yaml`            | Alternative when a `specs/` folder already exists by convention.      |
+| Pattern                       | Use case                                                              |
+|-------------------------------|-----------------------------------------------------------------------|
+| `./product-spec.yaml`         | Repository dedicated to a product spec (e.g. `acme/product-spec`).    |
+| `docs/spec/product-spec.yaml` | Spec colocated with code inside an application repository.            |
+| `.spec/product-spec.yaml`     | Spec kept as "infra" in a hidden top-level folder (`.github/` style). |
+| `specs/product-spec.yaml`     | Alternative when a `specs/` folder already exists by convention.      |
 
-A single repository MAY contain multiple LiveSpec projects (e.g. one per app in a monorepo), each with its own `livespec.yaml` defining its own root. They are treated as independent projects with independent slug namespaces.
+Tools that skip hidden directories when searching a repository for projects SHOULD still search `.spec/` and `.livespec/`.
+
+A single repository MAY contain multiple LiveSpec projects (e.g. one per app in a monorepo), each with its own manifest defining its own root. They are treated as independent projects with independent slug namespaces.
 
 ---
 
-## 4. The Project Manifest (`livespec.yaml`)
+## 4. The Project Manifest
 
-Every LiveSpec project MUST contain a `livespec.yaml` at its root:
+Every LiveSpec project MUST contain exactly one manifest at its root, named either `livespec.yaml` or `product-spec.yaml`:
 
 ```yaml
 format_version: "1.0"
@@ -143,12 +145,14 @@ mode: strict
 
 | Field            | Type   | Required | Description                                              |
 |------------------|--------|----------|----------------------------------------------------------|
-| `format_version` | string | Yes      | LiveSpec spec version this project conforms to (semver). |
+| `format_version` | string | Yes      | Version of this format the project conforms to (semver). |
 | `name`           | string | Yes      | Human-readable project name.                             |
 | `description`    | string | No       | Short project description.                               |
 | `mode`           | enum   | No       | `loose` (default) or `strict`. See §12.                  |
 
 Additional fields MAY be added by tools as `x-{tool}-{key}` (e.g. `x-acme-project-id`). Conformant tools MUST preserve unknown `x-*` fields on write.
+
+**Manifest file name.** The two names are equivalent: tools MUST accept both and treat their content identically. Discovery relies on the file name alone; tools MUST NOT inspect a file's content to decide whether it is a manifest. `product-spec.yaml` is the neutral name, for teams that adopt the format without carrying its name into their repository; `livespec.yaml` remains valid. A directory MUST NOT hold both. Writers creating a new project MAY use either name and MUST NOT rename an existing manifest unprompted.
 
 > **Future:** Mechanisms for shared configuration (presets, manifest inheritance) are under consideration for a future minor version. See §15.
 
@@ -948,7 +952,7 @@ assets:
 
 ## 12. Modes
 
-LiveSpec defines two modes of operation, declared by the `mode` field in `livespec.yaml` (see §4). The mode tightens (or relaxes) a set of conformance rules applied by linters and writers without changing the underlying grammar.
+LiveSpec defines two modes of operation, declared by the `mode` field in the manifest (see §4). The mode tightens (or relaxes) a set of conformance rules applied by linters and writers without changing the underlying grammar.
 
 ### 12.1 `loose` (default)
 
@@ -991,7 +995,7 @@ LiveSpec follows semantic versioning at the format level:
 - **Minor** (`1.1.0`): additive: new optional fields, new entity types, new spec item types.
 - **Patch** (`1.0.1`): clarifications, typo fixes, no semantic change.
 
-The `format_version` field in `livespec.yaml` declares the version a project targets. Tools MUST refuse to write files in a version they don't support and SHOULD warn (not refuse) when reading a newer minor version.
+The `format_version` field in the manifest declares the version a project targets. Tools MUST refuse to write files in a version they don't support and SHOULD warn (not refuse) when reading a newer minor version.
 
 ---
 
@@ -1000,6 +1004,7 @@ The `format_version` field in `livespec.yaml` declares the version a project tar
 Tools claim conformance at one of three levels:
 
 ### Level 1: Reader
+- MUST recognize both manifest names, `livespec.yaml` and `product-spec.yaml` (§4)
 - MUST parse all required frontmatter fields without error
 - MUST preserve unknown fields on read
 - MAY ignore unknown spec item types
@@ -1017,6 +1022,7 @@ Tools claim conformance at one of three levels:
 ### Level 3: Linter
 - All Level 2 requirements
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
+- MUST emit a diagnostic for a project root holding both `livespec.yaml` and `product-spec.yaml` (§4)
 - MUST emit diagnostics for broken code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
 - SHOULD emit diagnostics for markers using the legacy `livespec:` verb (§9.4)
 - SHOULD emit diagnostics for resolution-note misuses (§8.1): multiple `→ ` lines on one item, or a `→ ` line on an open (`[ ]`) item
@@ -1049,7 +1055,7 @@ These are known limitations or undecided design points. Each will be addressed i
 | 013 | Presets and manifest inheritance (`presets`, `extends`): packaging shared types and config    |
 | 014 | Spec ↔ code verification semantics: standardizing coverage rules, drift detection, and agent-driven re-validation on top of the §9.4 marker syntax |
 | 015 | Feature status: structured representation of spec maturity vs implementation state, if any     |
-| 016 | Spec-item tagging mechanism: should LiveSpec introduce a typed tagging system for spec items (multi-axis: domain, concern, test-class, priority…), with controlled vocabularies declared in `livespec.yaml`? v1 deliberately ships without any tagging syntax to avoid locking in a single-slot design |
+| 016 | Spec-item tagging mechanism: should LiveSpec introduce a typed tagging system for spec items (multi-axis: domain, concern, test-class, priority…), with controlled vocabularies declared in the manifest? v1 deliberately ships without any tagging syntax to avoid locking in a single-slot design |
 | 017 | Compiled artifacts: should LiveSpec standardize how tools generate aggregated views (per-type aggregations, AI-consumption bundles), or leave this entirely to tools? |
 | 018 | Evolution-oriented feature relations: `requires`, `triggers`, `extends` are now in v1 (§7.2). Should `replaces` / `supersedes` (which describe evolution *over time*) be added in a future minor version, or are they project-management concerns excluded by §1? |
 | 019 | Spec item body change tracking: should LiveSpec define a substantive-vs-editorial diff convention for spec item bodies, beyond what `git` provides? |

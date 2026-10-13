@@ -1,4 +1,4 @@
-"""Shared LiveSpec parsing helpers for the check-* scripts.
+"""Shared spec parsing helpers for the check-* scripts.
 
 Pure stdlib, no dependencies: the plugin cannot install anything in the user's
 environment. Parses the subset of LiveSpec that the checks need, tolerantly:
@@ -29,7 +29,14 @@ IGNORED_DIRS = {
     "Pods", "DerivedData", ".terraform",
 }
 
-# Binary-ish extensions skipped when grepping for livespec: markers.
+# Accepted manifest file names (§4), equivalent; `product-spec.yaml` is the
+# neutral one. Discovery is filename-only, never content sniffing.
+MANIFEST_NAMES = ("livespec.yaml", "product-spec.yaml")
+
+# Hidden directories still searched for projects (§3.1).
+HIDDEN_PROJECT_DIRS = {".spec", ".livespec"}
+
+# Binary-ish extensions skipped when grepping for code markers.
 BINARY_EXT = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".bmp", ".tiff", ".avif",
     ".pdf", ".zip", ".gz", ".tar", ".bz2", ".xz", ".7z", ".rar", ".jar", ".war",
@@ -163,6 +170,7 @@ class Project:
     manifest: dict
     features: list[Feature]
     concepts: list[Concept]
+    manifest_files: list[str] = field(default_factory=list)
 
     @property
     def mode(self) -> str:
@@ -430,12 +438,22 @@ def _as_concept(d: Doc, root_dir: str, type_slug: str) -> Concept:
     return c
 
 
+def manifest_paths(d: Path) -> list[Path]:
+    """The manifests present in a directory, in MANIFEST_NAMES order (§4).
+    More than one is a defect the caller reports; an empty list means no project."""
+    return [d / name for name in MANIFEST_NAMES if (d / name).is_file()]
+
+
+def is_project_root(d: Path) -> bool:
+    return bool(manifest_paths(d))
+
+
 def load_project(root: Path) -> Project:
     root = root.resolve()
-    manifest_path = root / "livespec.yaml"
+    paths = manifest_paths(root)
     manifest = {}
-    if manifest_path.is_file():
-        manifest = parse_yaml_block(manifest_path.read_text(encoding="utf-8", errors="replace"))
+    if paths:
+        manifest = parse_yaml_block(paths[0].read_text(encoding="utf-8", errors="replace"))
 
     features: list[Feature] = []
     fdir = root / "features"
@@ -461,17 +479,18 @@ def load_project(root: Path) -> Project:
             type_slug = rel_parts[0] if len(rel_parts) > 1 else ""
             concepts.append(_as_concept(parse_doc(path, root), root_dir, type_slug))
 
-    return Project(root=root, manifest=manifest, features=features, concepts=concepts)
+    return Project(root=root, manifest=manifest, features=features, concepts=concepts,
+                   manifest_files=[p.name for p in paths])
 
 
 # --------------------------------------------------------------- discovery
 
 def find_projects(start: Path, max_depth: int = 4) -> list[Path]:
-    """Locate LiveSpec project roots (§3, §3.1). Never assume a fixed path."""
+    """Locate project roots (§3, §3.1). Never assume a fixed path."""
     start = start.resolve()
     found: list[Path] = []
 
-    if (start / "livespec.yaml").is_file():
+    if is_project_root(start):
         found.append(start)
 
     def walk(base: Path, depth: int) -> None:
@@ -482,9 +501,9 @@ def find_projects(start: Path, max_depth: int = 4) -> list[Path]:
         except (PermissionError, OSError):
             return
         for d in entries:
-            if d.name in IGNORED_DIRS or (d.name.startswith(".") and d.name != ".livespec"):
+            if d.name in IGNORED_DIRS or (d.name.startswith(".") and d.name not in HIDDEN_PROJECT_DIRS):
                 continue
-            if (d / "livespec.yaml").is_file():
+            if is_project_root(d):
                 found.append(d)
                 continue  # nested projects are independent roots; do not recurse in
             walk(d, depth + 1)
@@ -493,7 +512,7 @@ def find_projects(start: Path, max_depth: int = 4) -> list[Path]:
 
     # Walk up too: the user may sit inside the codebase, spec above or beside.
     for parent in start.parents:
-        if (parent / "livespec.yaml").is_file() and parent not in found:
+        if is_project_root(parent) and parent not in found:
             found.append(parent)
         if (parent / ".git").exists():
             break
@@ -745,7 +764,7 @@ class Report:
 
 def emit(report: Report, as_json: bool) -> int:
     """Print the report. Exit code is 0 even with findings: this is a diagnostic,
-    not a quality gate (LiveSpec describes the software, not the work on it)."""
+    not a quality gate (the spec describes the software, not the work on it)."""
     if as_json:
         json.dump(report.to_dict(), sys.stdout, indent=2, ensure_ascii=False)
         sys.stdout.write("\n")
@@ -758,17 +777,18 @@ def resolve_project(arg: str | None, cwd: Path) -> Project:
     """Resolve the project to check, or exit(2) with an actionable message."""
     if arg:
         root = Path(arg).expanduser().resolve()
-        if root.is_file() and root.name == "livespec.yaml":
+        if root.is_file() and root.name in MANIFEST_NAMES:
             root = root.parent
-        if not (root / "livespec.yaml").is_file():
-            print(f"error: no livespec.yaml in {root}", file=sys.stderr)
+        if not is_project_root(root):
+            print(f"error: no project manifest (product-spec.yaml or livespec.yaml) in {root}", file=sys.stderr)
             raise SystemExit(2)
         return load_project(root)
 
     candidates = find_projects(cwd)
     if not candidates:
         print(
-            "error: no livespec.yaml found. Pass the project root explicitly "
+            "error: no project manifest (product-spec.yaml or livespec.yaml) found. "
+            "Pass the project root explicitly "
             "(see SPEC.md §3.1 for common locations).",
             file=sys.stderr,
         )
@@ -776,7 +796,7 @@ def resolve_project(arg: str | None, cwd: Path) -> Project:
     if len(candidates) > 1:
         listing = "\n".join(f"  {c}" for c in candidates)
         print(
-            "error: several LiveSpec projects found; pass one explicitly:\n" + listing,
+            "error: several spec projects found; pass one explicitly:\n" + listing,
             file=sys.stderr,
         )
         raise SystemExit(2)

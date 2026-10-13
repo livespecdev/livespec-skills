@@ -1,7 +1,7 @@
 ---
 name: frame-ux
 description: |
-  Frames the user experience for a LiveSpec feature and records it in the feature's `## UX` section:
+  Frames the user experience for a spec feature and records it in the feature's `## UX` section:
   user flow, key decisions, patterns used, states, content, and accessibility, optionally with mockup
   assets. Reads ux/ concepts for the design system. Use when framing UX for a feature before
   implementation. Not for the core spec (/specify-feature) or technical approach (/frame-tech).
@@ -10,13 +10,13 @@ argument-hint: [feature-slug]
 
 # UX Framing
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the user experience for a feature and write it into the feature's `## UX` section (`SPEC.md` §7.3). Each durable UX decision is a `UX` spec item (§8.2): a checkbox line `- [ ] UX-N: ...`, written declaratively as target state. Free-form prose under `## UX` carries what items cannot: the user flow, the rationale, references to assets.
 
 ## Identify the feature
 
-If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob features/**/*.md` and ask the user which one. Locate the project root (nearest `livespec.yaml`, §3.1) and read its `mode` (§12).
+If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob features/**/*.md` and ask the user which one. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12).
 
 ## Gather context
 

@@ -8,7 +8,7 @@ Scope intent into features, specify them, frame the UX and the technical approac
 
 ## How it works
 
-A LiveSpec project is any directory containing a `livespec.yaml` manifest. The skills locate that root, read the four fixed folders (`product/`, `ux/`, `tech/`, `features/`), and read or write the markdown files according to the [format spec](https://livespec.dev). There is no hidden state: everything is plain files versioned in git.
+A LiveSpec project is any directory containing a manifest, `product-spec.yaml` or `livespec.yaml` (equivalent names; `product-spec.yaml` keeps the format's name out of your repository). The skills locate that root, read the four fixed folders (`product/`, `ux/`, `tech/`, `features/`), and read or write the markdown files according to the [format spec](https://livespec.dev). There is no hidden state: everything is plain files versioned in git.
 
 You do not clone the LiveSpec repository or visit livespec.dev to use this. The format spec is **bundled with the plugin** at `reference/SPEC.md` (pinned to `v0.1.0-draft`, with a condensed `reference/CHEATSHEET.md`); the skills read it on demand to resolve format edge cases. Your repository only ever needs a `livespec.yaml` and the four folders.
 
@@ -43,7 +43,7 @@ Invoke a skill with its slash command, or just describe what you want and let th
 
 | Skill | What it does |
 |---|---|
-| `/livespec-context` | Locates the project, maps its concepts and features, and bridges the spec against the codebase. Read-only orientation. |
+| `/spec-context` | Locates the project, maps its concepts and features, and bridges the spec against the codebase. Read-only orientation. |
 | `/scope-features` | Decomposes natural-language intent into a plan of features to write or update (and concepts to extract), then writes them. |
 | `/specify-feature` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
 | `/frame-ux` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
@@ -65,17 +65,17 @@ Both exit 0 even when they report findings: they are diagnostics, not quality ga
 
 ## Making the skills self-trigger
 
-Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a `livespec.yaml`, the skills already fire on their own: ask "how does the export feature work?" and `/livespec-context` orients itself against the spec; say "implement the export feature" and `/implement-feature` takes over. You rarely need to type the slash command.
+Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a spec manifest, the skills already fire on their own: ask "how does the export feature work?" and `/spec-context` orients itself against the spec; say "implement the export feature" and `/implement-feature` takes over. You rarely need to type the slash command.
 
-That routing is model-driven and best-effort, not a hard rule keyed on `livespec.yaml`. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-skills):
+That routing is model-driven and best-effort, not a hard rule keyed on the manifest. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-skills):
 
 ```markdown
 ## Specs
 
-This repository is a LiveSpec project (see `livespec.yaml`). Use the
+This repository is a LiveSpec project (see its manifest). Use the
 `livespec` plugin skills to read and maintain the spec:
 
-- At session start, or before working on any feature, use `livespec-context`
+- At session start, or before working on any feature, use `spec-context`
   to orient against the spec.
 - When scoping new work, use `scope-features`; to author one feature,
   `specify-feature`; to build it, `implement-feature`.
@@ -83,7 +83,7 @@ This repository is a LiveSpec project (see `livespec.yaml`). Use the
 Keep the spec files in sync with the code: they are the source of truth.
 ```
 
-`CLAUDE.md` is read into context every session, so this nudges Claude toward the skills consistently. For a hard guarantee independent of the model's judgment, configure a `SessionStart` hook in `settings.json` instead; a hook cannot invoke a skill directly, but it can inject a reminder to run `/livespec-context`.
+`CLAUDE.md` is read into context every session, so this nudges Claude toward the skills consistently. For a hard guarantee independent of the model's judgment, configure a `SessionStart` hook in `settings.json` instead; a hook cannot invoke a skill directly, but it can inject a reminder to run `/spec-context`.
 
 ## The subagents
 

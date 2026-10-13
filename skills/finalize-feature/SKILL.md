@@ -1,7 +1,7 @@
 ---
 name: finalize-feature
 description: |
-  Takes an implemented LiveSpec feature to production-ready: adds or updates tests, runs the project's
+  Takes an implemented spec feature to production-ready: adds or updates tests, runs the project's
   CI/quality gate, commits the changes, and delegates spec reconciliation to /sync-spec. Use when the
   user signals readiness to finish ("ready to finalize", "need tests", "run CI", "implementation done").
   Not for active implementation (/implement-feature), debugging, or spec-only updates (/sync-spec directly).
@@ -10,7 +10,7 @@ argument-hint: <feature-slug>
 
 # Finalize Work
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Complete the production-readiness workflow for a feature: **test → check → commit → reconcile**. Use this once the feature's behavior is implemented and you need it shippable.
 

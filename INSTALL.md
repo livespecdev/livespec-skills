@@ -8,7 +8,7 @@ All commands below are typed at the Claude Code prompt unless prefixed with a sh
 
 - A recent Claude Code (the plugin system, `/plugin`, and `/reload-plugins` must be available).
 - A git repository to work in. The plugin reads and writes plain files and shows you diffs.
-- Either an existing LiveSpec project (any directory containing a `livespec.yaml`) or the bundled `examples/sample-project/` to try the skills against.
+- Either an existing LiveSpec project (any directory containing a manifest, `product-spec.yaml` or `livespec.yaml`) or the bundled `examples/sample-project/` to try the skills against.
 
 You do **not** need to clone the LiveSpec format repository or visit livespec.dev. The format spec is bundled inside the plugin at `reference/SPEC.md`.
 
@@ -60,7 +60,7 @@ This loads the plugin in-place, so edits to skills and agents are picked up with
 You should see `livespec` enabled. Its skills become available as slash commands:
 
 ```
-/livespec-context
+/spec-context
 /scope-features
 /specify-feature
 /frame-ux
@@ -72,7 +72,7 @@ You should see `livespec` enabled. Its skills become available as slash commands
 
 The subagents (`specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`) become available to the Agent tool. Skills and agents are discovered by convention from the plugin's `skills/` and `agents/` directories; there is no registration step.
 
-If the plugin namespaces its commands, they may appear as `/livespec:livespec-context` and so on. `/plugin details livespec@livespec` shows exactly what was registered.
+If the plugin namespaces its commands, they may appear as `/livespec:spec-context` and so on. `/plugin details livespec@livespec` shows exactly what was registered.
 
 ## Smoke test
 
@@ -87,10 +87,10 @@ The quickest end-to-end check uses the bundled fixture.
 2. Run orientation:
 
    ```
-   /livespec-context
+   /spec-context
    ```
 
-   It should locate `livespec.yaml`, report the project as "Habit Tracker (Sample)" in loose mode, list the concepts (persona, goal, pain_point, constraint, entity) and the two features under `features/habits/`, and read progress from the checkbox state (all ACs open).
+   It should locate the manifest (`livespec.yaml` in the sample), report the project as "Habit Tracker (Sample)" in loose mode, list the concepts (persona, goal, pain_point, constraint, entity) and the two features under `features/habits/`, and read progress from the checkbox state (all ACs open).
 
 3. Try authoring:
 

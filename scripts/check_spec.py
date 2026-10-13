@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""check-spec: internal consistency of a LiveSpec project.
+"""check-spec: internal consistency of a spec project.
 
-Reads the LiveSpec files only, never the codebase. Answers: do the specs hold
+Reads the spec files only, never the codebase. Answers: do the specs hold
 together? (spec <-> code coherence is check_drift.py.)
 
 This is NOT the deferred LiveSpec validator (Level-3 conformance, §14): that one
@@ -55,6 +55,7 @@ CORE_TAXONOMY = {
 SAME_FILE_REF_RE = re.compile(r"\[(?P<id>(?:REQ|AC|AS|Q|LIM|UX|TECH)-[0-9.]+)\](?!\()")
 
 CHECKS = [
+    "duplicate-manifest",
     "feature-no-requirements",
     "feature-no-summary",
     "duplicate-id",
@@ -437,8 +438,18 @@ def check_orphan_concepts(report: Report, project: Project, enabled) -> None:
             )
 
 
+def check_manifest(report: Report, project: Project, enabled) -> None:
+    if "duplicate-manifest" not in enabled or len(project.manifest_files) < 2:
+        return
+    report.add(
+        check="duplicate-manifest", severity="error", spec_ref="§4",
+        file=project.manifest_files[0], line=1,
+        message=f"The project root holds several manifests ({', '.join(project.manifest_files)}). Keep one; this script read {project.manifest_files[0]}.",
+    )
+
+
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="Check a LiveSpec project's internal consistency.")
+    parser = argparse.ArgumentParser(description="Check a spec project's internal consistency.")
     parser.add_argument("project", nargs="?", help="project root (defaults to discovery from CWD)")
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--only", help="comma-separated checks to run")
@@ -474,6 +485,7 @@ def main(argv=None) -> int:
             return 2
 
     report = Report("check-spec", project, scope=args.feature)
+    check_manifest(report, project, enabled)
 
     for feature in features:
         check_doc_shape(report, feature, enabled)

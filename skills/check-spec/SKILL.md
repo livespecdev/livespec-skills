@@ -1,7 +1,7 @@
 ---
 name: check-spec
 description: |
-  Reports internal inconsistencies across a LiveSpec project: features with no requirements,
+  Reports internal inconsistencies across a spec project: features with no requirements,
   duplicate or misnumbered IDs, ACs not nested under a REQ, REQs checked off with open ACs, broken
   frontmatter links and in-prose references, orphan concepts, and open questions or issues. Use when
   the user asks about spec quality, wants a health pass over the specs, or before a spec review.
@@ -11,11 +11,11 @@ argument-hint: "[feature-slug]"
 
 # Check Spec
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Do the specs hold together? This skill reads the LiveSpec files and only those: no codebase involved. It answers whether the documents are coherent among themselves, well formed, and fully linked.
+Do the specs hold together? This skill reads the spec files and only those: no codebase involved. It answers whether the documents are coherent among themselves, well formed, and fully linked.
 
-**This is not the deferred LiveSpec validator.** Level-3 conformance (§14) asks whether a file is a valid LiveSpec document; it is constitutive of the format and belongs in the `livespec` repo. This skill is an editorial diagnostic: it flags things that are conformant but probably not what the author meant, alongside a few outright format errors. Everything it reports carries a `§N` citation so you can always show the user what rule is behind a finding.
+**This is not the deferred format validator.** Level-3 conformance (§14) asks whether a file is a valid document under the format; that validator is constitutive of the format and belongs in the format's own repository. This skill is an editorial diagnostic: it flags things that are conformant but probably not what the author meant, alongside a few outright format errors. Everything it reports carries a `§N` citation so you can always show the user what rule is behind a finding.
 
 ## Run the script
 
@@ -27,7 +27,7 @@ python3 <plugin-root>/scripts/check_spec.py [PROJECT_ROOT] [--feature SLUG] [--o
 
 Python 3 stdlib only, no install step. Notes on the arguments:
 
-- **`PROJECT_ROOT`** is optional: the script locates `livespec.yaml` itself, honoring the §3.1 patterns. If it reports several projects (monorepo), ask the user which one. Never assume a fixed path.
+- **`PROJECT_ROOT`** is optional: the script locates the manifest (`product-spec.yaml` or `livespec.yaml`) itself, honoring the §3.1 patterns. If it reports several projects (monorepo), ask the user which one. Never assume a fixed path.
 - **`--feature SLUG`** narrows to one feature and skips the project-wide checks (orphan concepts, cross-file references).
 - **`--only` / `--skip`** take comma-separated check names; `--list-checks` prints them. Reach for `--only` when the user asks a targeted question ("which features have no requirements?") instead of filtering a full report by hand.
 - **`--json`** gives you the findings as data. Prefer it when you intend to group, rank, or cross-reference.
@@ -61,6 +61,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 | `empty-frontmatter` | warning | An empty `---` block; omit it entirely (§5). |
 | `invalid-slug` | warning | Filename is not kebab-case ASCII (§9.1). |
 | `concept-placement` | error | A concept sitting directly under `product/`, `ux/`, or `tech/` instead of in a `{type}/` subdirectory (§6.1). It cannot be linked at all. |
+| `duplicate-manifest` | error | The project root holds both `product-spec.yaml` and `livespec.yaml` (§4). The two names are equivalent and only one is allowed; the script reads `livespec.yaml`. Ask the user which to keep. |
 
 **Links (§9)**
 
@@ -79,7 +80,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 
 ## Interpret, do not dump
 
-The script produces facts. Your job is to say which ones matter, and the framing matters: LiveSpec describes the software, not the work on it (§1). Report coherence problems, never a to-do list, a maturity score, or a readiness assessment.
+The script produces facts. Your job is to say which ones matter, and the framing matters: the format describes the software, not the work on it (§1). Report coherence problems, never a to-do list, a maturity score, or a readiness assessment.
 
 Lead with errors, group warnings by kind, and give counts instead of exhaustive lists once a category runs long. A finding is a question to the author, not a verdict:
 

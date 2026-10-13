@@ -1,7 +1,7 @@
 ---
 name: check-drift
 description: |
-  Reports where LiveSpec intent and codebase reality disagree: spec items marked done with no
+  Reports where spec intent and codebase reality disagree: spec items marked done with no
   implements: marker anchoring them, markers pointing at features or IDs that no longer exist, code
   anchored to items still open or cancelled, and what carries no code yet. Use when the user asks
   what is actually built, whether the spec matches the code, to check marker coverage, or before a
@@ -12,9 +12,9 @@ argument-hint: "[feature-slug]"
 
 # Check Drift
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Two sources of truth: the LiveSpec files hold intent, the codebase holds reality (§1). This skill compares them mechanically, using the one bridge the format defines: the code marker `implements: {feature-slug}#{spec-item-id}` and its companion `see-spec:` (§9.4). The legacy `livespec:` verb is read as `implements:`.
+Two sources of truth: the spec files hold intent, the codebase holds reality (§1). This skill compares them mechanically, using the one bridge the format defines: the code marker `implements: {feature-slug}#{spec-item-id}` and its companion `see-spec:` (§9.4). The legacy `livespec:` verb is read as `implements:`.
 
 The format defines the marker syntax and nothing more. Coverage rules, drift detection, and verification semantics are explicitly left to tooling (§9.4, "Scope of this section"). This skill is that tooling. It does not extend the format, and a project that ignores it stays perfectly conformant.
 
@@ -28,7 +28,7 @@ python3 <plugin-root>/scripts/check_drift.py [PROJECT_ROOT] [--feature SLUG] [--
 
 Python 3 stdlib only, no install step. Notes on the arguments:
 
-- **`PROJECT_ROOT`** is optional: the script locates `livespec.yaml` itself, honoring the §3.1 patterns. If it reports several projects (monorepo), ask the user which one, or pass the one the current work belongs to. Never assume a fixed path.
+- **`PROJECT_ROOT`** is optional: the script locates the manifest (`product-spec.yaml` or `livespec.yaml`) itself, honoring the §3.1 patterns. If it reports several projects (monorepo), ask the user which one, or pass the one the current work belongs to. Never assume a fixed path.
 - **`--code-root`** defaults to the git repo root. Pass it when the spec lives in a repo separate from the application, otherwise the scan finds no markers and every item looks unanchored.
 - **`--feature SLUG`** narrows the report to one feature. Use it when the user is working on a single feature; run the full sweep otherwise.
 - **`--json`** gives you the findings as data. Prefer it when you intend to group, rank, or cross-reference; the plain output is for showing the user directly.
@@ -54,7 +54,7 @@ Coverage follows §9.4 and counts `implements:` markers only (and legacy `livesp
 
 ## Report it as a divergence, not as a backlog
 
-The script produces facts. Your job is to say what they mean, and the framing matters: LiveSpec describes the software, not the work on it (§1). Report **where intent and reality disagree**, never as a prioritized to-do list, a completion percentage, or a delivery forecast. Sequencing lives in git and in the user's issue tracker.
+The script produces facts. Your job is to say what they mean, and the framing matters: the format describes the software, not the work on it (§1). Report **where intent and reality disagree**, never as a prioritized to-do list, a completion percentage, or a delivery forecast. Sequencing lives in git and in the user's issue tracker.
 
 Lead with what is genuinely wrong (the errors and warnings: dangling markers, unanchored `[x]` items), and keep the `open-unmarked` inventory short unless the user asked for it. On a large sweep, group by feature and give counts rather than listing every open item.
 
@@ -72,4 +72,4 @@ This skill reports and stops. It writes nothing, neither spec files nor code.
 
 ## What this skill does not do
 
-It does not check the specs against each other (feature without REQ, broken links, duplicate IDs): that is `/check-spec`. It does not validate conformance to the format (Level-3, §14); that validator is constitutive of the standard and belongs in the `livespec` repo. It does not judge whether the implementation is *correct*, only whether it is *anchored*: verifying that code actually satisfies an AC is the `qa` agent's job.
+It does not check the specs against each other (feature without REQ, broken links, duplicate IDs): that is `/check-spec`. It does not validate conformance to the format (Level-3, §14); that validator is constitutive of the format and belongs in the format's own repository. It does not judge whether the implementation is *correct*, only whether it is *anchored*: verifying that code actually satisfies an AC is the `qa` agent's job.

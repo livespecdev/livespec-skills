@@ -1,7 +1,7 @@
 ---
 name: specify-feature
 description: |
-  Authors or refines a single LiveSpec feature file: the summary paragraph, requirements, nested
+  Authors or refines a single spec feature file: the summary paragraph, requirements, nested
   acceptance criteria, assumptions, questions, issues, and concept links. Use when the user discusses
   new functionality, mentions a spec, requirements, or acceptance criteria for one feature, or wants an
   existing feature sharpened. Owns the core spec, not UX framing (/frame-ux) or tech framing
@@ -11,7 +11,7 @@ argument-hint: [feature-description or feature-slug]
 
 # Specify Feature
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Write a clear, well-scoped feature as a single markdown file under `features/`, focused on user value and observable behavior. A feature describes **target state**: what the software *is*, not the work to do. It should read the same before and after implementation. Structure matters, agents and humans consume atomic, typed, linked spec items far better than prose (`SPEC.md` §8).
 
@@ -24,7 +24,7 @@ Write a clear, well-scoped feature as a single markdown file under `features/`, 
 - **Refining** an existing feature: `Read` `features/**/{slug}.md` in full and identify what is weak (missing ACs, vague REQs, unresolved questions).
 - **Creating** a new one: understand what problem it solves, who benefits most, and the smallest version that delivers value.
 
-Locate the project root (nearest `livespec.yaml`, §3.1) and read its `mode` (§12) first.
+Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12) first.
 
 ## Is this actually a feature?
 

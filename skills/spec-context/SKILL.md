@@ -1,34 +1,34 @@
 ---
-name: livespec-context
+name: spec-context
 description: |
-  Locates the LiveSpec project in the repo, maps its concepts and features from the local
+  Locates the spec project in the repo, maps its concepts and features from the local
   markdown files, and bridges spec intent against codebase reality during development. Read-only
   orientation. Use at session start, when the user asks "how does X work?", references a feature,
   makes a design or architectural decision, works on UI, or wants product feedback grounded in the
-  spec. Not for pure syntax questions, general programming help, or repos with no livespec.yaml.
+  spec. Not for pure syntax questions, general programming help, or repos with no spec manifest.
 argument-hint: [path-or-feature-slug]
 ---
 
-# LiveSpec Context
+# Spec Context
 
-> **Format reference.** The `§N` citations throughout the LiveSpec skills point to the bundled spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
+> **Format reference.** The `§N` citations throughout these skills point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
 
-LiveSpec specs live as plain markdown files in the repository. There is no server and no sync step: you read the files directly. Your job is to locate the project, understand what it says the software should do, and bridge that against what the code actually does.
+Specs live as plain markdown files in the repository. There is no server and no sync step: you read the files directly. Your job is to locate the project, understand what it says the software should do, and bridge that against what the code actually does.
 
 ## Phase 1: Locate the project
 
-A LiveSpec project is the directory containing a `livespec.yaml` manifest (`SPEC.md` §3). Find it before anything else:
+A spec project is the directory containing a manifest, `product-spec.yaml` or `livespec.yaml` (`SPEC.md` §3, §4). Find it before anything else:
 
-1. Search upward from the working directory for the nearest `livespec.yaml`.
-2. If none is found upward, search the common locations (`SPEC.md` §3.1): `./livespec.yaml`, `docs/livespec/livespec.yaml`, `.livespec/livespec.yaml`, `specs/livespec.yaml`.
-3. A monorepo MAY hold several projects, each `livespec.yaml` is an independent root with its own slug namespace (§3.1). If you find more than one, ask the user which project they mean.
-4. If you find none, tell the user there is no LiveSpec project here and offer to scaffold one (a `livespec.yaml` plus the four folders) or to point at an existing one.
+1. Search upward from the working directory for the nearest manifest, `product-spec.yaml` or `livespec.yaml`.
+2. If none is found upward, search the common locations (`SPEC.md` §3.1), each with either manifest name: `./`, `docs/spec/`, `.spec/`, `specs/`, and the older `docs/livespec/`, `.livespec/`.
+3. A monorepo MAY hold several projects, each manifest is an independent root with its own slug namespace (§3.1). If you find more than one, ask the user which project they mean.
+4. If you find none, tell the user there is no spec project here and offer to scaffold one (a `product-spec.yaml` manifest plus the four folders) or to point at an existing one.
 
 Read the manifest. Note `name`, `format_version`, and `mode` (`loose` default, or `strict`, §12). The mode governs how strict later skills are on section names and ordering; carry it forward.
 
 ## Phase 2: Map the project
 
-The project root has exactly four meaningful top-level folders (§3): `product/`, `ux/`, `tech/`, `features/`. Everything else (README, code, `node_modules/`) is not LiveSpec and you ignore it.
+The project root has exactly four meaningful top-level folders (§3): `product/`, `ux/`, `tech/`, `features/`. Everything else (README, code, `node_modules/`) is not part of the spec and you ignore it.
 
 1. **Concepts.** `Glob` `product/*/*.md`, `ux/*/*.md`, `tech/*/*.md`. The directory name is the concept type slug and the link key (§6.1). The core taxonomy is §6.2: under `product/` you will see `persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`; under `ux/` `ui_component`, `design_principle`, `ux_pattern`, `screen`; under `tech/` `coding_standard`, `architecture_decision`, `external_system`. Unknown types are valid extensions, not errors (§6.2). For each concept, the opening paragraph after the H1 is its summary (§6.4).
 2. **Features.** `Glob` `features/**/*.md`. The slug is the filename; the area is the path between `features/` and the file (§7.1). The opening paragraph is the summary (§7.4). The body carries spec items.
@@ -38,7 +38,7 @@ Give the user a compact map: project name and mode, concept counts by type, feat
 
 ## Phase 3: Read progress from the files
 
-LiveSpec defines no `status` field for features (§10). Do not invent one. Progress is the checkbox state of spec items (§8.1):
+The format defines no `status` field for features (§10). Do not invent one. Progress is the checkbox state of spec items (§8.1):
 
 - `- [ ]` open / pending, `- [x]` done / closed, `- [-]` cancelled (won't do).
 - A `REQ` is implemented when its code exists and its `AC`s pass; you read that from the `[x]` marks, not from any maturity enum.
@@ -48,7 +48,7 @@ When you describe where a body of work stands, describe it as checkbox state plu
 
 ## The two sources of truth
 
-| | LiveSpec files | Codebase |
+| | Spec files | Codebase |
 |---|---|---|
 | **Contain** | Intent: what the software should do and why | Reality: what is actually implemented |
 | **Authority on** | Acceptance criteria, personas, constraints | Actual behavior |

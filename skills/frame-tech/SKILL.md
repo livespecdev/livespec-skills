@@ -1,7 +1,7 @@
 ---
 name: frame-tech
 description: |
-  Frames the technical approach for a LiveSpec feature and records it in the feature's `## Tech`
+  Frames the technical approach for a spec feature and records it in the feature's `## Tech`
   section: architecture, data model, API shape, key decisions, constraints applied, testing strategy.
   Explores the codebase and reads tech/ concepts. Use when framing the technical approach before
   implementation. Not for the core spec (/specify-feature) or UX (/frame-ux).
@@ -10,13 +10,13 @@ argument-hint: [feature-slug]
 
 # Tech Framing
 
-> **Format reference.** The `§N` citations point to the bundled LiveSpec spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the technical approach for a feature and write it into the feature's `## Tech` section (`SPEC.md` §7.3). Each durable technical decision is a `TECH` spec item (§8.2): a checkbox line `- [ ] TECH-N: ...`, written declaratively as target state. Free-form prose under `## Tech` carries what items cannot: the rationale, diagrams, the testing strategy.
 
 ## Identify the feature
 
-If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob features/**/*.md` and ask. Locate the project root (nearest `livespec.yaml`, §3.1) and read its `mode` (§12).
+If `$ARGUMENTS` names a feature, `Read` `features/**/{slug}.md`. Otherwise `Glob features/**/*.md` and ask. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12).
 
 ## Check prerequisites
 
