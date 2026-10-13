@@ -13,6 +13,7 @@ my-project/
 ├── ux/{type}/{slug}.md
 ├── tech/{type}/{slug}.md
 └── features/[{area}/]{slug}.md
+    └── [{area}/]assets/{slug}/  # Feature assets; `assets` is never an area
 ```
 
 The four top-level folders are **fixed and exhaustive**. Extensions go through sub-types, never new top-level folders.
@@ -130,7 +131,7 @@ Checkbox states: `[ ]` open, `[x]` done, `[-]` cancelled. AC nesting is **exactl
 
 **Requirement or direction?** `REQ` / `AC` say *what* the feature does; `UX` / `TECH` say *how* this feature is built to do it. Test: could another implementation satisfy every REQ and AC while contradicting the statement? Yes: direction. No: AC. A direction that applies beyond the feature is a concept (`ux_pattern`, `coding_standard`, `architecture_decision`), linked from the feature. A changed direction is a new item; the old one goes `[-]` with `→ Superseded by [TECH-3]: ...`.
 
-**IDs are file-scoped and immutable.** Never reuse or renumber.
+**IDs are file-scoped and immutable.** Never reuse or renumber. An AC's prefix is its parent REQ's number (`AC-3.1` under `REQ-3`).
 
 Inline references: `[REQ-3]` (same file), `[feature-slug#REQ-3]` (cross-feature).
 
@@ -138,16 +139,16 @@ Resolution note (closed items only): start a continuation line with `→ `, one 
 
 ```markdown
 - [x] Q-1: Should we paginate?
-  → Yes — by 50 with an opaque cursor. Decided 2026-03-12.
+  → Yes, paginate by 50 with an opaque cursor. Decided 2026-03-12.
 ```
 
 ## Linking
 
 - All structured links live in `links:` frontmatter, keyed by target type slug (always singular).
-- Slug rule: `^[a-z0-9]+(-[a-z0-9]+)*$` (kebab-case ASCII).
+- Slug rule: `^[a-z0-9]+(-[a-z0-9]+)*$` (kebab-case ASCII). Type slugs are snake_case (`pain_point`).
 - **Concepts may link to concepts** (e.g. `persona` → `pain_point`, `goal` → `persona`, `entity` → `entity`) just like features link to concepts. Same `links:` field, same resolution.
-- **`feature:` is the only typed-relation key**: accepts either an untyped list **or** a typed object (`requires` / `triggers` / `extends`) — pick one form per file. Typed relations apply only between features.
-- **Concept↔feature relations are carried by the concept type** — no need to type them. `constraint: [...]` already means *respects*, `entity: [...]` already means *manipulates*, `external_system: [...]` already means *integrates with*.
+- **`feature:` is the only typed-relation key**: accepts either an untyped list **or** a typed object (`requires` / `triggers` / `extends`); pick one form per key. Typed relations apply only between features.
+- **Concept↔feature relations are carried by the concept type**: no need to type them. `constraint: [...]` already means *respects*, `entity: [...]` already means *manipulates*, `external_system: [...]` already means *integrates with*.
 
 ## In-prose references
 
@@ -162,7 +163,7 @@ Examples: `[[persona:solo-organizer]]`, `[[remind-on-due-date]]`, `[[max-list-si
 
 For features, the type prefix is `feature`. For concepts, the type is the concept's type slug.
 
-**In-prose vs frontmatter** — they have different purposes:
+**In-prose vs frontmatter** have different purposes:
 - `links:` frontmatter = structural relations (indexed, audited, presented in graphs)
 - `[[ ]]` in prose = reading aids (contextual mentions, not exhaustive)
 
@@ -197,20 +198,20 @@ Marker = verb + `:` + space(s) + `{feature-slug}#{spec-item-id}`, optionally fol
 ## Anti-patterns
 
 ### Don't put work in the spec
-- **No** features for migrations, upgrades, refactors — those are tasks. Document the *target state* as a REQ in an existing feature or a `tech/` concept.
+- **No** features for migrations, upgrades, refactors: those are tasks. Document the *target state* as a REQ in an existing feature or a `tech/` concept.
 - **No** `status` field, assignees, due dates, kanban states. Progress lives in checkbox states (`[ ]` → `[x]`) and external trackers.
 - **No** "ephemeral implementation context" in `## Tech` ("I'm here, next step is X"). That belongs in PR descriptions or task trackers.
 - **No** bug tracking. `LIM` records a known limitation the software has today, accepted for now (`LIM-1: Two collaborators marking the same todo done within seconds produce two completion events`). A defect scheduled for a fix goes in the tracker. Never phrase a `LIM` as a task.
 - **No** tasks as directions: `TECH-1: Search uses tsvector`, not `TECH-1: Add a tsvector index`.
 
 ### Don't confuse types
-- A document is **either** a feature **or** a concept — never both. `features/auth/two-factor.md` (ships) and `tech/security_pattern/two-factor.md` (standing pattern) may coexist; one file MUST NOT try to be both.
-- If a "concept" you're writing has acceptance criteria, it is a feature — move it.
+- A document is **either** a feature **or** a concept, never both. `features/auth/two-factor.md` (ships) and `tech/security_convention/two-factor.md` (standing convention) may coexist; one file MUST NOT try to be both.
+- If a "concept" you're writing has acceptance criteria, it is a feature: move it.
 - If a feature states a rule that clearly applies elsewhere, extract it as a concept first, then link from the feature.
 
 ### Don't over-fragment
 - Prefer **REQ first, extract to feature later** when in doubt about granularity.
-- Prefer **start coarser, split later** for areas — easier than consolidating fragmented features.
+- Prefer **start coarser, split later** for features: easier than consolidating fragmented features.
 - AC nesting beyond one level is invalid. Multiple REQs are the answer.
 
 ### Don't invent format

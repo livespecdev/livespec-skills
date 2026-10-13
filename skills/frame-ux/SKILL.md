@@ -52,7 +52,7 @@ If the feature involves substantial UI (new screens, a new major component, a si
 On acceptance, store each asset on disk and declare it in the feature frontmatter (§11):
 
 - File path: `assets/{feature-slug}/{filename}`, in the `assets/` directory **next to the feature file** (same level whether the feature sits under an area or directly in `features/`, §11.1).
-- Declare it in frontmatter `assets:` with `id` (a stable identifier), `type` (`wireframe` | `mockup` | `diagram` | `screenshot` | `reference`), `title`, optional `description`, and `path` (project-root-relative):
+- Declare it in frontmatter `assets:` with `id` (a stable identifier), `type` (`wireframe` | `mockup` | `diagram` | `screenshot` | `reference`), `title`, optional `description`, and `path` (relative to the feature file's directory):
 
 ```yaml
 assets:

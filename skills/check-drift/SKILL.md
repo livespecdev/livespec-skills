@@ -50,7 +50,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 | `open-unmarked` | info | An item is `[ ]` with no code behind it. Consistent, and the normal state of unbuilt work. Inventory, not a defect. |
 | `feature-unmarked` | info | No marker anywhere for that feature. Expected before implementation starts; notable once items are `[x]`. |
 
-Coverage follows §9.4 and counts `implements:` markers only (and legacy `livespec:` ones): a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is. `UX` and `TECH` directions are resolved and checked when a marker points at them (`marker-on-open`, `marker-on-cancelled`), but they are not coverage targets: a direction with no marker is not reported, since many have no single code site.
+Coverage counts `implements:` markers only (and legacy `livespec:` ones), per §9.4. The format leaves coverage rules to tools; this skill's rule is that a marker on a REQ implicitly covers its nested ACs, so an AC counts as anchored when its parent REQ carries a marker. A REQ counts as anchored when every one of its non-cancelled ACs is. `UX` and `TECH` directions are resolved and checked when a marker points at them (`marker-on-open`, `marker-on-cancelled`), but they are not coverage targets: a direction with no marker is not reported, since many have no single code site.
 
 ## Report it as a divergence, not as a backlog
 

@@ -23,7 +23,7 @@ You analyze a spec feature from a user-experience perspective and record the res
 3. **Analyze gaps** across user flow (happy path, entry/exit, errors, empty/loading/partial), information architecture, interactions (feedback, affordances, undo for destructive actions), content (labels, help, errors, empty states), and accessibility (keyboard, screen reader, contrast, focus).
 4. **Ask** about gaps that affect implementation (2-3 options with tradeoffs, recommended first); defer minor polish.
 5. **Synthesize**: flow summary, key screens/states, patterns used, deviations with rationale.
-6. **Assets (if substantial UI)**: store each under `assets/{feature-slug}/` next to the feature file and declare it in frontmatter `assets:` with `id`, `type` (`wireframe`|`mockup`|`diagram`|`screenshot`|`reference`), `title`, optional `description`, and project-root-relative `path` (§11). One asset per key state; do not over-produce.
+6. **Assets (if substantial UI)**: store each under `assets/{feature-slug}/` next to the feature file and declare it in frontmatter `assets:` with `id`, `type` (`wireframe`|`mockup`|`diagram`|`screenshot`|`reference`), `title`, optional `description`, and a `path` relative to the feature file's directory (§11). One asset per key state; do not over-produce.
 
 ## Review then write
 
