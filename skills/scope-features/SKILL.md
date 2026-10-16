@@ -11,7 +11,7 @@ argument-hint: <natural-language-description>
 
 # Scope Features
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Decompose intent into spec features and write them as files under `features/`. There is no batch or delivery layer: the format describes the software, not the work on it (`SPEC.md` §1). Ordering a body of work is a git-branch and issue-tracker concern, out of scope here.
 

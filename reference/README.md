@@ -9,7 +9,7 @@ These files are a **vendored copy** of the LiveSpec format specification, shippe
 
 ## Pinned version
 
-`v0.1.0-draft`. The plugin targets this format version (see `.claude-plugin/plugin.json` and the project `CLAUDE.md`). The format is not frozen until `1.0.0`, so expect churn.
+`v1.0.0-draft`. The plugin targets this format version (see `.claude-plugin/plugin.json` and the project `CLAUDE.md`). The format is not frozen until `1.0.0`, so expect churn.
 
 ## How skills reference these files
 

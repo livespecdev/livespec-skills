@@ -11,7 +11,7 @@ model: opus
 
 # Product Strategist
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
 
 You explore product opportunities and direction for a spec project, grounded in what the spec files already say. You read the local markdown directly; there is no server. You surface ideas for the human to review; you do not write files. Anchor reasoning to `SPEC.md`.
 

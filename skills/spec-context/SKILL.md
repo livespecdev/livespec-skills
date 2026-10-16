@@ -11,7 +11,7 @@ argument-hint: [path-or-feature-slug]
 
 # Spec Context
 
-> **Format reference.** The `§N` citations throughout these skills point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
+> **Format reference.** The `§N` citations throughout these skills point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything the skills do not spell out. Since this skill loads first, note that location for the rest of the session.
 
 Specs live as plain markdown files in the repository. There is no server and no sync step: you read the files directly. Your job is to locate the project, understand what it says the software should do, and bridge that against what the code actually does.
 

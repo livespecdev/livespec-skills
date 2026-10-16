@@ -11,7 +11,7 @@ argument-hint: [feature-description or feature-slug]
 
 # Specify Feature
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Write a clear, well-scoped feature as a single markdown file under `features/`, focused on user value and observable behavior. A feature describes **target state**: what the software *is*, not the work to do. It should read the same before and after implementation. Structure matters, agents and humans consume atomic, typed, linked spec items far better than prose (`SPEC.md` §8).
 

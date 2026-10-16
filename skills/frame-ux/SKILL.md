@@ -10,7 +10,7 @@ argument-hint: [feature-slug]
 
 # UX Framing
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the user experience for a feature and write it into the feature's `## UX` section (`SPEC.md` §7.3). Each durable UX decision is a `UX` spec item (§8.2): a checkbox line `- [ ] UX-N: ...`, written declaratively as target state. Free-form prose under `## UX` carries what items cannot: the user flow, the rationale, references to assets.
 

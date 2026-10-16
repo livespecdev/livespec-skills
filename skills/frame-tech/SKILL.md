@@ -10,7 +10,7 @@ argument-hint: [feature-slug]
 
 # Tech Framing
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Frame the technical approach for a feature and write it into the feature's `## Tech` section (`SPEC.md` §7.3). Each durable technical decision is a `TECH` spec item (§8.2): a checkbox line `- [ ] TECH-N: ...`, written declaratively as target state. Free-form prose under `## Tech` carries what items cannot: the rationale, diagrams, the testing strategy.
 

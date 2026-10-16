@@ -11,7 +11,7 @@ argument-hint: <feature-slug>
 
 # Implement Feature
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Work through a feature's acceptance criteria, write the code, and anchor it to the spec with `implements:` / `see-spec:` markers (`SPEC.md` §9.4). The format has no feature `status` (§10): progress is the checkbox state of spec items (§8.1). You check ACs `[x]` as they pass; you never flip a status.
 

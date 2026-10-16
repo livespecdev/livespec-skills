@@ -1,12 +1,12 @@
 # LiveSpec: Format Specification
 
-**Version:** `v0.1.0-draft`
+**Version:** `v1.0.0-draft`
 **Status:** Draft (open for comments)
 **Canonical home:** https://livespec.dev
 
 > LiveSpec is a file format for product specifications that stay current with the code they describe. It is designed to be readable by humans, parseable by tools, and consumable by AI coding agents, without lock-in to any specific application.
 
-> ⚠️ **Work in progress.** This is an early draft (`v0.1.0-draft`), not a frozen standard. Every part of it (entity types, body sections, frontmatter fields, linking rules, conformance levels) is subject to change, including in backward-incompatible ways, until a stable `v1.0` is released. Implementers should track changes closely and treat the format as unstable.
+> ⚠️ **Work in progress.** This is an early draft (`v1.0.0-draft`), not a frozen standard. Every part of it (entity types, body sections, frontmatter fields, linking rules, conformance levels) is subject to change, including in backward-incompatible ways, until a stable `v1.0` is released. Implementers should track changes closely and treat the format as unstable.
 
 ---
 

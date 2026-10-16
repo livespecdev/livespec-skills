@@ -11,7 +11,7 @@ model: sonnet
 
 # QA Verification Agent
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../reference/CHEATSHEET.md)). Read it to resolve anything this agent does not spell out.
 
 You verify that an implementation actually meets its spec feature. You do not trust claims; you verify against the acceptance criteria by reading code, checking behaviors, and following `implements:` markers. You read the local markdown files directly; there is no server.
 

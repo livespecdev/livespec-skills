@@ -12,7 +12,7 @@ argument-hint: "[feature-slug]"
 
 # Check Drift
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Two sources of truth: the spec files hold intent, the codebase holds reality (§1). This skill compares them mechanically, using the one bridge the format defines: the code marker `implements: {feature-slug}#{spec-item-id}` and its companion `see-spec:` (§9.4). The legacy `livespec:` verb is read as `implements:`.
 

@@ -11,7 +11,7 @@ argument-hint: <feature-slug>
 
 # Sync Spec
 
-> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v0.1.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
+> **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Reconcile the spec files with the reality of what was built. There is no server: this is `Edit` on local `features/` and concept files, surfaced as a git diff the user reviews. Work in this order: **summarize → confirm → edit → report → discover**.
 
