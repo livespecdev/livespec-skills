@@ -93,6 +93,9 @@ SPEC_SECTIONS = {
     "tech": "TECH",
 }
 
+# §6.4: the one reserved H2 in a concept body; it holds Q items only.
+CONCEPT_QUESTIONS_SECTION = "questions"
+
 
 # ------------------------------------------------------------------ models
 
@@ -431,10 +434,22 @@ def _as_concept(d: Doc, root_dir: str, type_slug: str) -> Concept:
         title=d.title, sections=[], body_lines=d.body_lines,
         root=root_dir, type=type_slug,
     )
-    for _, text in c.body_lines:
+    # §6.4: a concept body is free-form, except `## Questions`, which holds Q
+    # items. Only that section is parsed for spec items.
+    in_questions = False
+    question_lines: list[tuple[int, str]] = []
+    for lineno, text in c.body_lines:
         h2 = H2_RE.match(text)
         if h2:
             c.sections.append(h2.group("title"))
+            in_questions = h2.group("title").strip().lower() == CONCEPT_QUESTIONS_SECTION
+        if in_questions:
+            question_lines.append((lineno, text))
+    if question_lines:
+        sections = c.sections
+        c.sections = []
+        _parse_items(question_lines, c)
+        c.sections = sections
     return c
 
 

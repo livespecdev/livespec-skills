@@ -65,9 +65,12 @@ Single-paragraph summary (required).
 
 ## Author-defined section (optional)
 Free-form markdown.
+
+## Questions (optional, the one reserved name)
+- [ ] Q-1: ...
 ```
 
-Frontmatter is optional. Omit entirely if empty.
+Frontmatter is optional. Omit entirely if empty. A concept holds no spec item other than `Q`, and only in `## Questions`: same syntax and ID rules as in a feature (§6.4).
 
 ## Feature file anatomy
 
@@ -122,7 +125,7 @@ In **loose mode** (default), section names and order are flexible. In **strict m
 | `REQ` | top-level in `## Requirements` | `- [ ] REQ-1: body`                      |
 | `AC`  | nested under its REQ (2 sp)  | `  - [ ] AC-1.1: body`                    |
 | `AS`  | top-level in `## Assumptions`| `- [ ] AS-1: body`                        |
-| `Q`   | top-level in `## Questions`  | `- [ ] Q-1: body`                          |
+| `Q`   | top-level in `## Questions` (feature or concept) | `- [ ] Q-1: body`        |
 | `LIM` | top-level in `## Limitations`| `- [ ] LIM-1: body`                        |
 | `UX`  | top-level in `## UX`         | `- [ ] UX-1: body`                         |
 | `TECH`| top-level in `## Tech`       | `- [ ] TECH-1: body`                       |

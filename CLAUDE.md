@@ -16,7 +16,7 @@ It is the *forward authoring* toolchain for LiveSpec: scope, specify, frame, imp
 - **Files, not an API.** Feature and concept edits are `Read`/`Write`/`Edit` on `features/**/*.md` and `{product|ux|tech}/**/*.md`.
 - **Propose, don't impose.** Edits to `product/`, `ux/`, `tech/` are product decisions: skills propose them, and the human reviews via git diff / PR.
 - **No status field.** LiveSpec §10 defines none. Progress is the checkbox state of spec items (§8.1).
-- **No work-tracking layer.** LiveSpec describes the software, not the work on it (`SPEC.md` §1). Anything that answers *"how is the work going?"* (assignees, due dates, kanban states, delivery batches/ordering/readiness, spec maturity enums) MUST NOT be written into spec files, nor reconstructed elsewhere by these skills. That concern belongs to external work-tracking tools (issue tracker, git branches).
+- **No work-tracking layer.** LiveSpec describes the software, not the work on it (`SPEC.md` §1). Anything that answers *"how is the work going?"* (assignees, due dates, kanban states, delivery batches/ordering/readiness, spec maturity enums) MUST NOT be written into spec files, nor reconstructed elsewhere by these skills. That concern belongs to external work-tracking tools (issue tracker, git branches). One exception: an open `Q` item MAY name the **role** that decides it (e.g. "PM", "the payments team"), because who holds the answer is part of the product's current context, like the question itself. Never a person's name, a due date, or an intermediate status ("in progress", "chased"): those are work tracking. The format is a project convention, not part of the format spec.
 
 ## Locating the project
 

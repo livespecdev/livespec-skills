@@ -285,7 +285,8 @@ The **typed feature relations** (`requires` / `triggers` / `extends`, §7.2) app
 - The H1 title MUST match the file's intended display name.
 - The opening paragraph immediately following the H1 is the **summary**: it MUST be present, MUST be a single paragraph, and is what tools display in lists / link previews.
 - Any content after the summary is OPTIONAL and is organized as free-form H2 sections (with H3+ sub-headings as needed).
-- H2 section names are chosen by the author. Tools MUST NOT impose constraints on H2 (or deeper) section names in a concept body, and MUST NOT require any specific section to be present.
+- H2 section names are chosen by the author. Tools MUST NOT impose constraints on H2 (or deeper) section names in a concept body, and MUST NOT require any specific section to be present. The one reserved name is `## Questions` (below).
+- **Questions.** A concept MAY hold a `## Questions` section. Its top-level items are `Q` spec items (§8), with the same syntax, checkbox states, resolution notes and identifier rules as in a feature; their IDs are scoped to the concept file. `Q` is the only spec item type a concept holds: a standing rule has no requirements of its own, but it can leave questions open, and those questions deserve the same visibility as a feature's. Tools parse spec items in that section only; every other section of a concept stays free-form.
 
 ### 6.5 Choosing: concept, feature, or spec item
 
@@ -539,7 +540,7 @@ When deciding whether to merge two features into one, ask the same questions in 
 
 ## 8. Spec Items
 
-Spec items are atomic, addressable units inside a feature: requirements, acceptance criteria, assumptions, questions, known limitations, and design directions.
+Spec items are atomic, addressable units inside a feature: requirements, acceptance criteria, assumptions, questions, known limitations, and design directions. Questions may also sit inside a concept (§6.4).
 
 ### 8.1 Inline syntax
 
@@ -661,7 +662,7 @@ Tools MAY render these as navigable links and use them to build a reverse-refere
 | `REQ` | Requirement           | Top-level in `## Requirements`      | Functional/behavioral requirement of the feature.    |
 | `AC`  | Acceptance Criterion  | Nested under a REQ (2-space indent) | Specific testable condition for its parent REQ.      |
 | `AS`  | Assumption            | Top-level in `## Assumptions`       | Assumption the spec relies on; flag if invalidated.  |
-| `Q`   | Question              | Top-level in `## Questions`         | Unresolved question that blocks or shapes the spec.  |
+| `Q`   | Question              | Top-level in `## Questions` (feature or concept, §6.4) | Unresolved question that blocks or shapes the spec.  |
 | `LIM` | Known limitation      | Top-level in `## Limitations`       | Known, accepted gap between what this feature should do and what it does today. |
 | `UX`  | UX direction          | Top-level in `## UX`                | Interface or interaction choice made for this feature (component, pattern, layout, state, wording). |
 | `TECH`| Tech direction        | Top-level in `## Tech`              | Implementation choice made for this feature (data shape, module boundary, library, storage, integration). |
@@ -700,7 +701,7 @@ The pills stay informative rather than alarming: the score is unaffected, so not
 
 ### 8.3 Identifiers
 
-**REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, unique per type within the feature file. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
+**REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, unique per type within the file (a feature, or a concept for its `Q` items). Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
 
 **AC IDs** use the form `AC-{R}.{N}`, where `R` MUST equal the `N` of the parent REQ:
 

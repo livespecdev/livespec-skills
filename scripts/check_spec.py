@@ -77,6 +77,7 @@ CHECKS = [
     "orphan-concept",
     "invalid-slug",
     "concept-placement",
+    "concept-item-type",
     "empty-frontmatter",
     "missing-title",
     "open-question",
@@ -411,6 +412,19 @@ def check_concept_placement(report: Report, concept: Concept, enabled) -> None:
         )
 
 
+def check_concept_items(report: Report, concept: Concept, enabled) -> None:
+    if "concept-item-type" not in enabled:
+        return
+    for item in concept.items:
+        if item.type != "Q":
+            report.add(
+                check="concept-item-type", severity="error", spec_ref="§6.4",
+                file=concept.rel, line=item.line, item=item.id,
+                message=f"{item.id}: a concept holds only Q items, in ## Questions. "
+                        f"A requirement or direction belongs in a feature.",
+            )
+
+
 def check_orphan_concepts(report: Report, project: Project, enabled) -> None:
     if "orphan-concept" not in enabled:
         return
@@ -498,6 +512,8 @@ def main(argv=None) -> int:
         for concept in project.concepts:
             check_doc_shape(report, concept, enabled)
             check_concept_placement(report, concept, enabled)
+            check_concept_items(report, concept, enabled)
+            check_items(report, concept, enabled)
             check_links(report, project, concept, types, enabled)
             check_refs(report, project, concept, types, enabled)
         check_orphan_concepts(report, project, enabled)
@@ -509,6 +525,9 @@ def main(argv=None) -> int:
         "REQ": sum(1 for i in all_items if i.type == "REQ"),
         "AC": sum(1 for i in all_items if i.type == "AC"),
         "open Q": sum(1 for i in all_items if i.type == "Q" and i.open),
+        "open Q (concepts)": sum(
+            1 for c in project.concepts for i in c.items if i.type == "Q" and i.open
+        ) if not args.feature else 0,
         "open LIM": sum(1 for i in all_items if i.type == "LIM" and i.open),
         "UX": sum(1 for i in all_items if i.type == "UX"),
         "TECH": sum(1 for i in all_items if i.type == "TECH"),

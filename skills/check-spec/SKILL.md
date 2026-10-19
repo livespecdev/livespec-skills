@@ -76,7 +76,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 
 **Open items**
 
-`open-question` and `open-limitation` list every `[ ]` Q and LIM. They are an inventory, not findings. Surface them when the user wants to know what is unresolved.
+`open-question` and `open-limitation` list every `[ ]` Q and LIM, including the `Q` items of a concept's `## Questions` section (§6.4). They are an inventory, not findings. Surface them when the user wants to know what is unresolved. `concept-item-type` flags any other spec item found in a concept.
 
 ## Interpret, do not dump
 
