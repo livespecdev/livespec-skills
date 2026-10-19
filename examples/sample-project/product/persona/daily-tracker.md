@@ -11,7 +11,7 @@ Person who is trying to build one or more personal habits and checks in most day
 
 ## Context
 
-The daily tracker has bounced between notes apps, calendar reminders, and paper. Their dominant frustration is the one captured by [[streaks-break-silently]]: they lose momentum the moment the tool gets in the way. They value a check-in that takes one tap and works even when the network does not.
+The daily tracker has bounced between notes apps, calendar reminders, and paper. Their dominant frustration is the one captured by [Streaks Break Silently](../pain_point/streaks-break-silently.md): they lose momentum the moment the tool gets in the way. They value a check-in that takes one tap and works even when the network does not.
 
 ## What success looks like
 

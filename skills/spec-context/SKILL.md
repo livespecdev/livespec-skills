@@ -76,7 +76,7 @@ Features do not exist in isolation. When you study one, follow its connections:
 
 - **Typed relations** in `links.feature` (§7.2): `requires` (hard runtime dependency), `triggers` (causes the other to run), `extends` (specialization).
 - **Shared concepts**: a `constraint`, `entity`, or `external_system` linked from several features binds them. `constraint: [...]` means the feature must respect that standing rule; `entity: [...]` means it manipulates that domain object; `external_system: [...]` means it integrates with it (§7.2).
-- **In-prose `[[type:slug]]`** mentions (§9.5) are reading aids; the frontmatter `links:` is the authoritative relation set.
+- **In-prose references** (§9.5), relative Markdown links to a spec file or `[[type:slug]]`, are reading aids; the frontmatter `links:` is the authoritative relation set.
 
 Answer: where does this feature's responsibility end and a neighbor's begin? Which constraints apply? Does it depend on another feature being built first?
 

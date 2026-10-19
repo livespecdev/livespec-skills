@@ -70,7 +70,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 | `broken-link` | warning | A `links:` entry resolving to no file (§9.2). Usually a renamed or not-yet-written concept. |
 | `unknown-link-type` | warning | A `links:` key that is neither a core type (§6.2) nor a directory present in the project. Likely a typo or a plural (`personas` for `persona`); type slugs are always singular. |
 | `broken-item-ref` | warning | `[REQ-9]` or `[other-feature#REQ-3]` in a body pointing at an ID that does not exist (§8.1). |
-| `broken-prose-ref` | warning | A `[[type:slug]]` or `[[slug]]` resolving to nothing (§9.5). |
+| `broken-prose-ref` | warning | An in-prose reference resolving to nothing (§9.5): a `[[type:slug]]` or `[[slug]]`, or a relative Markdown link pointing into `product/`, `ux/`, `tech/` or `features/` at a missing file. Other links (URLs, assets, files outside those four folders) are not checked. |
 | `ambiguous-prose-ref` | warning | A bare `[[slug]]` matching several entities. Disambiguate with the typed form (§9.5). |
 | `orphan-concept` | info | A concept no feature and no concept references. Not a defect: it may be context that stands on its own. Worth a look if the project has many. |
 

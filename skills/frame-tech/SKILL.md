@@ -72,7 +72,7 @@ Present the full proposed `## Tech` section (the `TECH` items, then the supporti
 - [ ] TECH-3: `PUT /habits/{id}/completions/{day}` is an idempotent upsert: repeated calls for the same day converge to one completion.
 - [ ] TECH-4: Streaks are derived from the log on read, never stored as an independent value.
 
-The log keeps logging fully offline-capable (respects [[constraint:offline-first-logging]]). The idempotent upsert makes reconciliation order-independent, which is how two devices logging the same day end with a single completion ([AC-2.3]). Derived streaks cannot drift out of sync with the log.
+The log keeps logging fully offline-capable (respects [offline-first logging](../../product/constraint/offline-first-logging.md)). The idempotent upsert makes reconciliation order-independent, which is how two devices logging the same day end with a single completion ([AC-2.3]). Derived streaks cannot drift out of sync with the log.
 
 ### Testing strategy
 

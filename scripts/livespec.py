@@ -10,10 +10,12 @@ Section references (§N) point to reference/SPEC.md, pinned v1.0.0-draft.2.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import unquote
 
 # ---------------------------------------------------------------- constants
 
@@ -79,8 +81,13 @@ MARKER_VERBS = ("implements", "see-spec", "livespec")
 MARKER_RE = re.compile(
     r"(?<![\w-])(?P<verb>implements|see-spec|livespec):[ \t]+(?P<slug>[a-z0-9]+(?:-[a-z0-9]+)*)#(?P<ids>[A-Za-z]+-[0-9.]+(?:,[A-Za-z]+-[0-9.]+)*)"
 )
-# §9.5 in-prose reference.
+# §9.5 in-prose reference, wiki-style form.
 PROSE_REF_RE = re.compile(r"\[\[(?P<payload>[^\[\]\s][^\[\]]*?)\]\]")
+# §9.5 in-prose reference, Markdown link form (inline links; images excluded).
+MD_LINK_RE = re.compile(
+    r"(?<!!)\[(?P<text>[^\[\]\n]*)\]\((?P<dest><[^>\n]*>|[^\s()]+)(?:[ \t]+\"[^\"\n]*\")?\)"
+)
+URI_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 # §8.1 cross-feature spec item reference inside a body.
 XFEAT_REF_RE = re.compile(r"\[(?P<slug>[a-z0-9]+(?:-[a-z0-9]+)*)#(?P<id>[A-Za-z]+-[0-9.]+)\]")
 
@@ -199,6 +206,33 @@ class Project:
 
     def concepts_by_slug(self, slug: str) -> list[Concept]:
         return [c for c in self.concepts if c.slug == slug]
+
+    def doc_at(self, rel: str) -> Doc | None:
+        for d in self.docs:
+            if Path(d.rel).as_posix() == rel:
+                return d
+        return None
+
+    def md_ref_target(self, doc: Doc, dest: str) -> str | None:
+        """Project-relative path a Markdown link designates, if it is a §9.5 reference.
+
+        A link is a reference when its destination is relative, ends in `.md`
+        (fragment aside) and lands inside product/, ux/, tech/ or features/ of
+        this project. Anything else is an ordinary link: returns None.
+        """
+        dest = dest.strip()
+        if dest.startswith("<") and dest.endswith(">"):
+            dest = dest[1:-1]
+        if not dest or dest.startswith(("/", "#")) or URI_SCHEME_RE.match(dest):
+            return None
+        path = unquote(dest.split("#", 1)[0])
+        if not path.endswith(".md"):
+            return None
+        target = os.path.normpath(os.path.join(doc.path.parent, path))
+        rel = Path(os.path.relpath(target, self.root))
+        if not rel.parts or rel.parts[0] not in ("product", "ux", "tech", "features"):
+            return None
+        return rel.as_posix()
 
     @property
     def docs(self) -> list[Doc]:

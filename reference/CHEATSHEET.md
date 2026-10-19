@@ -155,20 +155,23 @@ Resolution note (closed items only): start a continuation line with `→ `, one 
 
 ## In-prose references
 
-Inside any concept or feature body, reference other entities with a wiki-style syntax:
+Inside any concept or feature body, reference other entities with a relative Markdown link to their file (recommended, clickable in any forge or editor), or with a wiki-style syntax:
 
-| Form                          | Use when                                          |
-|-------------------------------|---------------------------------------------------|
-| `[[type:slug]]`               | Always valid. Explicitly typed.                   |
-| `[[slug]]`                    | Shorthand. Only when `slug` is unambiguous.       |
+| Form                       | Use when                                                                    |
+|----------------------------|-----------------------------------------------------------------------------|
+| `[text](relative/path.md)` | Recommended. Text is free; the path, relative to the current file, decides. |
+| `[[type:slug]]`            | Wiki-style, explicitly typed.                                               |
+| `[[slug]]`                 | Wiki-style shorthand. Only when `slug` is unambiguous.                      |
 
-Examples: `[[persona:solo-organizer]]`, `[[remind-on-due-date]]`, `[[max-list-size]]`.
+Examples: `the [solo organizer](../persona/solo-organizer.md)`, `see [Remind on due date](../../features/notifications/remind-on-due-date.md)`, `[[persona:solo-organizer]]`, `[[remind-on-due-date]]`.
 
-For features, the type prefix is `feature`. For concepts, the type is the concept's type slug.
+Write the link text so it reads naturally in the sentence: the target's title, or the term as the sentence uses it (`the [todos](../entity/todo.md)`). For wiki-style references, the type prefix is `feature` for features and the concept's type slug for concepts. Pick one form per project.
+
+Frontmatter never carries either form: `links:` keeps plain slugs under type keys.
 
 **In-prose vs frontmatter** have different purposes:
 - `links:` frontmatter = structural relations (indexed, audited, presented in graphs)
-- `[[ ]]` in prose = reading aids (contextual mentions, not exhaustive)
+- references in prose = reading aids (contextual mentions, not exhaustive)
 
 A reference may appear in prose without `links:`, and vice-versa. When a relation is *structurally meaningful*, declare it in `links:` regardless of whether you mention it in prose.
 
@@ -220,10 +223,11 @@ Marker = verb + `:` + space(s) + `{feature-slug}#{spec-item-id}`, optionally fol
 ### Don't invent format
 - No block-level constructs inside spec item bodies (headings, fenced code blocks, tables). Move them to `## Tech` / `## UX` prose, or split them into `UX` / `TECH` items, and reference by ID.
 - No new top-level folders. Extension types go inside the existing four.
-- In-prose `[[ ]]` references resolve only to whole entities (concept/feature). To reference a spec item, use `[REQ-3]` (same file) or `[feature-slug#REQ-3]` (cross-feature).
+- In-prose references resolve only to whole entities (concept/feature file). To reference a spec item, use `[REQ-3]` (same file) or `[feature-slug#REQ-3]` (cross-feature).
 
 ### Don't break references
 - Slugs SHOULD be stable. Renaming a file breaks inbound links.
+- Moving a file (e.g. a feature to another area) breaks the relative Markdown links to it and from it: rewrite them in the same change.
 - Spec item IDs are immutable. To remove an item without breaking inbound refs, mark `[-]` (cancelled), don't delete.
 - Gaps in IDs (`REQ-1, REQ-3, REQ-7`) are valid. Don't renumber to close gaps.
 

@@ -83,7 +83,7 @@ Before touching the file, present the full proposed `## UX` section for review: 
 ## UX
 
 - [ ] UX-1: Today's completion toggles with a single tap anywhere on the habit row, not only on an icon.
-- [ ] UX-2: The toggle is optimistic: the row shows the new state before the write confirms, per [[ux_pattern:optimistic-update]].
+- [ ] UX-2: The toggle is optimistic: the row shows the new state before the write confirms, per [optimistic update](../../ux/ux_pattern/optimistic-update.md).
 - [ ] UX-3: A logged-but-unsynced completion shows an offline-pending badge labelled "Not synced yet", cleared on sync.
 - [ ] UX-4: With no habits yet, the list shows the create-habit call to action in place of rows.
 - [ ] UX-5: The toggle is reachable by keyboard and exposes its checked state to screen readers; the pending badge is announced, not conveyed by color alone.

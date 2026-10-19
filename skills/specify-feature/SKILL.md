@@ -122,7 +122,7 @@ links:
 ---
 ```
 
-`constraint: [...]` already means "respects", `entity: [...]` "manipulates", `external_system: [...]` "integrates with", `screen: [...]` "lands on" (§7.2); no explicit relation typing needed for concepts. Link the relations that structurally matter; in-prose `[[type:slug]]` mentions are reading aids, not a substitute (§9.5). Never emit an empty frontmatter block (§5).
+`constraint: [...]` already means "respects", `entity: [...]` "manipulates", `external_system: [...]` "integrates with", `screen: [...]` "lands on" (§7.2); no explicit relation typing needed for concepts. Link the relations that structurally matter; in-prose mentions are reading aids, not a substitute (§9.5). Write them as relative Markdown links to the target file, with link text that reads naturally in the sentence (`respects [offline-first logging](../../product/constraint/offline-first-logging.md)`); keep `[[type:slug]]` only in a project that already uses it throughout. Never emit an empty frontmatter block (§5).
 
 ## Validate before writing
 

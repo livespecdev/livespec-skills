@@ -4,7 +4,7 @@ Logging a habit completion MUST succeed with no network connection. A completion
 
 ## Why this cap
 
-The daily tracker frequently checks in from places with no signal. A check-in that requires the network would fail exactly when it is most needed, which is the failure mode behind [[streaks-break-silently]]. Offline-first logging is a standing rule every feature that records or displays completions must respect.
+The daily tracker frequently checks in from places with no signal. A check-in that requires the network would fail exactly when it is most needed, which is the failure mode behind [Streaks Break Silently](../pain_point/streaks-break-silently.md). Offline-first logging is a standing rule every feature that records or displays completions must respect.
 
 ## Scope
 

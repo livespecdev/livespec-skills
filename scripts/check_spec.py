@@ -23,6 +23,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from livespec import (  # noqa: E402
     CONCEPT_ROOTS,
+    INLINE_CODE_RE,
+    MD_LINK_RE,
     PROSE_REF_RE,
     SLUG_RE,
     XFEAT_REF_RE,
@@ -281,6 +283,16 @@ def check_refs(report: Report, project: Project, doc, types: dict, enabled) -> N
                         message=f"[{m.group('slug')}#{m.group('id')}]: {m.group('slug')} has no {m.group('id')}.",
                     )
 
+        if "broken-prose-ref" in enabled:
+            for m in MD_LINK_RE.finditer(INLINE_CODE_RE.sub("", text)):
+                rel = project.md_ref_target(doc, m.group("dest"))
+                if rel is not None and project.doc_at(rel) is None:
+                    report.add(
+                        check="broken-prose-ref", severity="warning", spec_ref="§9.5",
+                        file=doc.rel, line=lineno,
+                        message=f"[{m.group('text')}]({m.group('dest')}) resolves to no concept or feature ({rel}).",
+                    )
+
         for m in PROSE_REF_RE.finditer(text):
             payload = m.group("payload").strip()
             if ":" in payload:
@@ -433,6 +445,11 @@ def check_orphan_concepts(report: Report, project: Project, enabled) -> None:
         for type_slug, target in link_targets(doc.links):
             referenced.add((type_slug, target))
         for _, text in doc.body_lines:
+            for m in MD_LINK_RE.finditer(INLINE_CODE_RE.sub("", text)):
+                rel = project.md_ref_target(doc, m.group("dest"))
+                target = project.doc_at(rel) if rel else None
+                if isinstance(target, Concept):
+                    referenced.add((target.type, target.slug))
             for m in PROSE_REF_RE.finditer(text):
                 payload = m.group("payload").strip()
                 if ":" in payload:

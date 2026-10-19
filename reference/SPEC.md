@@ -839,28 +839,36 @@ The format guarantees one thing: **if a marker (`implements:`, `see-spec:`, or l
 
 ### 9.5 In-prose references
 
-Inside the body of a concept or feature, authors MAY reference other entities using a wiki-style bracketed syntax. This complements but does not replace the frontmatter `links:` field (§9.2); see "Relation to `links:` frontmatter" below.
+Inside the body of a concept or feature, authors MAY reference other entities by name. This complements but does not replace the frontmatter `links:` field (§9.2); see "Relation to `links:` frontmatter" below.
 
 #### Syntax
 
-Two forms are defined:
+Three forms are defined:
 
-| Form                     | Meaning                                                              | Example                                |
-|--------------------------|----------------------------------------------------------------------|----------------------------------------|
-| `[[type:slug]]`          | Typed reference. Always valid.                                       | `[[persona:solo-organizer]]`           |
-| `[[slug]]`               | Shorthand. Valid only when `slug` is unambiguous across the project. | `[[remind-on-due-date]]`               |
+| Form                       | Meaning                                                                         | Example                                              |
+|----------------------------|---------------------------------------------------------------------------------|------------------------------------------------------|
+| `[text](relative/path.md)` | Markdown link to the entity's file. Recommended.                                | `the [solo organizer](../persona/solo-organizer.md)` |
+| `[[type:slug]]`            | Typed wiki-style reference.                                                     | `[[persona:solo-organizer]]`                         |
+| `[[slug]]`                 | Wiki-style shorthand. Valid only when `slug` is unambiguous across the project. | `[[remind-on-due-date]]`                             |
 
-For features, the type prefix is `feature`. For concepts, the type is the concept's type slug (§6.2). The literal characters `[[` and `]]` MUST appear without whitespace around the payload. Tools MUST match case-sensitively.
+Writers SHOULD use the Markdown link form: every Markdown renderer (code forges, editors, documentation sites) displays it as a working link, with no LiveSpec-aware tool involved. The wiki-style forms remain valid, and are handy for quick drafting or in environments that resolve them. A project SHOULD use one form throughout its bodies.
+
+**Markdown link form.** A Markdown link (inline or reference-style) is an in-prose reference when its destination is a relative path that, resolved against the directory of the file containing the link, designates a path inside `product/`, `ux/`, `tech/`, or `features/` of the same project and ends in `.md`. Only a relative destination makes a reference: a path starting with `/` or carrying a URI scheme is an ordinary link. A fragment (`#...`), if present, is ignored for resolution. The link text is free and carries no meaning for tools: it SHOULD read naturally in the sentence (the target's title, or the term as the sentence uses it, e.g. `the [todos](../entity/todo.md)`). Any other link (an asset, an external URL, a file outside the four directories) is ordinary Markdown and is not checked as a reference.
+
+**Wiki-style forms.** For features, the type prefix is `feature`. For concepts, the type is the concept's type slug (§6.2). The literal characters `[[` and `]]` MUST appear without whitespace around the payload. Tools MUST match case-sensitively.
 
 #### Resolution
 
-1. For `[[type:slug]]`: find the directory containing `type` as in §9.2 (core taxonomy, else the unique `{type}/` subdirectory under `product/`, `ux/`, or `tech/`), then resolve to `{dir}/{type}/{slug}.md`. For `type = feature`, resolve to `features/**/{slug}.md`.
-2. For `[[slug]]`: search across all features and all concept types in the project.
+1. For a Markdown link: normalize the destination against the directory of the containing file. If a concept or feature file exists at that path, the reference resolves to it. Otherwise it is a broken reference; lint warning at Level 3 (§14).
+2. For `[[type:slug]]`: find the directory containing `type` as in §9.2 (core taxonomy, else the unique `{type}/` subdirectory under `product/`, `ux/`, or `tech/`), then resolve to `{dir}/{type}/{slug}.md`. For `type = feature`, resolve to `features/**/{slug}.md`.
+3. For `[[slug]]`: search across all features and all concept types in the project.
    - **Exactly one match** → resolved.
    - **Zero matches** → broken reference; lint warning at Level 3 (§14).
    - **Two or more matches** → ambiguous; lint warning at Level 3. The author MUST disambiguate using the typed form.
 
-A broken or ambiguous in-prose reference does NOT invalidate the document: readers without a resolver simply read the literal `[[...]]` text. The format degrades gracefully.
+A broken or ambiguous in-prose reference does NOT invalidate the document. Readers without a resolver still follow a Markdown link in any renderer, and read the literal `[[...]]` text of a wiki-style reference. The format degrades gracefully.
+
+**Moving files.** A Markdown link encodes the relative position of two files, so moving or renaming either one (for instance moving a feature to another area, §7.1) breaks it; a wiki-style reference only breaks on a slug change. A Level 2 writer that moves or renames an entity file SHOULD rewrite the Markdown-link references to it, and the ones it contains. Remaining breaks surface as Level 3 warnings.
 
 #### Where in-prose references are allowed
 
@@ -870,14 +878,14 @@ In-prose references MAY appear in:
 - Feature body prose (anywhere after the H1, in any section).
 - Spec item bodies (§8.1), alongside same-file `[REQ-3]` and cross-feature `[feature-slug#REQ-3]` references.
 
-They MUST NOT appear in frontmatter values (which use structured `links:` per §9.2), in slugs themselves, or in code markers (which use the unambiguous `feature-slug#spec-item-id` form per §9.4).
+They MUST NOT appear in frontmatter values (which use structured `links:` by slug per §9.2), in slugs themselves, or in code markers (which use the unambiguous `feature-slug#spec-item-id` form per §9.4).
 
 #### Relation to `links:` frontmatter
 
 In-prose references are **reading aids**, not a substitute for the frontmatter `links:` field. The two have distinct purposes:
 
 - **`links:` frontmatter** carries the *significant* relations of the entity: the ones a tool indexes, presents in a graph, or audits for coverage. It SHOULD be exhaustive on relations that *structurally matter*.
-- **In-prose `[[ ]]`** are *contextual mentions*: naming another entity while describing the current one, to keep prose navigable for human readers. They are not exhaustive and are not required to mirror the frontmatter.
+- **In-prose references** (any of the three forms) are *contextual mentions*: naming another entity while describing the current one, to keep prose navigable for human readers. They are not exhaustive and are not required to mirror the frontmatter.
 
 A reference MAY appear in prose without being declared in `links:`, and a relation MAY be declared in `links:` without being mentioned in prose. Tools building a project-wide reference graph SHOULD index both, but MUST NOT treat a missing prose mention as a defect, nor a missing `links:` entry as one (absent explicit coverage configuration).
 
@@ -1014,6 +1022,7 @@ Tools claim conformance at one of three levels:
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
 - MUST recognize code markers (§9.4) when scanning source files and resolve them to spec items: both verbs (`implements:`, `see-spec:`) on any spec item type, the legacy `livespec:` verb, and the multi-ID list form (`#REQ-1,REQ-2`)
 - MUST NOT emit the legacy `livespec:` verb when writing markers
+- SHOULD rewrite Markdown-link in-prose references when moving or renaming an entity file (§9.5)
 
 ### Level 3: Linter
 
