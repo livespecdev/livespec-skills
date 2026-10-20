@@ -5,7 +5,7 @@ description: |
   implements: marker anchoring them, markers pointing at features or IDs that no longer exist, code
   anchored to items still open or cancelled, and what carries no code yet. Use when the user asks
   what is actually built, whether the spec matches the code, to check marker coverage, or before a
-  review. Read-only diagnostic: fixes belong to /sync-spec (spec side) or /implement-feature (code
+  review. Read-only diagnostic: fixes belong to /sync (spec side) or /implement (code
   side). Not for internal spec consistency (/check-spec).
 argument-hint: "[feature-slug]"
 ---
@@ -66,8 +66,8 @@ Do not treat every finding as a defect to fix. A `done-unmarked` item on code wr
 
 This skill reports and stops. It writes nothing, neither spec files nor code.
 
-- Spec is behind reality (items to check off, resolution notes, new REQs or LIM discovered): `/sync-spec`.
-- Code is behind the spec (items still open, markers to place): `/implement-feature`.
+- Spec is behind reality (items to check off, resolution notes, new REQs or LIM discovered): `/sync`.
+- Code is behind the spec (items still open, markers to place): `/implement`.
 - Dangling markers: the fix is a judgment call. A renamed feature means the marker needs updating; a deleted spec item means the item should have been `[-]` cancelled and probably needs restoring, since IDs are immutable (§8.3). Propose it, let the user decide.
 
 ## What this skill does not do

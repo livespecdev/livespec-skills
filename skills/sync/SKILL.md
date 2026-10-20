@@ -1,5 +1,5 @@
 ---
-name: sync-spec
+name: sync
 description: |
   Reconciles spec files with what was actually built: checks resolved acceptance criteria, adds
   resolution notes, updates ## Tech / ## UX notes, captures new behavior as REQs or LIM items, and

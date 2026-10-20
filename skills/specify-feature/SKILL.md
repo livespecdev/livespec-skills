@@ -5,7 +5,7 @@ description: |
   acceptance criteria, assumptions, questions, issues, and concept links. Use when the user discusses
   new functionality, mentions a spec, requirements, or acceptance criteria for one feature, or wants an
   existing feature sharpened. Owns the core spec, not UX framing (/frame-ux) or tech framing
-  (/frame-tech). Not for multi-feature decomposition (/scope-features) or implementation.
+  (/frame-tech). Not for multi-feature decomposition (/scope) or implementation.
 argument-hint: [feature-description or feature-slug]
 ---
 
@@ -48,7 +48,7 @@ If what was described is really a behavior of an existing feature, add a REQ or 
 
 ## Right-sizing
 
-Use the §7.5 smell tests, not numeric limits. The feature's summary should hold in one sentence without conjunction-stuffing; its REQs should serve one audience; it should not naturally split into PRs whose ACs never touch. When in doubt, start coarser and split later (§7.5). If a feature is genuinely too big, decompose it into siblings along natural boundaries (different flows, personas, data domains) and relate them via `links.feature` (§7.2); hand off to `/scope-features` if it is more than a clean split.
+Use the §7.5 smell tests, not numeric limits. The feature's summary should hold in one sentence without conjunction-stuffing; its REQs should serve one audience; it should not naturally split into PRs whose ACs never touch. When in doubt, start coarser and split later (§7.5). If a feature is genuinely too big, decompose it into siblings along natural boundaries (different flows, personas, data domains) and relate them via `links.feature` (§7.2); hand off to `/scope` if it is more than a clean split.
 
 ## Write the spec
 
@@ -145,7 +145,7 @@ When the change is really a product decision (a new concept, or a brand-new feat
 
 ## Present and hand off
 
-Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, then `/implement-feature`.
+Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, then `/implement`.
 
 ---
 

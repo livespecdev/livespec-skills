@@ -68,7 +68,7 @@ Check both sources and report on both:
 
 ### Before implementing
 
-When the user asks you to build something, check whether a feature already covers it (`Grep`/`Glob features/`). If yes, read its ACs, linked constraints, and linked concepts before coding. If no, say so and let the user decide whether to scope it first (`/scope-features`) or build ad hoc.
+When the user asks you to build something, check whether a feature already covers it (`Grep`/`Glob features/`). If yes, read its ACs, linked constraints, and linked concepts before coding. If no, say so and let the user decide whether to scope it first (`/scope`) or build ad hoc.
 
 ## Exploring feature relationships
 
@@ -104,4 +104,4 @@ This is the narrative version, scoped to whatever you are currently looking at. 
 
 ## What this skill does not do
 
-It reads and reports. It does not write spec files. Hand off to `/scope-features`, `/specify-feature`, `/frame-ux`, `/frame-tech`, `/implement-feature`, or `/sync-spec` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.
+It reads and reports. It does not write spec files. Hand off to `/scope`, `/specify-feature`, `/frame-ux`, `/frame-tech`, `/implement`, or `/sync` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.

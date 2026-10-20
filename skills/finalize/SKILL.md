@@ -1,10 +1,10 @@
 ---
-name: finalize-feature
+name: finalize
 description: |
   Takes an implemented spec feature to production-ready: adds or updates tests, runs the project's
-  CI/quality gate, commits the changes, and delegates spec reconciliation to /sync-spec. Use when the
+  CI/quality gate, commits the changes, and delegates spec reconciliation to /sync. Use when the
   user signals readiness to finish ("ready to finalize", "need tests", "run CI", "implementation done").
-  Not for active implementation (/implement-feature), debugging, or spec-only updates (/sync-spec directly).
+  Not for active implementation (/implement), debugging, or spec-only updates (/sync directly).
 argument-hint: <feature-slug>
 ---
 
@@ -54,18 +54,18 @@ Run the most comprehensive check. If it fails, fix the issues and re-run. Do not
 
 ## Step 5: Reconcile the spec
 
-Delegate to `/sync-spec` for this feature to reconcile the spec files with what was actually built:
+Delegate to `/sync` for this feature to reconcile the spec files with what was actually built:
 
 - Confirm the right ACs are `[x]` (and any dropped one is `[-]` with a reason).
 - Add or sharpen `## Tech` notes for decisions made during implementation.
 - Record answered `Q` and lifted `LIM` as resolution notes (`→ `, §8.1).
 - Promote any standing rule discovered during the work to a concept for the user to review.
 
-If `/sync-spec` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).
+If `/sync` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).
 
 ## Step 6: Summary
 
-Summarize conversationally: tests added for what, the gate passing, the commit hash, and what `/sync-spec` reconciled. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
+Summarize conversationally: tests added for what, the gate passing, the commit hash, and what `/sync` reconciled. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
 
 ## Handling failures
 

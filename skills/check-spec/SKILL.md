@@ -98,7 +98,7 @@ Three categories deserve caution before you propose a fix:
 This skill reports and stops. It writes nothing.
 
 - Missing requirements, malformed items, weak ACs: `/specify-feature`.
-- Features that should be concepts, or an intent covering several features: `/scope-features`.
+- Features that should be concepts, or an intent covering several features: `/scope`.
 - Broken links to concepts worth writing: propose the concept file and let the user review the diff. Edits to `product/`, `ux/`, and `tech/` are product decisions.
 
 In `strict` mode (§12.2) the manifest enforces section names, order, and placement. This script does not check those; say so rather than implying the project is clean. Warn on strict violations you notice while reading, do not silently rewrite.

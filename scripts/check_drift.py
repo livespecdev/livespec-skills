@@ -7,8 +7,8 @@ as the spec?
 
 The format defines the marker syntax and explicitly leaves coverage rules and
 drift detection to tooling (§9.4, "Scope of this section"). This script is one
-such tool. It reports, it never writes: the fixes belong to /sync-spec (spec
-side) or /implement-feature (code side).
+such tool. It reports, it never writes: the fixes belong to /sync (spec
+side) or /implement (code side).
 
 Usage:
   python3 check_drift.py [PROJECT_ROOT] [--code-root DIR] [--feature SLUG] [--json]

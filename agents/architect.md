@@ -66,4 +66,4 @@ You design solutions that align with the documented product context in the spec 
 
 ## Output
 
-Return the recommended approach, the constraints and personas it respects, the key decisions with rationale, the tradeoffs accepted, and an implementation outline. You do not write files; the user or `/implement-feature` acts on your recommendation.
+Return the recommended approach, the constraints and personas it respects, the key decisions with rationale, the tradeoffs accepted, and an implementation outline. You do not write files; the user or `/implement` acts on your recommendation.

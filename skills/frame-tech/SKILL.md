@@ -86,7 +86,7 @@ The log keeps logging fully offline-capable (respects [offline-first logging](..
 
 **What becomes an item.** Each choice the implementation must follow is a `TECH` item: a module boundary, a data shape, an API contract, a storage location, a library, an integration path. Apply the substitution test (§6.5, *Requirement vs. direction*): if another implementation could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong (a latency budget, an error the user sees), it is an AC: note it for `/specify-feature` instead.
 
-**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body: a schema or a snippet goes in the prose, and the item names it. Extend the existing `TECH-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement-feature`, `/sync-spec`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [TECH-5]: ...`) and add the new direction as a new item (§8.1).
+**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body: a schema or a snippet goes in the prose, and the item names it. Extend the existing `TECH-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement`, `/sync`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [TECH-5]: ...`) and add the new direction as a new item (§8.1).
 
 **What stays prose.** The rationale that ties the items together, the constraints they satisfy, diagrams, the testing strategy, what is out of scope. Prose explains the items; it does not carry decisions of its own.
 
@@ -103,7 +103,7 @@ Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the 
 
 ## Wrap up
 
-Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer to start `/implement-feature`. There is no status to flip (§10).
+Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer to start `/implement`. There is no status to flip (§10).
 
 ---
 

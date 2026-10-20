@@ -44,13 +44,13 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | Skill | What it does |
 |---|---|
 | `/spec-context` | Locates the project, maps its concepts and features, and bridges the spec against the codebase. Read-only orientation. |
-| `/scope-features` | Decomposes natural-language intent into a plan of features to write or update (and concepts to extract), then writes them. |
+| `/scope` | Decomposes natural-language intent into a plan of features to write or update (and concepts to extract), then writes them. |
 | `/specify-feature` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
 | `/frame-ux` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
 | `/frame-tech` | Frames the technical approach into the feature's `## Tech` section, grounded in the codebase. |
-| `/implement-feature` | Works through the acceptance criteria, writes code, places `implements:` / `see-spec:` markers, and checks ACs as they pass. |
-| `/finalize-feature` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync-spec`. |
-| `/sync-spec` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
+| `/implement` | Works through the acceptance criteria, writes code, places `implements:` / `see-spec:` markers, and checks ACs as they pass. |
+| `/finalize` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync`. |
+| `/sync` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
 | `/check-drift` | Reports where intent and code disagree: `[x]` items with no `implements:` marker, dangling markers, code anchored to open items. |
 | `/check-spec` | Reports internal spec inconsistencies: features with no requirements, duplicate IDs, broken links, orphan concepts. |
 
@@ -65,7 +65,7 @@ Both exit 0 even when they report findings: they are diagnostics, not quality ga
 
 ## Making the skills self-trigger
 
-Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a spec manifest, the skills already fire on their own: ask "how does the export feature work?" and `/spec-context` orients itself against the spec; say "implement the export feature" and `/implement-feature` takes over. You rarely need to type the slash command.
+Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a spec manifest, the skills already fire on their own: ask "how does the export feature work?" and `/spec-context` orients itself against the spec; say "implement the export feature" and `/implement` takes over. You rarely need to type the slash command.
 
 That routing is model-driven and best-effort, not a hard rule keyed on the manifest. To make it reliable in a repository you work in often, add a short pointer to **that repository's** `CLAUDE.md` (the spec lives in the user's repo; this is not about editing anything in livespec-skills):
 
@@ -77,8 +77,8 @@ This repository is a LiveSpec project (see its manifest). Use the
 
 - At session start, or before working on any feature, use `spec-context`
   to orient against the spec.
-- When scoping new work, use `scope-features`; to author one feature,
-  `specify-feature`; to build it, `implement-feature`.
+- When scoping new work, use `scope`; to author one feature,
+  `specify-feature`; to build it, `implement`.
 
 Keep the spec files in sync with the code: they are the source of truth.
 ```

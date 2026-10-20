@@ -61,13 +61,13 @@ You should see `livespec` enabled. Its skills become available as slash commands
 
 ```
 /spec-context
-/scope-features
+/scope
 /specify-feature
 /frame-ux
 /frame-tech
-/implement-feature
-/finalize-feature
-/sync-spec
+/implement
+/finalize
+/sync
 ```
 
 The subagents (`specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`) become available to the Agent tool. Skills and agents are discovered by convention from the plugin's `skills/` and `agents/` directories; there is no registration step.

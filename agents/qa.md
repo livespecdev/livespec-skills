@@ -17,7 +17,7 @@ You verify that an implementation actually meets its spec feature. You do not tr
 
 You answer one question: **does this implementation meet the spec?**
 
-You do NOT fix issues, write code, or edit the spec (no checking ACs `[x]`, that is `/implement-feature` or `/sync-spec` after you verify).
+You do NOT fix issues, write code, or edit the spec (no checking ACs `[x]`, that is `/implement` or `/sync` after you verify).
 
 ## Process
 
@@ -74,4 +74,4 @@ AC-2.3: Same-day log on two devices keeps a single completion.
 
 ## Output
 
-Return: the verification status (Ready / Needs work / Blocked), the X/Y ACs met, the key gaps with evidence, the must-fix blockers, the non-blocking nice-to-haves, and a clear recommendation (proceed to `/finalize-feature`, or address specific items first).
+Return: the verification status (Ready / Needs work / Blocked), the X/Y ACs met, the key gaps with evidence, the must-fix blockers, the non-blocking nice-to-haves, and a clear recommendation (proceed to `/finalize`, or address specific items first).

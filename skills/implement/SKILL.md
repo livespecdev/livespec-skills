@@ -1,11 +1,11 @@
 ---
-name: implement-feature
+name: implement
 description: |
   Implements a spec feature by working through its acceptance criteria, writing code, placing
   code markers (implements: / see-spec:) that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
   tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
   this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
-  scoping (/scope-features), or framing only (/frame-ux, /frame-tech).
+  scoping (/scope), or framing only (/frame-ux, /frame-tech).
 argument-hint: <feature-slug>
 ---
 
@@ -29,7 +29,7 @@ If the slug matches nothing, say so and run Picker mode.
 1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1).
 2. `Glob features/**/*.md` and read each feature's spec-item state.
 3. Present, via `AskUserQuestion`, the features that are framed (have `## UX` where user-facing, and `## Tech`) and still have open (`- [ ]`) ACs, with their progress (e.g. "log-completion (3/8 ACs done)").
-4. If nothing is ready, say so and point at `/scope-features` or `/specify-feature`.
+4. If nothing is ready, say so and point at `/scope` or `/specify-feature`.
 5. Route the selection into Single-feature mode.
 
 ## Single-feature mode
@@ -79,7 +79,7 @@ If the code needs to behave differently from an AC, do not silently overwrite in
 
 ## Wrap up
 
-Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the code markers) is the record. Then point at `/finalize-feature` (tests, quality gate, commit) and `/sync-spec` (reconcile the spec with what was built). There is no status to set.
+Summarize conversationally: the feature, how many ACs are now `[x]`, and which (if any) remain open and why. The diff (code plus the checked spec items plus the code markers) is the record. Then point at `/finalize` (tests, quality gate, commit) and `/sync` (reconcile the spec with what was built). There is no status to set.
 
 ---
 

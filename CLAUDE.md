@@ -74,13 +74,13 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 | Skill | Purpose |
 |---|---|
 | `spec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
-| `scope-features` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
+| `scope` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
 | `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, LIM. Writes the `.md` directly per §7–§8. |
 | `frame-ux` | Frame UX into `UX` items + supporting prose under `## UX`. Reads `ux/` concepts. |
 | `frame-tech` | Frame technical approach into `TECH` items + supporting prose under `## Tech`; explore the codebase; reads `tech/` concepts. |
-| `implement-feature` | Work through ACs, write code, place `implements:` / `see-spec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
-| `finalize-feature` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync-spec`. |
-| `sync-spec` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), flip or supersede `UX`/`TECH` directions, promote discovered standing rules to concepts. |
+| `implement` | Work through ACs, write code, place `implements:` / `see-spec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
+| `finalize` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync`. |
+| `sync` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), flip or supersede `UX`/`TECH` directions, promote discovered standing rules to concepts. |
 | `check-drift` | Report where intent and code disagree: `[x]` items with no marker, dangling markers, code anchored to open or cancelled items. Read-only. |
 | `check-spec` | Report internal spec inconsistencies: features with no REQ, duplicate IDs, broken links, orphan concepts. Read-only, spec files only. |
 

@@ -101,7 +101,7 @@ Habit list → tap habit row → today's completion toggles on (streak updates i
 
 **What becomes an item.** Each choice the implementation must follow is a `UX` item: a component or pattern, a layout, how a state is shown, a label, an accessibility treatment. Apply the substitution test (§6.5, *Requirement vs. direction*): if a different interface could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong, it is an AC: note it for `/specify-feature` instead of writing it under `## UX` (a sync conflict that "resolves silently to one completion" is AC-2.3, not a UX choice).
 
-**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body. Extend the existing `UX-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement-feature`, `/sync-spec`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [UX-6]: ...`) and add the new direction as a new item (§8.1).
+**Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body. Extend the existing `UX-N` sequence; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement`, `/sync`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [UX-6]: ...`) and add the new direction as a new item (§8.1).
 
 **What stays prose.** The summary of the approach and why, the user flow, sketches and asset references. Prose explains the items; it does not carry decisions of its own. A decision that only exists in prose cannot be referenced, anchored, or closed.
 
@@ -122,7 +122,7 @@ If framing established a reusable interaction or component rule that would apply
 
 ## Wrap up
 
-Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer to start `/implement-feature`. There is no status to flip (§10): readiness is simply that both `## UX` and `## Tech` are present and the spec items are ready to implement.
+Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer to start `/implement`. There is no status to flip (§10): readiness is simply that both `## UX` and `## Tech` are present and the spec items are ready to implement.
 
 ---
 
