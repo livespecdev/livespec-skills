@@ -90,7 +90,7 @@ Keep the spec files in sync with the code: they are the source of truth.
 
 ## The subagents
 
-For heavier or isolated work, the skills can delegate to subagents in `agents/`: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`, and `reviewer` (the fresh-context agent `/review` runs in). They operate on the local files only.
+For heavier or isolated work, the skills can delegate to subagents in `agents/`: `qa` (checks an implementation against a feature's acceptance criteria), `strategist` (explores product opportunities from the spec), and `reviewer` (the fresh-context agent `/review` runs in). They read the local files only and cannot ask you questions: they return their findings to the session that called them.
 
 ## Example project
 

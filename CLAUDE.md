@@ -67,7 +67,7 @@ livespec-skills/
 
 **Bundled format reference.** Skills and agents cite `SPEC.md §N` constantly, and they resolve those citations against the **vendored** copy in `reference/`, not against an external clone. Reference it with relative paths (`../../reference/SPEC.md` from a skill, `../reference/SPEC.md` from an agent): `${CLAUDE_PLUGIN_ROOT}` does NOT expand in skill or agent prose (only in hook, MCP, and LSP config), so it MUST NOT be used there. The copy is pinned to the version in `plugin.json`; when the format bumps, re-vendor from the `livespec` repo (`cp .../livespec/{SPEC,CHEATSHEET}.md reference/`) and update the pin. See `reference/README.md`.
 
-A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter carries `name`, `description` (with trigger phrases), and optional `argument-hint`. Subagents are single markdown files under `agents/` with frontmatter `name`, `description`, `tools`. **Agent tool lists MUST NOT reference any MCP server**: use `Read`, `Glob`, `Grep`, `Edit`, `Write`, `AskUserQuestion` instead.
+A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter carries `name`, `description` (with trigger phrases), and optional `argument-hint`. Subagents are single markdown files under `agents/` with frontmatter `name`, `description`, `tools`. **Agent tool lists MUST NOT reference any MCP server**: use `Read`, `Glob`, `Grep`, `Bash`, `Edit`, `Write` instead (never `AskUserQuestion`, which subagents do not get).
 
 ## The skill suite
 
@@ -87,7 +87,7 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 | `check-drift` | Report where intent and code disagree: `[x]` items with no marker, dangling markers, code anchored to open or cancelled items. Read-only. |
 | `check-spec` | Report internal spec inconsistencies: features with no REQ, duplicate IDs, broken links, orphan concepts. Read-only, spec files only. |
 
-Subagents: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`, `reviewer`.
+Subagents: `qa`, `strategist`, `reviewer`. All three are read-only and earn their place by context isolation (an independent reader, or open-ended exploration); a skill that only needs a bigger context does not get an agent twin. Subagents cannot use `AskUserQuestion`: they return to the calling session, which asks.
 
 > **Conformance validation is still deferred.** A deterministic LiveSpec validator (Level-3 per §14) is intentionally *not* part of this toolchain. When it is built, the reference validator belongs in the `livespec` repo itself (it is constitutive of the standard), and a thin skill here would merely wrap it.
 >

@@ -5,7 +5,7 @@ description: |
   feature's acceptance criteria. Use before finalizing, when you want the ACs verified, or when you are
   unsure implementation is complete. Examines code, checks behaviors, reports gaps. Read-only: does not
   fix code or edit the spec.
-tools: Read, Grep, Glob, Bash, AskUserQuestion
+tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 

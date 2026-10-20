@@ -123,7 +123,3 @@ If framing established a reusable interaction or component rule that would apply
 ## Wrap up
 
 Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer to start `/implement`. There is no status to flip (§10): readiness is simply that both `## UX` and `## Tech` are present and the spec items are ready to implement.
-
----
-
-For complex features (new interaction patterns, multi-step flows, significant design-system work), delegate to the `ux-framer` subagent, which writes the `## UX` section and assets directly, operating only on the local files.

@@ -105,4 +105,4 @@ In `strict` mode (§12.2) the manifest enforces section names, order, and placem
 
 ## What this skill does not do
 
-It never reads the codebase: spec-to-code coherence, marker coverage, and dangling code markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: editorial quality is `/specify-feature` and the `specifier` agent.
+It never reads the codebase: spec-to-code coherence, marker coverage, and dangling code markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: editorial quality is `/specify-feature`.

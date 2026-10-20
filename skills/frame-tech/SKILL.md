@@ -104,7 +104,3 @@ Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the 
 ## Wrap up
 
 Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer to start `/implement`. There is no status to flip (§10).
-
----
-
-For large architectural changes, multiple integration points, or heavy codebase exploration, delegate to the `tech-framer` subagent, which writes the `## Tech` section directly, operating only on the local files.

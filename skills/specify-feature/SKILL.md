@@ -146,7 +146,3 @@ When the change is really a product decision (a new concept, or a brand-new feat
 ## Present and hand off
 
 Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, then `/implement`.
-
----
-
-For complex specification work (several related features, large decomposition, a quality pass across many features), delegate to the `specifier` subagent, which writes feature files directly, operating only on the local files.
