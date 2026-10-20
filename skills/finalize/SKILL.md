@@ -67,6 +67,8 @@ If `/sync` is unavailable, do those edits directly on the local files (this is p
 
 Summarize conversationally: tests added for what, the gate passing, the commit hash, and what `/sync` reconciled. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
 
+Then offer the hand-over: `/declare` writes the pull request description from the branch, and `/review` has an independent agent check it against the diff before the user pushes.
+
 ## Handling failures
 
 - **Test failures**: fix the implementation or the tests, re-run; do not move to the gate until tests pass.

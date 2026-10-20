@@ -80,11 +80,14 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 | `frame-tech` | Frame technical approach into `TECH` items + supporting prose under `## Tech`; explore the codebase; reads `tech/` concepts. |
 | `implement` | Work through ACs, write code, place `implements:` / `see-spec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |
 | `finalize` | Tests, CI/quality gate, commit. Delegates spec reconciliation to `sync`. |
+| `declare` | Write the pull request description of a branch into `.pr-description.md` (git-ignored): spec items implemented and changed, rewordings, checks actually run, points of attention. Runs in the authoring session. Lives outside the spec (§1). |
+| `review` | Independent review in a fresh context (`context: fork`, agent `reviewer`): declaration vs diff, format and project rules, code. Findings classed `fix` or `decide`. Read-only. |
+| `review-pr` | Run `review` on an open pull request (GitLab merge request) (`glab`/`gh`) and post its findings as one comment each, after the user confirms. Manual invocation only. |
 | `sync` | Reconcile spec files with what was built: check ACs, add resolution notes (§8.1 `→`), flip or supersede `UX`/`TECH` directions, promote discovered standing rules to concepts. |
 | `check-drift` | Report where intent and code disagree: `[x]` items with no marker, dangling markers, code anchored to open or cancelled items. Read-only. |
 | `check-spec` | Report internal spec inconsistencies: features with no REQ, duplicate IDs, broken links, orphan concepts. Read-only, spec files only. |
 
-Subagents: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`.
+Subagents: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`, `reviewer`.
 
 > **Conformance validation is still deferred.** A deterministic LiveSpec validator (Level-3 per §14) is intentionally *not* part of this toolchain. When it is built, the reference validator belongs in the `livespec` repo itself (it is constitutive of the standard), and a thin skill here would merely wrap it.
 >

@@ -51,6 +51,9 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/implement` | Works through the acceptance criteria, writes code, places `implements:` / `see-spec:` markers, and checks ACs as they pass. |
 | `/finalize` | Adds tests, runs the project's quality gate, commits, and hands off to `/sync`. |
 | `/sync` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
+| `/declare` | Writes the pull request description of the branch: what it implements and changes in the spec, rewordings first, what was checked, what to watch. |
+| `/review` | Has an independent agent, with no access to the session that wrote the code, check the declaration against the diff, then the format's and the project's rules, then the code. Read-only. |
+| `/review-pr` | Runs `/review` on an open pull request (or GitLab merge request) and posts its findings as comments, one thread each, after you confirm. |
 | `/check-drift` | Reports where intent and code disagree: `[x]` items with no `implements:` marker, dangling markers, code anchored to open items. |
 | `/check-spec` | Reports internal spec inconsistencies: features with no requirements, duplicate IDs, broken links, orphan concepts. |
 
@@ -87,7 +90,7 @@ Keep the spec files in sync with the code: they are the source of truth.
 
 ## The subagents
 
-For heavier or isolated work, the skills can delegate to subagents in `agents/`: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, and `strategist`. They operate on the local files only.
+For heavier or isolated work, the skills can delegate to subagents in `agents/`: `specifier`, `ux-framer`, `tech-framer`, `architect`, `qa`, `strategist`, and `reviewer` (the fresh-context agent `/review` runs in). They operate on the local files only.
 
 ## Example project
 
