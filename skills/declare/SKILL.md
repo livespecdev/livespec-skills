@@ -4,7 +4,8 @@ description: |
   Writes the end-of-work declaration of the current branch: the pull request description (merge
   request on GitLab),
   stating what the change implements and changes in the spec, what was checked, what to watch and
-  what is left, into `.pr-description.md`. Use when work on a branch is finished, before a pull
+  what is left, into `.pr-description.md`, then sets it on the request with `gh` or `glab` once
+  the user confirms. Use when work on a branch is finished, before a pull
   request is opened or updated, or when the user says "done", "open the PR", "open the MR",
   "write the declaration". Not for committing (/finalize) or reviewing (/review, /review-pr).
 argument-hint: "[base branch, default origin/main]"
@@ -62,11 +63,24 @@ Check that `.pr-description.md` is git-ignored (`git check-ignore`). If it is no
 
 **Do not tick a checklist** if the template has one: it records what the person who opens the request did.
 
-## Step 8: Hand over
+The file is the working copy of the declaration even when you publish it: `/review` reads it there.
 
-Show the declaration, then tell the user:
+## Step 8: Publish
 
-- paste `.pr-description.md` into the request description, or `glab mr create --description "$(cat .pr-description.md)"` / `gh pr create --body-file .pr-description.md`;
-- run `/review` for an independent agent review before pushing, or `/review-pr` once the request exists.
+Show the declaration. Then detect the host from `git remote -v`: GitHub uses `gh`, GitLab uses `glab`. A self-hosted GitLab may not say so in its URL: match the remote host against `glab auth status`. If the host is still unclear, ask the user. If the CLI is missing or not authenticated, say so and go to Step 9.
 
-Do not push and do not open the request yourself.
+Find the request opened from the current branch (`gh pr view` / `glab mr view`), then propose the one action that fits and wait for the user's answer:
+
+| Situation | Proposal |
+|---|---|
+| A request exists | Replace its description: `gh pr edit <id> --body-file .pr-description.md` / `glab mr update <id> --description "$(cat .pr-description.md)"`. |
+| No request, the branch is pushed and its upstream is at `HEAD` | Open it as a draft against the base branch (without its remote prefix): `gh pr create --draft --base <base> --title "<title>" --body-file .pr-description.md` / `glab mr create --draft --target-branch <base> --title "<title>" --description "$(cat .pr-description.md)"`. Propose the title (default: the subject of the only commit). If `/review` has not run on this declaration, offer it first: an open request is visible to others. |
+| No request, the branch is not pushed or is behind | Publish nothing. Go to Step 9. |
+
+Publish nothing without the user's confirmation, and never push: pushing stays the user's act.
+
+## Step 9: Hand over
+
+If nothing was published, tell the user why, and how to do it: paste `.pr-description.md` into the request description, or use the command above once the branch is pushed.
+
+Then point to the review: `/review` for an independent agent review before pushing, or `/review-pr` once the request exists.
