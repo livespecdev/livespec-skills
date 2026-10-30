@@ -20,7 +20,7 @@ Reconcile the spec files with the reality of what was built. There is no server:
 
 ## Which feature
 
-The slug in `$ARGUMENTS`. Without one, the features this branch touches: feature files changed in `git diff --name-only <base>...HEAD`, and features named by the `implements:` markers the diff adds (base: `--base <branch>` in `$ARGUMENTS`, else the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). One feature: go on with it. Several: list them and ask which, or all of them in turn. None: ask.
+The slug in `$ARGUMENTS`. Without one, the features the work touches, committed or not: feature files changed in `git diff --name-only $(git merge-base <base> HEAD)` or new (`git ls-files --others --exclude-standard`), and features named by the `implements:` markers that diff adds (base: `--base <branch>` in `$ARGUMENTS`, else the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). One feature: go on with it. Several: list them and ask which, or all of them in turn. None: ask.
 
 ## Step 1: Analyze what changed
 

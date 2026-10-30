@@ -9,7 +9,7 @@ description: |
   Use after /specify, /scope, /frame-ux or /frame-tech, before implementation, or when
   the user asks for a critical review of a spec. Read-only. Not for format errors (/check-spec)
   or for a code change (/review).
-argument-hint: "[feature-slug or area, default the features changed on the branch] [--base <branch>]"
+argument-hint: "[feature-slugs or areas, default the spec changed since the base] [--base <branch>]"
 context: fork
 agent: livespec:reviewer
 background: false
@@ -19,7 +19,7 @@ background: false
 
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: a feature slug, a feature path or an area, and optionally `--base <branch>` (default: the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). If it holds anything else, ignore it and say so in the summary.
+You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: feature slugs, feature paths or areas, any number of them, and optionally `--base <branch>` (default: the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). If it holds anything else, ignore it and say so in the summary.
 
 Read the specs as a skeptical reader would: the author knows what they meant and cannot see what they left implicit. Your job is to find what a developer, a tester or another feature would trip on.
 
@@ -27,9 +27,9 @@ Read the specs as a skeptical reader would: the author knows what they meant and
 
 - **The spec project**: locate the manifest (`product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode`.
 - **The features under review**:
-  - a slug or a path: that feature;
+  - slugs or paths: those features;
   - an area (`features/{area}/`): every feature in it;
-  - nothing: the features changed on the current branch, `git diff --name-only <base>...HEAD -- <project-root>/features`. When the branch also changes concepts under `product/`, `ux/` or `tech/`, add the features that link to them: a changed rule can break a feature nobody touched. If there is nothing to review, say so and stop.
+  - nothing: the spec files changed since the base, committed or not: `git diff --name-only $(git merge-base <base> HEAD)` (the working tree against the point where the branch left the base) plus the new files from `git ls-files --others --exclude-standard`. Spec edits are often still uncommitted when they are reviewed, and the work may sit on the default branch itself. Review the changed features. When concepts under `product/`, `ux/` or `tech/` changed, review those concepts too, and add the features that link to them: a changed rule can break a feature nobody touched. If nothing changed, say so and stop: the user can name the features.
 - **Every concept the features link to** (frontmatter `links:`, §9.2, and in-prose references, §9.5).
 - **The standing rules, linked or not**: every `principle` and `constraint` under `product/`, every `design_principle` under `ux/`, every `architecture_decision`, `coding_standard` and `*_convention` under `tech/` (§6.2). On a large project, read their H1 and summary, and read in full those whose subject the feature touches.
 - **The neighbors**: the features the reviewed ones link to or are linked from, and the other features of the same area.
@@ -44,6 +44,7 @@ The first question: does the feature respect what the project already holds true
 - **A rule restated**: the feature copies a concept's content instead of linking it (§6.5, *boundary rule*). The copy will drift.
 - **A rule born in a feature**: an item that would clearly apply to other features (§6.5, *Concept vs. spec item*). It belongs in a concept, proposed for review.
 - **A term misused**: a word defined in a `glossary_term` or an `entity` used with another meaning, or two words used for one thing.
+- **A changed concept against the rest**: a concept the change adds or edits that contradicts another concept, or that a feature linking it no longer respects.
 - **Two features in conflict**: a neighbor specifies the opposite behavior for the same case, or both specify the same behavior (the overlap will diverge).
 - **A promise not kept**: the summary paragraph (§7.4) or a linked `goal`, `pain_point` or `persona` promises something no REQ delivers, or a REQ serves none of what the feature claims. Whether the feature is worth building is out of scope; whether its items deliver what it says is not.
 
@@ -58,7 +59,7 @@ The REQs and ACs are the acceptance contract (§6.5, *Requirement vs. direction*
 - **Items in conflict** inside the feature.
 - **An assumption that carries weight**: an `AS` that, if false, invalidates REQs. Say which.
 - **A question that blocks**: an open `Q` on which ACs depend. Say which ACs.
-- **A closed item reworded**: when reviewing the branch, an `[x]` REQ or AC whose text in `<base>...HEAD` now requires something else. The code that implements it no longer matches and the spec still reads as delivered. It should be superseded (`[-]` and a new item, §8.1), not reworded.
+- **A closed item reworded**: an `[x]` REQ or AC whose text now requires something else than at the base (`git diff $(git merge-base <base> HEAD) -- <file>`). The code that implements it no longer matches and the spec still reads as delivered. It should be superseded (`[-]` and a new item, §8.1), not reworded.
 - **Work written into the spec**: an item phrased as a task ("Add", "Need to handle"), a `LIM` that is a defect scheduled for a fix (§8.2), or anything that answers "how is the work going?" (§1).
 
 ## 3. The placement
@@ -106,9 +107,9 @@ Return exactly this, so that the caller can show it:
 
 ### Summary
 
-Agent spec review of <date>, on <short commit> (<model>): <features reviewed>, <n> findings, <k> to decide.
+Agent spec review of <date>, on <short commit> (<model>): <features and concepts reviewed>, <n> findings, <k> to decide.
 
-**Changed spec files**: <the files under the project root that `<base>...HEAD` changes, or "none: features named directly">
+**Changed spec files**: <the spec files changed since the base, marking those not yet committed, or "none: features named directly">
 
 **Not verified by this review**
 - <what you could not check: assumptions about users or data, external systems' real behavior, concepts read by summary only>
