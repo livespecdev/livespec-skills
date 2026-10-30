@@ -1,0 +1,50 @@
+# Agent review on each pull request: /review on the change, /review-spec on the
+# spec files it touches, findings posted as resolvable review threads.
+# Copy to .github/workflows/review-pr.yml. Needs the secret ANTHROPIC_API_KEY.
+# Findings never fail the job; a misconfigured job (wrong commit, no auth) does.
+#
+# Untested combination, run it once by hand before relying on it: a skill marked
+# disable-model-invocation invoked as the prompt of `claude -p`.
+# Pull requests from forks get no secrets: the job only runs for branches of
+# this repository.
+name: review-pr
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      # The head commit, not the merge commit the event checks out by default,
+      # with full history so the diff against the target branch exists.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Install Claude Code and the plugin (pinned to a release tag)
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          claude plugin marketplace add livespecdev/livespec-skills#livespec--v0.8.3
+          claude plugin install livespec@livespec --scope user
+
+      - name: Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        # Write is needed for .pr-description.md, in this throwaway checkout.
+        # The project's quality gate is not allowed here: CI runs it already,
+        # and the review lists it under "Not verified".
+        run: |
+          claude -p "/livespec:review-pr ${{ github.event.pull_request.number }} --ci" \
+            --permission-mode dontAsk \
+            --allowedTools "Read,Glob,Grep,Write,Bash(git fetch *),Bash(git diff *),Bash(git log *),Bash(git show *),Bash(git status *),Bash(git rev-parse *),Bash(gh *),Bash(python3 *)"

@@ -67,6 +67,35 @@ python3 scripts/check_drift.py [PROJECT_ROOT] [--code-root DIR] [--json]
 
 Both exit 0 even when they report findings: they are diagnostics, not quality gates. Neither is the LiveSpec **validator**. Level-3 conformance (`SPEC.md` §14) is constitutive of the format and belongs in the [`livespec`](https://github.com/livespecdev/livespec) repository; these two answer editorial and spec-to-code questions that need the user's own codebase.
 
+## Working as a team
+
+Each person runs the skills in their own Claude Code session, on their own branch. The spec files are shared through git like the code, so the usual rules apply: branches, pull requests, review.
+
+**Who enters where.** Nothing in the skills is tied to a role; this is the usual split in a small team.
+
+| Who | Skills | Produces |
+|---|---|---|
+| Product (PM, founder) | `/scope`, `/specify-feature`, `/review-spec` | Features with requirements and acceptance criteria, concepts proposed for review |
+| Design | `/frame-ux`, `/review-spec` | The `## UX` section of a feature, `ux/` concepts proposed |
+| Development | `/frame-tech`, `/implement`, `/finalize`, `/declare`, `/review` | The `## Tech` section, the code with its markers, the pull request description |
+| Anyone, on someone else's work | `/review-spec`, `/review-pr`, `/spec-context` | Findings, never edits |
+
+`/implement` does not frame a feature on its own: when `## UX` or `## Tech` is missing it asks whether to frame now, wait for whoever owns it, or code without it.
+
+**Two ways to ship a feature.**
+
+- **Spec and code in one pull request.** One person scopes, frames and implements on a branch. `/review-pr` runs `/review` on the change and `/review-spec` on the spec files it touches. Fits small features and teams where the developer writes the spec.
+- **Spec first.** Product (and design) open a pull request with the feature file only. `/review-pr` reviews its substance with `/review-spec`; the team discusses on the request and merges it. Development then implements against the merged spec in a second pull request. Fits features where the decision is the hard part.
+
+**Changing a delivered feature.** A checked `REQ` or `AC` whose requirement changes is not reworded: it is cancelled `[-]` with `→ Superseded by [...]` and replaced by a new item, as for UX and tech directions. The code anchored to the old item then shows up in `/check-drift`, which is the point.
+
+**Parallel branches.** IDs are numbered per file, so two branches can both add a `REQ-4` to the same feature, and git may merge them without a conflict. `/check-spec` and `/review` report the duplicate; the branch merged second renumbers the IDs it introduced, with their markers and references (`/specify-feature` describes the procedure, from §8.3).
+
+**In CI.** Two jobs, neither of which ever fails a pipeline because of findings:
+
+- **On each pull request**, `/review-pr --ci` posts the agent review on the request. It needs Claude Code and an API key in the job. Examples: [`examples/ci/`](examples/ci/).
+- **On a schedule**, the two check scripts report the drift and the inconsistencies accumulated across the whole spec, which no pull request review sees. They need only Python 3, no Claude Code and no key. Example in the same folder.
+
 ## Making the skills self-trigger
 
 Once the plugin is installed, Claude Code loads every skill's description at the start of each session and matches your request against it. So in a repository with a spec manifest, the skills already fire on their own: ask "how does the export feature work?" and `/spec-context` orients itself against the spec; say "implement the export feature" and `/implement` takes over. You rarely need to type the slash command.

@@ -19,7 +19,7 @@ Decompose intent into spec features and write them as files under `features/`. T
 
 ## Phase 1: Research
 
-1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12).
+1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1) and read its `mode` (§12). If there is none, the team is starting its spec: offer to create the project before scoping (see *Starting a project* below).
 2. Parse `$ARGUMENTS` for intent. If empty, ask the user what they want to build.
 3. Find existing coverage so you propose `[UPDATE]` instead of duplicating:
    - `Grep` the project for key terms from the intent (feature bodies, spec-item text, concept summaries).
@@ -31,6 +31,19 @@ Decompose intent into spec features and write them as files under `features/`. T
    - Entities (`product/entity/*.md`) and external systems (`tech/external_system/*.md`) it touches.
 
 Show the user what you found: existing features that overlap, features that partially cover the intent, and the relevant concepts.
+
+### Starting a project
+
+When no manifest exists in the repository, ask the user where the spec lives and propose a location from §3.1: `docs/spec/` when the spec sits beside the code, `./` for a repository dedicated to the spec. Then `Write` the manifest there (§4), with the user's project name:
+
+```yaml
+format_version: "1.0"
+name: Habit Tracker
+```
+
+Use `product-spec.yaml` unless the user asks for `livespec.yaml` (§4: the names are equivalent). Add `mode: strict` only if the user asks for it (§12). Create no empty folders: `product/`, `ux/`, `tech/` and `features/` appear with the first file written in each (§3). Then scope as usual: the first features and the concepts they rely on (personas, constraints) are this skill's first plan.
+
+If the repository has a codebase the spec should describe as it already is, that is reverse engineering, out of this skill's scope: point at the `reverse-livespec` tool.
 
 ## Phase 2: Propose a plan
 

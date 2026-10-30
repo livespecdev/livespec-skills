@@ -131,7 +131,7 @@ Commits MUST NOT mention Claude, Claude Code, or any AI agent as committer, auth
 
 The reason is mechanical: Claude Code materializes an installed plugin in a cache keyed by version, `~/.claude/plugins/cache/{marketplace}/{plugin}/{version}/`, and records the resolved `version` and `gitCommitSha` in `~/.claude/plugins/installed_plugins.json`. When the declared version is unchanged, the target path already exists and `claude plugin update` has nothing to do, however many commits the repository has moved on.
 
-This does not show up on a machine whose marketplace entry is a local `directory` source pointing at this working copy (`known_marketplaces.json`): there, edits appear in the next session with no install step at all. It only bites on machines that installed from the GitHub remote, which is exactly where it is hardest to notice. Do not use "it works on my machine" as evidence that a release shipped.
+A marketplace entry with a local `directory` source pointing at this working copy (`known_marketplaces.json`) does not escape it: the install is still a copy in the versioned cache, refreshed only when the version changes. Only `claude --plugin-dir /path/to/livespec-skills` loads the working copy itself, with no cache (see `INSTALL.md`). Do not use "it works on my machine" as evidence that a release shipped: check the installed `version` and `gitCommitSha`.
 
 Release checklist:
 

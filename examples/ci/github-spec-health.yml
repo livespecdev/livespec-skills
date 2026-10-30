@@ -1,0 +1,31 @@
+# Weekly spec health report: drift between spec and code, and inconsistencies
+# inside the spec. Needs only Python 3: no Claude Code, no API key.
+# Copy to .github/workflows/spec-health.yml in your repository.
+# The job never fails because of findings: they are a report, not a gate.
+name: spec-health
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # Mondays, 07:00 UTC
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the check scripts (pinned to a plugin release)
+        run: git clone --depth 1 --branch livespec--v0.8.3 https://github.com/livespecdev/livespec-skills.git "$RUNNER_TEMP/livespec-skills"
+
+      - name: Report
+        run: |
+          S="$RUNNER_TEMP/livespec-skills/scripts"
+          {
+            echo '## Spec consistency'; echo '```'
+            python3 "$S/check_spec.py"
+            echo '```'; echo '## Spec and code drift'; echo '```'
+            python3 "$S/check_drift.py"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          # Add --json and upload the files as an artifact if a tool consumes them.

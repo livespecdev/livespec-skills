@@ -144,6 +144,17 @@ Features are the work product: **write the file directly** when the user asked f
 
 When the change is really a product decision (a new concept, or a brand-new feature the user only hinted at), present it first and let the user confirm via the diff before writing.
 
+### Two branches took the same ID
+
+Two branches started from the same base can both add a `REQ-4` to a feature. Git often merges them without a conflict, and the file then holds two `REQ-4` (`/check-spec` reports `duplicate-id`). §8.3 settles it: the change merged second takes the next free integer. That is the current branch once the other one is on its base.
+
+1. Find the items the branch introduced: present at `HEAD`, absent from `git show <base>:<path>`. Only those are renumbered. An ID that exists on the base is shared, and immutable.
+2. Give each the next free integer over the whole file, with its nested ACs (`REQ-4` → `REQ-6` makes `AC-4.1` → `AC-6.1`).
+3. In the same change, rewrite what the branch wrote pointing at them: in-prose references in the feature (`[REQ-4]`, §8.1), the code markers (`implements: slug#REQ-4`, found in `git diff <base>...HEAD`), test names that cite them, and `.pr-description.md` if it exists. References that point at the base's `REQ-4` stay as they are.
+4. Show the renumbering to the user as a table (old ID, new ID, files touched) before editing.
+
+This does not break §8.3: the renumbered IDs never existed outside the branch.
+
 ## Present and hand off
 
 Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved (the designer's step, when the team has one), `/frame-tech` before implementation, `/review-spec` for an independent critical read, then `/implement`.

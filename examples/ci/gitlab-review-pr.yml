@@ -1,0 +1,33 @@
+# Agent review on each merge request: /review on the change, /review-spec on the
+# spec files it touches, findings posted as resolvable discussions.
+# Include in .gitlab-ci.yml. Needs two masked CI/CD variables:
+#   ANTHROPIC_API_KEY
+#   GITLAB_REVIEW_TOKEN  a project access token with the `api` scope (glab reads
+#                        it as GITLAB_TOKEN; CI_JOB_TOKEN cannot post discussions)
+# Findings never fail the job; a misconfigured job (wrong commit, no auth) does.
+#
+# Untested, run it once by hand before relying on it: a skill marked
+# disable-model-invocation invoked as the prompt of `claude -p`, and the glab
+# package name for your image.
+livespec-review:
+  stage: test
+  image: node:22-alpine
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  variables:
+    GIT_DEPTH: "0"
+  before_script:
+    - apk add --no-cache git curl bash python3 glab
+    - curl -fsSL https://claude.ai/install.sh | bash
+    - export PATH="$HOME/.local/bin:$PATH"
+    - claude plugin marketplace add livespecdev/livespec-skills#livespec--v0.8.3
+    - claude plugin install livespec@livespec --scope user
+    # The request's head commit, not the merge commit of a merged results pipeline.
+    - git fetch origin "refs/merge-requests/$CI_MERGE_REQUEST_IID/head"
+    - git checkout --detach FETCH_HEAD
+  script:
+    - export GITLAB_TOKEN="$GITLAB_REVIEW_TOKEN"
+    - >
+      claude -p "/livespec:review-pr $CI_MERGE_REQUEST_IID --ci"
+      --permission-mode dontAsk
+      --allowedTools "Read,Glob,Grep,Write,Bash(git fetch *),Bash(git diff *),Bash(git log *),Bash(git show *),Bash(git status *),Bash(git rev-parse *),Bash(glab *),Bash(python3 *)"

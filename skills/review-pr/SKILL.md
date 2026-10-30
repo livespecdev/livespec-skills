@@ -27,7 +27,7 @@ Detect the host from `git remote -v`, or from the CI environment (`GITHUB_ACTION
 
 Request = the number in `$ARGUMENTS`, or the one opened from the current branch (`gh pr view` / `glab mr view`). Read its target branch, its head commit and its description. Make sure the target branch is available locally (`git fetch origin <target>`).
 
-If the local `HEAD` differs from the request's head commit, a review of it is worthless on this request. Interactive: say so and ask whether to fetch the head commit first. CI: stop and say so; the job must check out the request's head commit, not a merge commit.
+If the local `HEAD` differs from the request's head commit, a review of it is worthless on this request. Interactive: say so and ask whether to fetch the head commit first. CI: stop and say so, and exit non-zero. The job must check out the request's head commit with full history, not a merge commit: on GitHub, the `pull_request` event checks out a merge commit by default (`actions/checkout` needs `ref: ${{ github.event.pull_request.head.sha }}` and `fetch-depth: 0`); on GitLab, merged results pipelines do the same (check out `$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`, with `GIT_DEPTH: 0`). See the examples in `examples/ci/`.
 
 ## Step 2: Hand the declaration to the review
 
@@ -43,15 +43,59 @@ Then, if the request changes files of a spec project (`git diff --name-only <tar
 
 ## Step 4: Skip what is already posted
 
-Read the request's existing comments (`gh pr view --comments` / `glab mr view --comments`). Drop a finding already posted by an earlier agent review on the same file and line with the same substance, and list it as already posted. Do the same when `/review` and `/review-spec` report one defect twice: keep one. In CI this step runs on every update of the request: without it, each push reposts the same findings.
+In CI this step runs on every push to the request. Without it, each push reposts the same findings.
+
+Every comment this skill posts carries a hidden key on its first line, which survives edits to the code around it:
+
+```
+<!-- agent-review: <review | spec> · <kind> · <path> · <anchor> -->
+```
+
+`<anchor>` names what the finding is about without a line number, since lines move from one push to the next: the spec item ID (`REQ-3`, `AC-2.1`), the concept slug, or the function or symbol in the code.
+
+Read the comments already on the request, positioned and general:
+
+- GitHub: `gh api --paginate repos/{owner}/{repo}/pulls/<n>/comments` and `gh api --paginate repos/{owner}/{repo}/issues/<n>/comments`;
+- GitLab: `glab api --paginate "projects/:id/merge_requests/<iid>/discussions"`.
+
+Keep those that carry the key. Drop a new finding when an existing comment has the same key and the same substance, **whether its thread is open or resolved**: a resolved thread means someone settled it, and reposting reopens a closed debate. List dropped findings as already posted. Do the same when `/review` and `/review-spec` report one defect twice: keep one.
 
 ## Step 5: Post
 
-Each finding comment starts with `**Agent review** · <fix | decide> · <kind> · \`file:line\`` (`**Agent spec review**` for a `/review-spec` finding), in the language of the review. Interactive: show the user the comments as they will appear, one per finding, then one summary per review, and post nothing before they confirm; they may drop or edit findings. CI: post them directly.
+Each finding comment starts with the key, then `**Agent review** · <fix | decide> · <kind> · \`file:line\`` (`**Agent spec review**` for a `/review-spec` finding), in the language of the review. Interactive: show the user the comments as they will appear, one per finding, then the summary, and post nothing before they confirm; they may drop or edit findings. CI: post them directly.
 
-Post each one as its own comment so that it becomes a thread resolved by a fix or an answer:
+Each finding must become a thread that a person can **resolve**, so that the request shows what is still open. A plain comment on the request cannot be resolved (`gh pr comment`, `glab mr note`): do not use those for findings.
 
-- GitHub: `gh pr comment <id> --body "<comment>"`;
-- GitLab: `glab mr note <id> --message "<comment>"`.
+**GitHub.** Post the findings as one review with `event: "COMMENT"` (never `APPROVE` or `REQUEST_CHANGES`), so that the request gets one notification and each finding its own resolvable thread:
 
-Report what was posted. Do not approve, merge or resolve threads, and do not fail a CI job because of findings: they are for the people on the request to settle.
+```bash
+gh api -X POST repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
+```
+
+```json
+{
+  "commit_id": "<head commit>",
+  "event": "COMMENT",
+  "body": "Agent review: <n> new findings on the diff. Summary in the agent summary comment.",
+  "comments": [
+    { "path": "src/sync/reconcile.ts", "line": 42, "side": "RIGHT", "body": "<finding>" }
+  ]
+}
+```
+
+GitHub only accepts a positioned comment on a line of the diff, and rejects the whole review otherwise. A finding whose `file:line` is outside the diff (a concept the change did not touch, a line far from any change) cannot be a thread on GitHub: list it in the summary, under **Outside the diff**, with its key. With no finding on the diff, post no review.
+
+**GitLab.** Post each finding as a discussion, which is resolvable. Positioned on the diff when its line is in it, using the request's `diff_refs` (`glab api "projects/:id/merge_requests/<iid>"`):
+
+```bash
+glab api -X POST "projects/:id/merge_requests/<iid>/discussions" \
+  -f body="<finding>" -f "position[position_type]=text" \
+  -f "position[base_sha]=<base_sha>" -f "position[start_sha]=<start_sha>" -f "position[head_sha]=<head_sha>" \
+  -f "position[new_path]=<path>" -f "position[new_line]=<line>"
+```
+
+When the line is not in the diff, GitLab refuses the position: post the same discussion without the `position` fields. It stays resolvable.
+
+**The summary** is one comment per request, kept up to date: if a comment with the key `<!-- agent-review: summary -->` exists, edit it (GitHub: `gh api -X PATCH repos/{owner}/{repo}/issues/comments/<id> -f body=...`; GitLab: `glab api -X PUT "projects/:id/merge_requests/<iid>/notes/<id>" -f body=...`); otherwise post it. It holds both reviews' summaries, their "Not verified" lists, the findings already posted, **Outside the diff** (GitHub) and **Pre-existing in the spec**. Read it in Step 4 too: its listed findings count as posted.
+
+Report what was posted. Do not approve, merge or resolve threads, and do not fail a CI job because of findings: they are for the people on the request to settle. Fail the job only when the review could not run (missing CLI, authentication, wrong commit checked out).

@@ -42,17 +42,21 @@ If the slug matches nothing, say so and run Picker mode.
 
 **Spec completeness**: the feature has a summary and at least one REQ with ACs, and its `## Questions` hold no blocker still open (`- [ ] Q-...`). If a blocking question is unresolved, surface it and resolve it (or defer explicitly) before coding.
 
-**UX framing**: if the feature is user-facing and has no `## UX` section, run `/frame-ux` for it and wait for completion. If the skill is unavailable, tell the user and ask whether to proceed without it.
+**Framing**: if the feature is user-facing and has no `## UX` section, or has no `## Tech` section, say so and ask the user how to go on:
 
-**Tech framing**: if the feature has no `## Tech` section, run `/frame-tech` for it and wait. If unavailable, tell the user and ask whether to proceed without it.
+- frame it now (`/frame-ux`, `/frame-tech`);
+- wait: in a team, framing may belong to someone else (UX to a designer), on their own branch;
+- code without it. That choice holds for this session only: write nothing in the spec to record it.
+
+Do not run a framing skill without asking: `## UX` written from a developer's session replaces a designer's decision with a default.
 
 ### Step 3: Implement
 
-Only once framing is in place:
+Once the user has chosen:
 
 1. Create a working task list from the acceptance criteria (`TaskCreate`), one item per AC.
 2. Briefly state what you are about to build: the feature, who it serves, the UX and tech approach in one line each, and the AC count.
-3. Write the code, AC by AC, following the `UX` and `TECH` directions and respecting linked constraints. A direction you cannot follow is a divergence: surface it (see below), do not silently implement something else.
+3. Write the code, AC by AC, following the `UX` and `TECH` directions (when there are some) and respecting linked constraints. A direction you cannot follow is a divergence: surface it (see below), do not silently implement something else.
 4. **Place code markers** (§9.4). At each code site that implements a spec item, add a comment in the host language's native syntax carrying `implements: {feature-slug}#{spec-item-id}`:
    - `// implements: log-completion#REQ-2` (JS/TS), `# implements: log-completion#AC-2.1` (Python), `<!-- implements: log-completion#REQ-1 -->` (HTML).
    - Pick the verb from the item type. `implements:` for what the code realizes: `REQ`, `AC`, `UX`, `TECH`. `see-spec:` for what the code depends on without realizing it: an `AS` it relies on (`// see-spec: log-completion#AS-1` above the code that assumes one completion per day), a `LIM` it works around, a `Q` it awaits. Readers accept either verb on any item, but only `implements:` counts toward coverage, so the right verb keeps `/check-drift` accurate.
