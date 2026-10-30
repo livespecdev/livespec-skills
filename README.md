@@ -53,6 +53,7 @@ Invoke a skill with its slash command, or just describe what you want and let th
 | `/sync` | Reconciles the spec with what was built: checks ACs, adds notes, promotes discovered standing rules to concepts. |
 | `/declare` | Writes the pull request description of the branch: what it implements and changes in the spec, rewordings first, what was checked, what to watch. Sets it on the request with `gh` or `glab` once you confirm. |
 | `/review` | Has an independent agent, with no access to the session that wrote the code, check the declaration against the diff, then the format's and the project's rules, then the code. Read-only. |
+| `/review-spec` | Has an independent agent critically review features before they are built: against the project's principles, constraints and UX and tech concepts, then whether each acceptance criterion can be verified, then placement and granularity, then the framing. Read-only, no readiness verdict. |
 | `/review-pr` | Runs `/review` on an open pull request (or GitLab merge request) and posts its findings as comments, one thread each. Meant for a CI job (`--ci`, no confirmation); by hand, for someone else's request, after you confirm. |
 | `/check-drift` | Reports where intent and code disagree: `[x]` items with no `implements:` marker, dangling markers, code anchored to open items. |
 | `/check-spec` | Reports internal spec inconsistencies: features with no requirements, duplicate IDs, broken links, orphan concepts. |
@@ -90,7 +91,7 @@ Keep the spec files in sync with the code: they are the source of truth.
 
 ## The subagents
 
-For heavier or isolated work, the skills can delegate to subagents in `agents/`: `qa` (checks an implementation against a feature's acceptance criteria), `strategist` (explores product opportunities from the spec), and `reviewer` (the fresh-context agent `/review` runs in). They read the local files only and cannot ask you questions: they return their findings to the session that called them.
+For heavier or isolated work, the skills can delegate to subagents in `agents/`: `qa` (checks an implementation against a feature's acceptance criteria), `strategist` (explores product opportunities from the spec), and `reviewer` (the fresh-context agent `/review` and `/review-spec` run in). They read the local files only and cannot ask you questions: they return their findings to the session that called them.
 
 ## Example project
 

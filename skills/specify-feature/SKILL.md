@@ -145,4 +145,4 @@ When the change is really a product decision (a new concept, or a brand-new feat
 
 ## Present and hand off
 
-Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, then `/implement`.
+Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, `/review-spec` for an independent critical read, then `/implement`.

@@ -133,4 +133,4 @@ Apply the links from the approved plan. Only auto-link when the connection is un
 
 Summarize conversationally what was written: which feature files are new, which got new REQs, which concepts you proposed. The diff is the record; the user reviews it.
 
-Then point at the natural next steps without formalizing them: `/frame-ux` for features with UI implications (new screens, user-facing flows), `/frame-tech` before implementation, then `/implement`. If features have clear UI implications, offer to start UX framing now.
+Then point at the natural next steps without formalizing them: `/frame-ux` for features with UI implications (new screens, user-facing flows), `/frame-tech` before implementation, then `/implement`. If features have clear UI implications, offer to start UX framing now. When several features were written or one bends an existing concept, offer `/review-spec` on them first.
