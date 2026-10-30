@@ -7,7 +7,7 @@ description: |
   before editing. Use when the user wants the spec brought in line with what was built, or when
   /finalize delegates to it. For "done" at the end of a feature, /finalize runs it. Not for active
   debugging or repos with no spec manifest.
-argument-hint: <feature-slug>
+argument-hint: "[feature-slug] [--base <branch>]"
 ---
 
 # Sync Spec
@@ -17,6 +17,10 @@ argument-hint: <feature-slug>
 Reconcile the spec files with the reality of what was built. There is no server: this is `Edit` on local `features/` and concept files, surfaced as a git diff the user reviews. Work in this order: **summarize → confirm → edit → report → discover**.
 
 **Never edit silently.** Present the planned changes and get confirmation first, so the developer reviews without leaving the CLI.
+
+## Which feature
+
+The slug in `$ARGUMENTS`. Without one, the features this branch touches: feature files changed in `git diff --name-only <base>...HEAD`, and features named by the `implements:` markers the diff adds (base: `--base <branch>` in `$ARGUMENTS`, else the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). One feature: go on with it. Several: list them and ask which, or all of them in turn. None: ask.
 
 ## Step 1: Analyze what changed
 
@@ -57,12 +61,12 @@ Only after confirmation:
 **Direct edits** (features are the work product):
 - `Edit` checkboxes `- [ ]` → `- [x]` / `- [-]` (§8.1). One `→ ` resolution note per closed item at most (§8.1).
 - `Edit` `## Tech` / `## UX`: flip applied directions to `[x]`; record a changed direction as a new item, with the old one `[-]` and `→ Superseded by [TECH-N]: ...` (never rewrite a closed direction to say the opposite); add new directions declaratively (target state, not "what I did").
-- Append new REQs/ACs/LIM/UX/TECH items with the **next free integer** in their section, counted over this file and its version on the base branch (`git show origin/main:<path>`, or the branch the work targets), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). Immutable IDs, gaps valid, never renumber (§8.3). When what was built changes what an `[x]` REQ or AC requires, supersede it (old item `[-]`, `→ Superseded by [...]`, new item), never reword it.
+- Append new REQs/ACs/LIM/UX/TECH items with the **next free integer** in their section, counted over this file and its version on the base branch (`git show <base>:<path>`, the base being the branch the work targets, by default the remote's default branch: `git symbolic-ref --short refs/remotes/origin/HEAD`), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). Immutable IDs, gaps valid, never renumber (§8.3). When what was built changes what an `[x]` REQ or AC requires, supersede it (old item `[-]`, `→ Superseded by [...]`, new item), never reword it.
 - Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14). Keep the diff tight.
 
 **Proposed edits** (product decisions, reviewed via diff):
 - New or changed concepts under `product|ux|tech/{type}/{slug}.md`: present the file, write on approval.
-- A genuinely new feature: present it, write on approval (or hand to `/specify-feature`).
+- A genuinely new feature: present it, write on approval (or hand to `/specify`).
 
 ## Step 5: Report
 
@@ -98,7 +102,7 @@ The intent is unchanged; the approach evolved. Examples: a better technical appr
 
 ### New functionality → a new feature
 
-The product's functional coverage expanded: a capability that did not exist, a different user problem, a user story the original feature never intended to cover. Propose a new feature (hand to `/specify-feature`).
+The product's functional coverage expanded: a capability that did not exist, a different user problem, a user story the original feature never intended to cover. Propose a new feature (hand to `/specify`).
 
 **Avoid feature sprawl**: implementation details, technical improvements, and edge-case handling are not new features. They are notes and ACs on the existing one.
 
@@ -115,4 +119,4 @@ The product's functional coverage expanded: a capability that did not exist, a d
 | Dropped criterion | `[-]` + reason | `Edit` the feature |
 | Missing edge case | new AC under its REQ | `Edit` the feature |
 | Reusable pattern / rule | concept under `tech/` or `product/` | propose, write on approval |
-| Genuinely new capability | new feature | propose, then `/specify-feature` |
+| Genuinely new capability | new feature | propose, then `/specify` |

@@ -5,7 +5,7 @@ description: |
   duplicate or misnumbered IDs, ACs not nested under a REQ, REQs checked off with open ACs, broken
   frontmatter links and in-prose references, orphan concepts, and open questions or issues. Use when
   the user asks about spec quality, wants a health pass over the specs, or before a spec review.
-  Read-only diagnostic. Not for spec-to-code coherence (/check-drift) or authoring (/specify-feature).
+  Read-only diagnostic. Not for spec-to-code coherence (/check-drift) or authoring (/specify).
 argument-hint: "[feature-slug]"
 ---
 
@@ -55,7 +55,7 @@ The script exits 0 even when it finds things. It is a diagnostic, not a quality 
 
 | Check | Severity | Reading |
 |---|---|---|
-| `feature-no-requirements` | warning | The feature states intent but nothing testable. Either it needs specifying (`/specify-feature`), or it is really a concept (§6.5). |
+| `feature-no-requirements` | warning | The feature states intent but nothing testable. Either it needs specifying (`/specify`), or it is really a concept (§6.5). |
 | `feature-no-summary` | warning | No summary paragraph between the H1 and the first section (§7.4). |
 | `missing-title` | warning | No H1. |
 | `empty-frontmatter` | warning | An empty `---` block; omit it entirely (§5). |
@@ -90,7 +90,7 @@ Three categories deserve caution before you propose a fix:
 
 - **`unknown-item-type`**: `TE-` items usually mean the project adopted tech directions before §8.2 defined them as `TECH`. Renaming `TE-N` to `TECH-N` keeps the numbers but breaks every inbound `[TE-N]` reference and code marker marker, so propose it as one migration covering the feature file, its in-prose references, and the code markers, and let the user decide. Do not convert them to REQs on your own: that changes the meaning of the spec. `ISS-` items need a read before any rename: those that describe a gap the software still has become `LIM-N`, stated in the present tense; those that record a fixed bug or a task were work tracking (§8.2) and are candidates for removal, which the user decides after checking that no marker or reference points at them.
 
-- **`duplicate-id`**: usually two branches that both took the next free integer. The fix is not to renumber either at random: the branch merged second renumbers the IDs it introduced, with their markers and references. `/specify-feature` describes it.
+- **`duplicate-id`**: usually two branches that both took the next free integer. The fix is not to renumber either at random: the branch merged second renumbers the IDs it introduced, with their markers and references. `/specify` describes it.
 - **`ac-id-mismatch`**: renumbering breaks inbound references, and IDs are immutable (§8.3). Often the honest fix is to leave the ID alone and live with the cosmetic mismatch.
 - **`orphan-concept`**: absence of links is not a defect. §9.5 is explicit that a missing reference must not be treated as one.
 
@@ -98,7 +98,7 @@ Three categories deserve caution before you propose a fix:
 
 This skill reports and stops. It writes nothing.
 
-- Missing requirements, malformed items, weak ACs: `/specify-feature`.
+- Missing requirements, malformed items, weak ACs: `/specify`.
 - Features that should be concepts, or an intent covering several features: `/scope`.
 - Broken links to concepts worth writing: propose the concept file and let the user review the diff. Edits to `product/`, `ux/`, and `tech/` are product decisions.
 
@@ -106,4 +106,4 @@ In `strict` mode (§12.2) the manifest enforces section names, order, and placem
 
 ## What this skill does not do
 
-It never reads the codebase: spec-to-code coherence, marker coverage, and dangling code markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: a critical review of the substance is `/review-spec`, and authoring is `/specify-feature`.
+It never reads the codebase: spec-to-code coherence, marker coverage, and dangling code markers are `/check-drift`. It does not validate conformance to the format (§14). It does not judge whether a requirement is *good*, only whether the documents are consistent: a critical review of the substance is `/review-spec`, and authoring is `/specify`.

@@ -4,9 +4,9 @@ description: |
   Decomposes natural-language intent into a plan of spec features to write or update (and any
   concepts worth extracting), iterates with the user, then writes the feature files. Use when the user
   describes what to build, says "scope this", "plan this work", or wants to break an idea into features.
-  Not for specifying a single known feature (/specify-feature), implementation (/implement), or
+  Not for specifying a single known feature (/specify), implementation (/implement), or
   framing (/frame-ux, /frame-tech). No delivery batches: sequencing lives in git and your issue tracker.
-argument-hint: <natural-language-description>
+argument-hint: "<what to build, in plain words>"
 ---
 
 # Scope Features
@@ -95,7 +95,7 @@ If the decomposition yields many features, offer to phase it (a coherent first s
 
 ## Phase 3: Detail the specs
 
-**Only after the plan is approved.** Draft each feature's full content before writing anything, following `/specify-feature` methodology (summary paragraph, REQs with nested ACs, AS, Q). Present them together for review:
+**Only after the plan is approved.** Draft each feature's full content before writing anything, following `/specify` methodology (summary paragraph, REQs with nested ACs, AS, Q). Present them together for review:
 
 ```
 ### features/habits/log-completion.md  [NEW]
@@ -132,7 +132,7 @@ For each **[NEW]** feature, `Write` `features/{area}/{slug}.md`:
 - A `## Requirements` section with `- [ ] REQ-N:` items, each AC nested exactly 2 spaces under its REQ as `- [ ] AC-N.M:` (§8.1). `## Assumptions`, `## Questions` as needed. Omit empty sections (§7.3).
 - In `strict` mode, use canonical section names in canonical order (§7.3, §12); in `loose`, canonical names are recommended.
 
-For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `LIM` items) with the **next free integer** in their section, counted over this file and its version on the base branch (`git show origin/main:<path>`, or the branch the work targets), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). An `[x]` item whose requirement changes is superseded, never reworded (see `/specify-feature`). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
+For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `LIM` items) with the **next free integer** in their section, counted over this file and its version on the base branch (`git show <base>:<path>`, the base being the branch the work targets, by default the remote's default branch: `git symbolic-ref --short refs/remotes/origin/HEAD`), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). An `[x]` item whose requirement changes is superseded, never reworded (see `/specify`). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
 
 ### Concepts
 

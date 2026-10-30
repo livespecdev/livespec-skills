@@ -45,7 +45,7 @@ Invoke a skill with its slash command, or just describe what you want and let th
 |---|---|
 | `/spec-context` | Locates the project, maps its concepts and features, and bridges the spec against the codebase. Read-only orientation. |
 | `/scope` | Decomposes natural-language intent into a plan of features to write or update (and concepts to extract), then writes them. |
-| `/specify-feature` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
+| `/specify` | Authors or refines one feature: summary, requirements, nested acceptance criteria, assumptions, questions. |
 | `/frame-ux` | Frames the user experience into the feature's `## UX` section, with optional mockup assets. |
 | `/frame-tech` | Frames the technical approach into the feature's `## Tech` section, grounded in the codebase. |
 | `/implement` | Works through the acceptance criteria, writes code, places `implements:` / `see-spec:` markers, and checks ACs as they pass. |
@@ -75,7 +75,7 @@ Each person runs the skills in their own Claude Code session, on their own branc
 
 | Who | Skills | Produces |
 |---|---|---|
-| Product (PM, founder) | `/scope`, `/specify-feature`, `/review-spec` | Features with requirements and acceptance criteria, concepts proposed for review |
+| Product (PM, founder) | `/scope`, `/specify`, `/review-spec` | Features with requirements and acceptance criteria, concepts proposed for review |
 | Design | `/frame-ux`, `/review-spec` | The `## UX` section of a feature, `ux/` concepts proposed |
 | Development | `/frame-tech`, `/implement`, `/finalize`, `/declare`, `/review` | The `## Tech` section, the code with its markers, the pull request description |
 | Anyone, on someone else's work | `/review-spec`, `/review-pr`, `/spec-context` | Findings, never edits |
@@ -89,7 +89,7 @@ Each person runs the skills in their own Claude Code session, on their own branc
 
 **Changing a delivered feature.** A checked `REQ` or `AC` whose requirement changes is not reworded: it is cancelled `[-]` with `→ Superseded by [...]` and replaced by a new item, as for UX and tech directions. The code anchored to the old item then shows up in `/check-drift`, which is the point.
 
-**Parallel branches.** IDs are numbered per file, so two branches can both add a `REQ-4` to the same feature, and git may merge them without a conflict. `/check-spec` and `/review` report the duplicate; the branch merged second renumbers the IDs it introduced, with their markers and references (`/specify-feature` describes the procedure, from §8.3).
+**Parallel branches.** IDs are numbered per file, so two branches can both add a `REQ-4` to the same feature, and git may merge them without a conflict. `/check-spec` and `/review` report the duplicate; the branch merged second renumbers the IDs it introduced, with their markers and references (`/specify` describes the procedure, from §8.3).
 
 **In CI.** Two jobs, neither of which ever fails a pipeline because of findings:
 
@@ -111,7 +111,7 @@ This repository is a LiveSpec project (see its manifest). Use the
 - At session start, or before working on any feature, use `spec-context`
   to orient against the spec.
 - When scoping new work, use `scope`; to author one feature,
-  `specify-feature`; to build it, `implement`.
+  `specify`; to build it, `implement`.
 
 Keep the spec files in sync with the code: they are the source of truth.
 ```

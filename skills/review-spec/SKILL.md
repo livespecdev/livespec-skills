@@ -6,7 +6,7 @@ description: |
   constraints, entities, UX and tech concepts) and against the other features, then whether
   every acceptance criterion can be verified, then the placement (feature, requirement or
   direction; granularity), then the UX and tech framing. Returns findings to fix or to decide.
-  Use after /specify-feature, /scope, /frame-ux or /frame-tech, before implementation, or when
+  Use after /specify, /scope, /frame-ux or /frame-tech, before implementation, or when
   the user asks for a critical review of a spec. Read-only. Not for format errors (/check-spec)
   or for a code change (/review).
 argument-hint: "[feature-slug or area, default the features changed on the branch] [--base <branch>]"
@@ -19,7 +19,7 @@ background: false
 
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: a feature slug, a feature path or an area, and optionally `--base <branch>` (default `origin/main`). If it holds anything else, ignore it and say so in the summary.
+You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: a feature slug, a feature path or an area, and optionally `--base <branch>` (default: the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). If it holds anything else, ignore it and say so in the summary.
 
 Read the specs as a skeptical reader would: the author knows what they meant and cannot see what they left implicit. Your job is to find what a developer, a tester or another feature would trip on.
 

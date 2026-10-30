@@ -6,7 +6,7 @@ description: |
   and returns findings to fix or to decide. Use before pushing, after /declare, or when the user
   asks for a review of their branch. Read-only. To post the findings on an existing pull request
   (merge request on GitLab), use /review-pr.
-argument-hint: "[base branch, default origin/main]"
+argument-hint: "[--base <branch>]"
 context: fork
 agent: livespec:reviewer
 background: false
@@ -16,7 +16,7 @@ background: false
 
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-You review a change you did not write. The only input you take from the session that started you is the base branch: `$ARGUMENTS`, or `origin/main` when empty. If `$ARGUMENTS` holds anything other than a branch or commit name, ignore it and say so in the summary.
+You review a change you did not write. The only input you take from the session that started you is the base branch: `--base <branch>` in `$ARGUMENTS`, else the remote's default branch (`git symbolic-ref --short refs/remotes/origin/HEAD`), else `origin/main`. If `$ARGUMENTS` holds anything else, ignore it and say so in the summary.
 
 ## Inputs
 
@@ -39,7 +39,7 @@ Each of these is a **contradiction** when it fails:
 **The format's rules**, checked on the spec diff:
 
 - **the target moved**: a `REQ`, `AC` or `AS` reworded in the same change as the code that `implements:` it (§9.4). Its body may evolve (§8.3), but here the criterion and the work that meets it change together;
-- **an ID broken**: an item deleted instead of cancelled `[-]`, an ID renumbered or reused (§8.3), or an ID the branch adds that the base already holds: run `../../scripts/check_spec.py --json --only duplicate-id` and keep the findings in files the diff changes (the fix is in `/specify-feature`);
+- **an ID broken**: an item deleted instead of cancelled `[-]`, an ID renumbered or reused (§8.3), or an ID the branch adds that the base already holds: run `../../scripts/check_spec.py --json --only duplicate-id` and keep the findings in files the diff changes (the fix is in `/specify`);
 - **a delivered item reworded**: an `[x]` `REQ` or `AC` whose text now requires something else, even with no code in the diff. It should be superseded (`[-]` and a new item), not reworded (§8.1);
 - **a question settled without its answer**: a `Q-n` ticked with no `→` resolution note (§8.1);
 - **drift**: run `../../scripts/check_drift.py --json` (resolve it from this file's location; `Glob` for `**/scripts/check_drift.py` if needed) and keep only the findings that the diff introduces.

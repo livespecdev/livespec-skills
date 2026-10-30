@@ -75,7 +75,7 @@ A skill is a folder under `skills/` with a `SKILL.md` whose YAML frontmatter car
 |---|---|
 | `spec-context` | Map the project at session start; bridge spec files ↔ codebase reality. |
 | `scope` | Decompose natural-language intent into proposed features (and concepts to extract), then write them. |
-| `specify-feature` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, LIM. Writes the `.md` directly per §7–§8. |
+| `specify` | Author/refine a feature: summary, REQs, nested ACs, AS, Q, LIM. Writes the `.md` directly per §7–§8. |
 | `frame-ux` | Frame UX into `UX` items + supporting prose under `## UX`. Reads `ux/` concepts. |
 | `frame-tech` | Frame technical approach into `TECH` items + supporting prose under `## Tech`; explore the codebase; reads `tech/` concepts. |
 | `implement` | Work through ACs, write code, place `implements:` / `see-spec:` markers (§9.4). Checks `[x]` ACs as they pass; markers anchor code. |

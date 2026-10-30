@@ -62,7 +62,7 @@ You should see `livespec` enabled. Its skills become available as slash commands
 ```
 /spec-context
 /scope
-/specify-feature
+/specify
 /frame-ux
 /frame-tech
 /implement
@@ -100,7 +100,7 @@ The quickest end-to-end check uses the bundled fixture.
 3. Try authoring:
 
    ```
-   /specify-feature view-streaks
+   /specify view-streaks
    ```
 
    It should propose a new feature file with a summary paragraph, REQs with nested ACs, and links to the relevant concepts, and write `features/habits/view-streaks.md` after you approve. Review the diff: the file must be valid LiveSpec (immutable sequential IDs, ACs nested two spaces, no empty frontmatter block).

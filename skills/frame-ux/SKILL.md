@@ -4,8 +4,8 @@ description: |
   Frames the user experience for a spec feature and records it in the feature's `## UX` section:
   user flow, key decisions, patterns used, states, content, and accessibility, optionally with mockup
   assets. Reads ux/ concepts for the design system. Use when framing UX for a feature before
-  implementation. Not for the core spec (/specify-feature) or technical approach (/frame-tech).
-argument-hint: [feature-slug]
+  implementation. Not for the core spec (/specify) or technical approach (/frame-tech).
+argument-hint: "[feature-slug]"
 ---
 
 # UX Framing
@@ -99,7 +99,7 @@ Habit list → tap habit row → today's completion toggles on (streak updates i
 - Mockup: one-tap check-in, default and offline states (`assets/log-completion/check-in.svg`).
 ```
 
-**What becomes an item.** Each choice the implementation must follow is a `UX` item: a component or pattern, a layout, how a state is shown, a label, an accessibility treatment. Apply the substitution test (§6.5, *Requirement vs. direction*): if a different interface could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong, it is an AC: note it for `/specify-feature` instead of writing it under `## UX` (a sync conflict that "resolves silently to one completion" is AC-2.3, not a UX choice).
+**What becomes an item.** Each choice the implementation must follow is a `UX` item: a component or pattern, a layout, how a state is shown, a label, an accessibility treatment. Apply the substitution test (§6.5, *Requirement vs. direction*): if a different interface could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong, it is an AC: note it for `/specify` instead of writing it under `## UX` (a sync conflict that "resolves silently to one completion" is AC-2.3, not a UX choice).
 
 **Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body. Extend the existing `UX-N` sequence from its highest number here or on the base branch; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement`, `/sync`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [UX-6]: ...`) and add the new direction as a new item (§8.1).
 

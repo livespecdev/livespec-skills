@@ -6,7 +6,7 @@ description: |
   user signals the work is finished ("done", "implementation done", "ready to finalize", "need tests",
   "run CI"); it chains /sync and offers /declare.
   Not for active implementation (/implement), debugging, or spec-only updates (/sync directly).
-argument-hint: <feature-slug>
+argument-hint: "[feature-slug] [--base <branch>]"
 ---
 
 # Finalize Work
@@ -14,6 +14,10 @@ argument-hint: <feature-slug>
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
 Complete the production-readiness workflow for a feature: **test → check → reconcile → commit**. Use this once the feature's behavior is implemented and you need it shippable.
+
+## Which feature
+
+The slug in `$ARGUMENTS`. Without one, the features this branch touches: feature files changed in `git diff --name-only <base>...HEAD`, and features named by the `implements:` markers the diff adds (base: `--base <branch>` in `$ARGUMENTS`, else the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). One feature: go on with it. Several: list them and ask which, or all of them in turn. None: ask.
 
 ## Step 1: Verify implementation status
 

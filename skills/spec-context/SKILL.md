@@ -6,7 +6,7 @@ description: |
   orientation. Use at session start, when the user asks "how does X work?" or what the spec says
   about something, or wants product feedback grounded in the spec. Authoring and framing have their
   own skills. Not for pure syntax questions, general programming help, or repos with no spec manifest.
-argument-hint: [path-or-feature-slug]
+argument-hint: "[path or feature-slug]"
 ---
 
 # Spec Context
@@ -104,4 +104,4 @@ This is the narrative version, scoped to whatever you are currently looking at. 
 
 ## What this skill does not do
 
-It reads and reports. It does not write spec files. Hand off to `/scope`, `/specify-feature`, `/frame-ux`, `/frame-tech`, `/implement`, or `/sync` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.
+It reads and reports. It does not write spec files. Hand off to `/scope`, `/specify`, `/frame-ux`, `/frame-tech`, `/implement`, or `/sync` for authoring. It also does not reverse-engineer a codebase into a new spec; that is `reverse-livespec`'s job.

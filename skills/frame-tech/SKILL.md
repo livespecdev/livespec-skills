@@ -4,8 +4,8 @@ description: |
   Frames the technical approach for a spec feature and records it in the feature's `## Tech`
   section: architecture, data model, API shape, key decisions, constraints applied, testing strategy.
   Explores the codebase and reads tech/ concepts. Use when framing the technical approach before
-  implementation. Not for the core spec (/specify-feature) or UX (/frame-ux).
-argument-hint: [feature-slug]
+  implementation. Not for the core spec (/specify) or UX (/frame-ux).
+argument-hint: "[feature-slug]"
 ---
 
 # Tech Framing
@@ -84,7 +84,7 @@ The log keeps logging fully offline-capable (respects [offline-first logging](..
 - Multiple completions per day ([AS-1]): single boolean per day in v1.
 ```
 
-**What becomes an item.** Each choice the implementation must follow is a `TECH` item: a module boundary, a data shape, an API contract, a storage location, a library, an integration path. Apply the substitution test (§6.5, *Requirement vs. direction*): if another implementation could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong (a latency budget, an error the user sees), it is an AC: note it for `/specify-feature` instead.
+**What becomes an item.** Each choice the implementation must follow is a `TECH` item: a module boundary, a data shape, an API contract, a storage location, a library, an integration path. Apply the substitution test (§6.5, *Requirement vs. direction*): if another implementation could satisfy every REQ and AC while contradicting the statement, it is a direction and belongs here. If contradicting it would make an observable behavior wrong (a latency budget, an error the user sees), it is an AC: note it for `/specify` instead.
 
 **Items and IDs.** One decision per item, top-level only (no nested children, §8.1), no block constructs in the body: a schema or a snippet goes in the prose, and the item names it. Extend the existing `TECH-N` sequence from its highest number here or on the base branch; never renumber (§8.3). New items start `[ ]`: they turn `[x]` when the implementation applies them (`/implement`, `/sync`). To change an existing direction, do not rewrite it: mark it `[-]` with a resolution note (`→ Superseded by [TECH-5]: ...`) and add the new direction as a new item (§8.1).
 
@@ -99,7 +99,7 @@ If framing established something reusable, that is a concept, not a feature note
 - A coding rule → `coding_standard`.
 - A newly integrated third-party service → `external_system` under `tech/`.
 
-Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the diff before writing. Then link it from the feature (`architecture_decision: [slug]`, `external_system: [slug]`, §9.2). Distinguish three things (§6.5): a feature-specific behavior is a REQ or AC, owned by `/specify-feature`; a feature-specific implementation choice is a `TECH` item; a rule that applies elsewhere is a concept, linked from the feature. A `TECH` item MAY still say how this feature applies a concept, when that involves a choice of its own.
+Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the diff before writing. Then link it from the feature (`architecture_decision: [slug]`, `external_system: [slug]`, §9.2). Distinguish three things (§6.5): a feature-specific behavior is a REQ or AC, owned by `/specify`; a feature-specific implementation choice is a `TECH` item; a rule that applies elsewhere is a concept, linked from the feature. A `TECH` item MAY still say how this feature applies a concept, when that involves a choice of its own.
 
 ## Wrap up
 

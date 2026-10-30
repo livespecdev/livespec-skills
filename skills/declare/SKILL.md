@@ -8,7 +8,7 @@ description: |
   the user confirms. Use when work on a branch is finished, before a pull
   request is opened or updated, or when the user says "open the PR", "open the MR",
   "write the declaration". /finalize offers it at the end of a feature. Not for committing (/finalize) or reviewing (/review, /review-pr).
-argument-hint: "[base branch, default origin/main]"
+argument-hint: "[--base <branch>]"
 ---
 
 # Declare
@@ -21,7 +21,7 @@ Run this skill in the session that did the work: only that session knows what it
 
 ## Step 1: Scope
 
-Base = `$ARGUMENTS` or `origin/main`. Read `git log --oneline <base>..HEAD`, `git diff --stat <base>...HEAD` and `git status --short`. If there are uncommitted changes, say so and ask whether they belong to the change before going on.
+Base = `--base <branch>` in `$ARGUMENTS`, else the remote's default branch (`git symbolic-ref --short refs/remotes/origin/HEAD`), else `origin/main`. Read `git log --oneline <base>..HEAD`, `git diff --stat <base>...HEAD` and `git status --short`. If there are uncommitted changes, say so and ask whether they belong to the change before going on.
 
 Locate the spec project (`product-spec.yaml` or `livespec.yaml`, §3.1). Never assume a path.
 

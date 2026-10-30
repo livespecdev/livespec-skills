@@ -35,7 +35,7 @@ Write the request description to `.pr-description.md`. This is the only material
 
 ## Step 3: Run the reviews
 
-Run `/review <target branch>`. Pass nothing else: no summary of the change, no opinion. Its independence depends on it.
+Run `/review --base <target branch>`. Pass nothing else: no summary of the change, no opinion. Its independence depends on it.
 
 Then, if the request changes files of a spec project (`git diff --name-only <target>...HEAD` against the manifests found per §3.1: anything under `features/`, `product/`, `ux/` or `tech/`), run `/review-spec --base <target branch>`, with nothing else either. A request that only changes the spec still gets `/review`: the declaration and the rewordings are checked there, the substance here.
 

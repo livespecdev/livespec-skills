@@ -4,9 +4,9 @@ description: |
   Implements a spec feature by working through its acceptance criteria, writing code, placing
   code markers (implements: / see-spec:) that anchor the code to spec items, and checking ACs [x] as they pass. Runs UX and
   tech framing first if the feature lacks a ## UX or ## Tech section. Use when the user says "implement
-  this", "code this", "start building", or names a feature slug. Not for specification (/specify-feature),
+  this", "code this", "start building", or names a feature slug. Not for specification (/specify),
   scoping (/scope), or framing only (/frame-ux, /frame-tech).
-argument-hint: <feature-slug>
+argument-hint: "[feature-slug]"
 ---
 
 # Implement Feature
@@ -29,7 +29,7 @@ If the slug matches nothing, say so and run Picker mode.
 1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1).
 2. `Glob features/**/*.md` and read each feature's spec-item state.
 3. Present, via `AskUserQuestion`, the features that still have open (`- [ ]`) ACs, with their counts (e.g. "log-completion: 5 of 8 ACs open"). Do not filter or rank them by framing: which one comes next is the team's call.
-4. If no feature has an open AC, say so and point at `/scope` or `/specify-feature`.
+4. If no feature has an open AC, say so and point at `/scope` or `/specify`.
 5. Route the selection into Single-feature mode.
 
 ## Single-feature mode
