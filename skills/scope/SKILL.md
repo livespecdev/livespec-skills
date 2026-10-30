@@ -107,7 +107,7 @@ Present all specs together and iterate until approved.
 
 ## Phase 4: Write the files
 
-**Only after the detailed specs are approved.** Features are the work product, so write them directly. Concept changes are product decisions, so propose them as a diff for the user to confirm before writing (mirroring the old suggestion queue).
+**Only after the detailed specs are approved.** Features are the work product, so write them directly. Concept changes are product decisions, so propose them as a diff for the user to confirm before writing.
 
 ### Features
 
@@ -119,7 +119,7 @@ For each **[NEW]** feature, `Write` `features/{area}/{slug}.md`:
 - A `## Requirements` section with `- [ ] REQ-N:` items, each AC nested exactly 2 spaces under its REQ as `- [ ] AC-N.M:` (§8.1). `## Assumptions`, `## Questions` as needed. Omit empty sections (§7.3).
 - In `strict` mode, use canonical section names in canonical order (§7.3, §12); in `loose`, canonical names are recommended.
 
-For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `LIM` items) with the **next free integer** in that section. IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
+For each **[UPDATE]** feature, `Edit` the existing file: append new REQs/ACs (or `LIM` items) with the **next free integer** in their section, counted over this file and its version on the base branch (`git show origin/main:<path>`, or the branch the work targets), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). IDs are file-scoped and immutable, gaps are valid, never renumber existing items (§8.3). An `[x]` item whose requirement changes is superseded, never reworded (see `/specify-feature`). Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14).
 
 ### Concepts
 

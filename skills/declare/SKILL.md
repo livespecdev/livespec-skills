@@ -6,8 +6,8 @@ description: |
   stating what the change implements and changes in the spec, what was checked, what to watch and
   what is left, into `.pr-description.md`, then sets it on the request with `gh` or `glab` once
   the user confirms. Use when work on a branch is finished, before a pull
-  request is opened or updated, or when the user says "done", "open the PR", "open the MR",
-  "write the declaration". Not for committing (/finalize) or reviewing (/review, /review-pr).
+  request is opened or updated, or when the user says "open the PR", "open the MR",
+  "write the declaration". /finalize offers it at the end of a feature. Not for committing (/finalize) or reviewing (/review, /review-pr).
 argument-hint: "[base branch, default origin/main]"
 ---
 

@@ -3,9 +3,9 @@ name: spec-context
 description: |
   Locates the spec project in the repo, maps its concepts and features from the local
   markdown files, and bridges spec intent against codebase reality during development. Read-only
-  orientation. Use at session start, when the user asks "how does X work?", references a feature,
-  makes a design or architectural decision, works on UI, or wants product feedback grounded in the
-  spec. Not for pure syntax questions, general programming help, or repos with no spec manifest.
+  orientation. Use at session start, when the user asks "how does X work?" or what the spec says
+  about something, or wants product feedback grounded in the spec. Authoring and framing have their
+  own skills. Not for pure syntax questions, general programming help, or repos with no spec manifest.
 argument-hint: [path-or-feature-slug]
 ---
 
@@ -22,7 +22,7 @@ A spec project is the directory containing a manifest, `product-spec.yaml` or `l
 1. Search upward from the working directory for the nearest manifest, `product-spec.yaml` or `livespec.yaml`.
 2. If none is found upward, search the common locations (`SPEC.md` §3.1), each with either manifest name: `./`, `docs/spec/`, `.spec/`, `specs/`, and the older `docs/livespec/`, `.livespec/`.
 3. A monorepo MAY hold several projects, each manifest is an independent root with its own slug namespace (§3.1). If you find more than one, ask the user which project they mean.
-4. If you find none, tell the user there is no spec project here and offer to scaffold one (a `product-spec.yaml` manifest plus the four folders) or to point at an existing one.
+4. If you find none, tell the user there is no spec project here and ask whether one exists elsewhere. This skill writes nothing, so it does not create one.
 
 Read the manifest. Note `name`, `format_version`, and `mode` (`loose` default, or `strict`, §12). The mode governs how strict later skills are on section names and ordering; carry it forward.
 
@@ -87,7 +87,7 @@ When the user brainstorms or asks for feedback, ground it in the concept files, 
 - **Personas** (`product/persona/`): who is affected, what they care about.
 - **Goals and pain points** (`product/goal/`, `product/pain_point/`): does this serve them?
 - **Principles and constraints** (`product/principle/`, `product/constraint/`): what beliefs and standing limits apply.
-- **UX and tech concepts** (`ux/`, `tech/`): relevant patterns, decisions, conventions — including any extension types the project defines beyond the core taxonomy (§6.2). A project-specific type often carries the axis that matters most for the question at hand, so name it when it applies rather than falling back on the core types alone.
+- **UX and tech concepts** (`ux/`, `tech/`): relevant patterns, decisions, conventions, including any extension types the project defines beyond the core taxonomy (§6.2). A project-specific type often carries the axis that matters most for the question at hand, so name it when it applies rather than falling back on the core types alone.
 
 ## Surfacing gaps
 

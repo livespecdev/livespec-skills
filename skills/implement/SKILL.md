@@ -28,8 +28,8 @@ If the slug matches nothing, say so and run Picker mode.
 
 1. Locate the project root (nearest manifest, `product-spec.yaml` or `livespec.yaml`, §3.1).
 2. `Glob features/**/*.md` and read each feature's spec-item state.
-3. Present, via `AskUserQuestion`, the features that are framed (have `## UX` where user-facing, and `## Tech`) and still have open (`- [ ]`) ACs, with their progress (e.g. "log-completion (3/8 ACs done)").
-4. If nothing is ready, say so and point at `/scope` or `/specify-feature`.
+3. Present, via `AskUserQuestion`, the features that still have open (`- [ ]`) ACs, with their counts (e.g. "log-completion: 5 of 8 ACs open"). Do not filter or rank them by framing: which one comes next is the team's call.
+4. If no feature has an open AC, say so and point at `/scope` or `/specify-feature`.
 5. Route the selection into Single-feature mode.
 
 ## Single-feature mode
@@ -38,7 +38,7 @@ If the slug matches nothing, say so and run Picker mode.
 
 `Read` `features/**/{slug}.md`. Pull in what shapes the work: linked personas, the constraints it must respect (`product/constraint/`), entities it manipulates (`product/entity/`), external systems (`tech/external_system/`), and any concepts referenced from `## UX` / `## Tech`. Read the manifest `mode` (§12).
 
-### Step 2: Check readiness
+### Step 2: Check what the work stands on
 
 **Spec completeness**: the feature has a summary and at least one REQ with ACs, and its `## Questions` hold no blocker still open (`- [ ] Q-...`). If a blocking question is unresolved, surface it and resolve it (or defer explicitly) before coding.
 

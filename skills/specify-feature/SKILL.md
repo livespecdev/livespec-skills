@@ -139,10 +139,11 @@ links:
 Features are the work product: **write the file directly** when the user asked for the feature.
 
 - **New feature**: `Write` `features/{area}/{slug}.md`. Start from the H1 (with frontmatter above it only if there are links). Assign `REQ-1`, `REQ-2`, ... and ACs in sequence.
-- **Refining**: `Edit` the file. Append new items with the **next free integer** in their section; never reuse or renumber existing IDs, even cancelled ones (§8.3). To drop an item, mark it `[-]` with a reason rather than deleting it (§8.3). Preserve unknown frontmatter and unrecognized sections (losslessness, §14).
+- **Refining**: `Edit` the file. Append new items with the **next free integer** in their section, counted over this file and its version on the base branch (`git show origin/main:<path>`, or the branch the work targets), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). Never reuse or renumber existing IDs, even cancelled ones (§8.3). To drop an item, mark it `[-]` with a reason rather than deleting it (§8.3).
+- **Changing what a closed item requires**: do not reword an `[x]` REQ or AC to mean something else. The code that `implements:` it would stop matching while the spec still reads as delivered. Mark it `[-]` with `→ Superseded by [AC-2.4]: ...` and add the new item `[ ]`, as for directions (§8.1). A REQ that changes meaning takes its ACs with it. Rewording an open item, or a closed one without changing what it requires (a typo, a clearer phrasing), is an ordinary edit (§8.3). Preserve unknown frontmatter and unrecognized sections (losslessness, §14).
 
 When the change is really a product decision (a new concept, or a brand-new feature the user only hinted at), present it first and let the user confirm via the diff before writing.
 
 ## Present and hand off
 
-Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved, `/frame-tech` before implementation, `/review-spec` for an independent critical read, then `/implement`.
+Show the spec in a clean, scannable form for review (summary, REQs as numbered lines with ACs as nested bullets, no ID noise), iterate until the user is satisfied, then note the next steps: `/frame-ux` if UI is involved (the designer's step, when the team has one), `/frame-tech` before implementation, `/review-spec` for an independent critical read, then `/implement`.

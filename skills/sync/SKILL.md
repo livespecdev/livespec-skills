@@ -4,8 +4,9 @@ description: |
   Reconciles spec files with what was actually built: checks resolved acceptance criteria, adds
   resolution notes, updates ## Tech / ## UX notes, captures new behavior as REQs or LIM items, and
   promotes standing rules discovered during development to concepts for review. Presents a summary
-  before editing. Use when the user signals completion ("done", "ship it", "looks good"), wants to sync
-  what was built, or update the spec. Not for active debugging or repos with no spec manifest.
+  before editing. Use when the user wants the spec brought in line with what was built, or when
+  /finalize delegates to it. For "done" at the end of a feature, /finalize runs it. Not for active
+  debugging or repos with no spec manifest.
 argument-hint: <feature-slug>
 ---
 
@@ -56,7 +57,7 @@ Only after confirmation:
 **Direct edits** (features are the work product):
 - `Edit` checkboxes `- [ ]` → `- [x]` / `- [-]` (§8.1). One `→ ` resolution note per closed item at most (§8.1).
 - `Edit` `## Tech` / `## UX`: flip applied directions to `[x]`; record a changed direction as a new item, with the old one `[-]` and `→ Superseded by [TECH-N]: ...` (never rewrite a closed direction to say the opposite); add new directions declaratively (target state, not "what I did").
-- Append new REQs/ACs/LIM/UX/TECH items with the **next free integer** in their section; immutable IDs, gaps valid, never renumber (§8.3).
+- Append new REQs/ACs/LIM/UX/TECH items with the **next free integer** in their section, counted over this file and its version on the base branch (`git show origin/main:<path>`, or the branch the work targets), so an ID another branch already merged is not reused. Two unmerged branches can still pick the same one: the second to merge takes the next free integer (§8.3). Immutable IDs, gaps valid, never renumber (§8.3). When what was built changes what an `[x]` REQ or AC requires, supersede it (old item `[-]`, `→ Superseded by [...]`, new item), never reword it.
 - Preserve unknown frontmatter keys and unrecognized sections (losslessness, §14). Keep the diff tight.
 
 **Proposed edits** (product decisions, reviewed via diff):
@@ -76,7 +77,7 @@ Reflect on the implementation and identify reusable rules that emerged (§6.5):
 - A coding or API rule not yet documented → `coding_standard` / `api_convention`.
 - A new page, route, or full-screen flow the implementation introduced, in a project that keeps `ux/screen/` → a `screen` under `ux/` (§6.2), following the sections its sibling screen files already use (a concept body is free-form, §6.4), plus `links.screen` on the feature. A durable change to an existing surface is a proposed edit to its screen file; the acceptance criteria stay in the feature.
 
-For each, propose the concept file and let the user approve via the diff before writing (this mirrors the old human-review queue: product-level decisions are proposed, not imposed). Also check whether the feature should link an existing concept it relied on, and propose adding that link (§9.2).
+For each, propose the concept file and let the user approve via the diff before writing: product-level decisions are proposed, not imposed. Also check whether the feature should link an existing concept it relied on, and propose adding that link (§9.2).
 
 If nothing reusable emerged, end the skill without asking.
 

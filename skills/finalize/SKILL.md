@@ -2,8 +2,9 @@
 name: finalize
 description: |
   Takes an implemented spec feature to production-ready: adds or updates tests, runs the project's
-  CI/quality gate, commits the changes, and delegates spec reconciliation to /sync. Use when the
-  user signals readiness to finish ("ready to finalize", "need tests", "run CI", "implementation done").
+  CI/quality gate, delegates spec reconciliation to /sync, then commits the code and the spec together. Use when the
+  user signals the work is finished ("done", "implementation done", "ready to finalize", "need tests",
+  "run CI"); it chains /sync and offers /declare.
   Not for active implementation (/implement), debugging, or spec-only updates (/sync directly).
 argument-hint: <feature-slug>
 ---
@@ -12,7 +13,7 @@ argument-hint: <feature-slug>
 
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-Complete the production-readiness workflow for a feature: **test → check → commit → reconcile**. Use this once the feature's behavior is implemented and you need it shippable.
+Complete the production-readiness workflow for a feature: **test → check → reconcile → commit**. Use this once the feature's behavior is implemented and you need it shippable.
 
 ## Step 1: Verify implementation status
 
@@ -39,20 +40,7 @@ Find and run the project's CI command:
 
 Run the most comprehensive check. If it fails, fix the issues and re-run. Do not proceed to commit until it passes. Note anything you fixed.
 
-## Step 4: Commit
-
-**Only after the gate passes.**
-
-1. Review what will be committed: implementation files, test files, the feature file (checked ACs and code markers), and any concept files touched.
-2. Match the project's commit style (read recent `git log`).
-3. Git safety:
-   - Never update git config; never use `--no-verify` or skip hooks.
-   - Stage specific files; avoid `git add -A`.
-   - Create a new commit; do not amend unless the user asks.
-   - If you are on the default branch, create a feature branch first.
-4. **Commit attribution**: the commit MUST NOT mention Claude, Claude Code, or any AI agent as author, committer, or contributor. No `Co-Authored-By` AI trailer, no "Generated with" line. The human is the sole author of record (per `CLAUDE.md`).
-
-## Step 5: Reconcile the spec
+## Step 4: Reconcile the spec
 
 Delegate to `/sync` for this feature to reconcile the spec files with what was actually built:
 
@@ -61,11 +49,24 @@ Delegate to `/sync` for this feature to reconcile the spec files with what was a
 - Record answered `Q` and lifted `LIM` as resolution notes (`→ `, §8.1).
 - Promote any standing rule discovered during the work to a concept for the user to review.
 
-If `/sync` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).
+Reconcile before committing, so the commit carries the spec as it now stands. If `/sync` is unavailable, do those edits directly on the local files (this is plain `Edit` on `features/` and concept files; there is no server to push to).
+
+## Step 5: Commit
+
+**Only after the gate passes and the spec is reconciled.**
+
+1. Review what will be committed: implementation files, test files, the feature file as `/sync` left it, and any concept files the user approved. Leave out nothing `/sync` edited: an uncommitted spec edit stalls `/declare`.
+2. Match the project's commit style (read recent `git log`).
+3. Git safety:
+   - Never update git config; never use `--no-verify` or skip hooks.
+   - Stage specific files; avoid `git add -A`.
+   - Create a new commit; do not amend unless the user asks.
+   - If you are on the default branch, create a feature branch first.
+4. **Commit attribution**: the commit MUST NOT mention Claude, Claude Code, or any AI agent as author, committer, or contributor. No `Co-Authored-By` AI trailer, no "Generated with" line. The human is the sole author of record (per `CLAUDE.md`).
 
 ## Step 6: Summary
 
-Summarize conversationally: tests added for what, the gate passing, the commit hash, and what `/sync` reconciled. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
+Summarize conversationally: tests added for what, the gate passing, what `/sync` reconciled, and the commit hash. The diff is the record. There is no feature status to set and no batch to advance: sequencing the next piece of work is a git/issue-tracker concern, outside the spec (§1).
 
 Then offer the hand-over: `/declare` writes the pull request description from the branch, and `/review` has an independent agent check it against the diff before the user pushes.
 
@@ -74,4 +75,4 @@ Then offer the hand-over: `/declare` writes the pull request description from th
 - **Test failures**: fix the implementation or the tests, re-run; do not move to the gate until tests pass.
 - **Gate failures**: address lint/type/other issues, re-run; do not commit until green.
 - **Pre-commit hook failures**: fix what the hook raised, create a new commit (do not amend).
-- **Reconciliation issues**: complete the file edits directly and report anything you could not reconcile.
+- **Reconciliation issues**: complete the file edits directly before committing, and report anything you could not reconcile.

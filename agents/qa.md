@@ -42,7 +42,6 @@ AC-2.3: Same-day log on two devices keeps a single completion.
 ## QA Report: {feature-slug}
 
 ### Summary
-- Status: Ready / Needs work / Blocked
 - ACs met: X/Y
 - Edge cases verified: X/Y
 
@@ -60,8 +59,8 @@ AC-2.3: Same-day log on two devices keeps a single completion.
 ### Tests
 - Status: passing / failing / missing; Coverage: [observations]
 
-### Verdict
-[Ready to finalize, or the specific items to address first]
+### What remains
+[The ACs not met or partial, with evidence. No overall verdict: the person decides what to do with the gaps.]
 ```
 
 ## Anti-patterns to avoid
@@ -74,4 +73,4 @@ AC-2.3: Same-day log on two devices keeps a single completion.
 
 ## Output
 
-Return: the verification status (Ready / Needs work / Blocked), the X/Y ACs met, the key gaps with evidence, the must-fix blockers, the non-blocking nice-to-haves, and a clear recommendation (proceed to `/finalize`, or address specific items first).
+Return: the X/Y ACs met, each AC not met or partial with its evidence, and the gaps outside the ACs worth knowing. No overall status or verdict (§1): the calling session and the person decide what comes next.

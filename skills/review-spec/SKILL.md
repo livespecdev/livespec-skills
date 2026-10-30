@@ -58,6 +58,7 @@ The REQs and ACs are the acceptance contract (§6.5, *Requirement vs. direction*
 - **Items in conflict** inside the feature.
 - **An assumption that carries weight**: an `AS` that, if false, invalidates REQs. Say which.
 - **A question that blocks**: an open `Q` on which ACs depend. Say which ACs.
+- **A closed item reworded**: when reviewing the branch, an `[x]` REQ or AC whose text in `<base>...HEAD` now requires something else. The code that implements it no longer matches and the spec still reads as delivered. It should be superseded (`[-]` and a new item, §8.1), not reworded.
 - **Work written into the spec**: an item phrased as a task ("Add", "Need to handle"), a `LIM` that is a defect scheduled for a fix (§8.2), or anything that answers "how is the work going?" (§1).
 
 ## 3. The placement

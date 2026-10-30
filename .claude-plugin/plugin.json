@@ -1,7 +1,7 @@
 {
   "name": "livespec",
   "displayName": "LiveSpec",
-  "version": "0.9.0",
+  "version": "0.8.3",
   "description": "Forward-authoring toolchain for LiveSpec: scope, specify, frame, implement, and keep product specs in sync with code, directly on the local markdown files in your git repository. No backend, no MCP server.",
   "author": {
     "name": "Eric Thérond"
