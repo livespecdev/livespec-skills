@@ -103,4 +103,4 @@ Propose the file under `tech/{type}/{slug}.md` and let the user confirm via the 
 
 ## Wrap up
 
-Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer to start `/implement`. There is no status to flip (§10).
+Summarize the key decisions, the main components affected, and any risks or deferred items. Then offer one next step: if `## UX` is missing and the feature is user-facing, offer `/frame-ux`; otherwise the feature is framed, so offer `/review-spec <slug>` or `/implement`. When the requirements were already reviewed and only the tech framing changed since, offer `/review-spec <slug> --focus tech`. There is no status to flip (§10).

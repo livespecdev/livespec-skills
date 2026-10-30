@@ -122,4 +122,4 @@ If framing established a reusable interaction or component rule that would apply
 
 ## Wrap up
 
-Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer `/review-spec` or `/implement`. There is no status to flip (§10).
+Summarize the key decisions and any open items. Then offer one next step: if `## Tech` is missing, offer `/frame-tech`; if tech framing is already done, the feature is fully framed, so offer `/review-spec` or `/implement`. When the requirements were already reviewed and only the UX framing changed since, offer `/review-spec <slug> --focus ux`. There is no status to flip (§10).

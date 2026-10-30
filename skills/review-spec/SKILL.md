@@ -9,7 +9,7 @@ description: |
   Use after /specify, /scope, /frame-ux or /frame-tech, before implementation, or when
   the user asks for a critical review of a spec. Read-only. Not for format errors (/check-spec)
   or for a code change (/review).
-argument-hint: "[feature-slugs or areas, default the spec changed since the base] [--base <branch>]"
+argument-hint: "[feature-slugs or areas, default the spec changed since the base] [--focus product|ux|tech] [--base <branch>]"
 context: fork
 agent: livespec:reviewer
 background: false
@@ -19,7 +19,7 @@ background: false
 
 > **Format reference.** The `§N` citations point to the bundled format spec at [`reference/SPEC.md`](../../reference/SPEC.md) (pinned `v1.0.0-draft`; condensed: [`reference/CHEATSHEET.md`](../../reference/CHEATSHEET.md)). Read it to resolve anything this skill does not spell out.
 
-You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: feature slugs, feature paths or areas, any number of them, and optionally `--base <branch>` (default: the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). If it holds anything else, ignore it and say so in the summary.
+You review spec features you did not write, before anyone builds them. A defect found here costs an edit; found in review of the code, it costs the code too. The only input you take from the session that started you is `$ARGUMENTS`: feature slugs, feature paths or areas, any number of them, optionally `--focus` (see [Focus](#focus)), and optionally `--base <branch>` (default: the remote's default branch, `git symbolic-ref --short refs/remotes/origin/HEAD`, else `origin/main`). If it holds anything else, ignore it and say so in the summary.
 
 Read the specs as a skeptical reader would: the author knows what they meant and cannot see what they left implicit. Your job is to find what a developer, a tester or another feature would trip on.
 
@@ -34,6 +34,21 @@ Read the specs as a skeptical reader would: the author knows what they meant and
 - **The standing rules, linked or not**: every `principle` and `constraint` under `product/`, every `design_principle` under `ux/`, every `architecture_decision`, `coding_standard` and `*_convention` under `tech/` (§6.2). On a large project, read their H1 and summary, and read in full those whose subject the feature touches.
 - **The neighbors**: the features the reviewed ones link to or are linked from, and the other features of the same area.
 - **The mechanical findings**: run `../../scripts/check_spec.py --json` (resolve it from this file's location; `Glob` for `**/scripts/check_spec.py` if needed) with `--feature <slug>` for each feature. They are reported by `/check-spec`: do not repeat them. Use them only to avoid reviewing what is already broken in form.
+
+## Focus
+
+By default the review covers the whole feature. `--focus` narrows what it reports to one or more aspects, comma-separated (`--focus tech`, `--focus ux,tech`), for a team iterating on one part after earlier reviews of the rest:
+
+| Focus | Items reported on | Concepts read in full |
+|---|---|---|
+| `product` | what the feature does: summary paragraph (§7.4), `REQ`, `AC`, `AS`, `Q`, `LIM` | `product/` |
+| `ux` | `UX` items and the `## UX` section | `ux/` |
+| `tech` | `TECH` items and the `## Tech` section | `tech/` |
+
+- **Read everything, report in focus.** Still read the whole feature, its links and its neighbors: a direction is judged against the ACs it serves. Report a finding only if it involves at least one item or section of the focus. With `--focus tech`, "TECH-2 contradicts AC-3" is reported; "AC-3 cannot be verified" is not.
+- **Run the passes the focus touches.** Section 1 for the concepts of the focus and the items of the focus; section 2 only with `product`; section 3 for the items of the focus (the substitution test applies to an AC that should be a `TECH` under `tech`, and to a `TECH` that should be an AC); section 4 only for the framed section of the focus.
+- **Read the other concepts by summary.** The standing rules outside the focus are read by H1 and summary, enough to see a direction of the focus that contradicts them.
+- **An unknown value**: review the whole feature and say so in the summary.
 
 ## 1. The standing rules
 
@@ -107,11 +122,12 @@ Return exactly this, so that the caller can show it:
 
 ### Summary
 
-Agent spec review of <date>, on <short commit> (<model>): <features and concepts reviewed>, <n> findings, <k> to decide.
+Agent spec review of <date>, on <short commit> (<model>): <features and concepts reviewed>, <focus, or "full review">, <n> findings, <k> to decide.
 
 **Changed spec files**: <the spec files changed since the base, marking those not yet committed, or "none: features named directly">
 
 **Not verified by this review**
+- <with a focus: the aspects not reviewed, for example "focus tech: REQ, AC and UX not reviewed">
 - <what you could not check: assumptions about users or data, external systems' real behavior, concepts read by summary only>
 ```
 
